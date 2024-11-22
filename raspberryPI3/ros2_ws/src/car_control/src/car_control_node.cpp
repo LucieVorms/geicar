@@ -7,6 +7,8 @@
 #include "interfaces/msg/motors_feedback.hpp"
 #include "interfaces/msg/steering_calibration.hpp"
 #include "interfaces/msg/joystick_order.hpp"
+#include "interfaces/msg/vehicle_speed.hpp"
+
 
 #include "std_srvs/srv/empty.hpp"
 
@@ -33,6 +35,8 @@ public:
         publisher_can_= this->create_publisher<interfaces::msg::MotorsOrder>("motors_order", 10);
 
         publisher_steeringCalibration_ = this->create_publisher<interfaces::msg::SteeringCalibration>("steering_calibration", 10);
+
+        publisher_vehicle_speed_ = this->create_publisher<interfaces::msg::VehicleSpeed>("vehicle_speed", 10);
 
         
 
@@ -104,7 +108,11 @@ private:
     */
     void motorsFeedbackCallback(const interfaces::msg::MotorsFeedback & motorsFeedback){
         currentAngle = motorsFeedback.steering_angle;
-    }
+
+        // Accéder aux PWM des moteurs
+        ActualleftMotorPwm = motorsFeedback.left_rear_speed;
+        ActualrightMotorPwm = motorsFeedback.right_rear_speed;
+}
 
 
     /* Update PWM commands : leftRearPwmCmd, rightRearPwmCmd, steeringPwmCmd
@@ -137,7 +145,21 @@ private:
 
             //Autonomous Mode
             } else if (mode==1){
-                //...
+                leftRearPwmCmd = 60;        
+                rightRearPwmCmd = 60;
+                steeringCmd(0 ,currentAngle, steeringPwmCmd);  //To calibrate the wheels always in the center
+
+                // Calculating the actual speed (this will depend on ta configuration or model)
+                float requestedSpeed = calculateActualSpeed(leftRearPwmCmd, rightRearPwmCmd); //Verifiy this function with the actual speed of the car
+                float actualSpeed = calculateActualSpeed(ActualleftMotorPwm, ActualrightMotorPwm);
+                // Assign values to the message
+                interfaces::msg::VehicleSpeed vehicleSpeed;
+
+                vehicleSpeed.requested_speed = requestedSpeed;  // Vitesse demandée (valeur fixe ici, mais pourrait être dynamique)
+                vehicleSpeed.actual_speed = actualSpeed;
+
+                // Publier la vitesse sur un topic
+                publisher_vehicle_speed_->publish(vehicleSpeed);
             }
         }
 
@@ -149,6 +171,18 @@ private:
 
         publisher_can_->publish(motorsOrder);
     }
+
+
+    float calculateActualSpeed(uint8_t leftPwm, uint8_t rightPwm) {
+        // Une estimation simple basée sur les commandes PWM
+        // Cela pourrait être plus complexe en fonction des caractéristiques réelles du véhicule.
+        float averagePwm = (leftPwm + rightPwm) / 2.0;
+        float maxPwm = 100;  // Valeur maximale de PWM
+        float maxSpeed = 2.1;  // Vitesse maximale estimée (en km/h par exemple)
+
+        return (averagePwm / maxPwm) * maxSpeed;
+    }
+
 
 
     /* Start the steering calibration process :
@@ -215,6 +249,8 @@ private:
     
     //Motors feedback variables
     float currentAngle;
+    float ActualleftMotorPwm;
+    float ActualrightMotorPwm;
 
     //Manual Mode variables (with joystick control)
     bool reverse;
@@ -229,6 +265,8 @@ private:
     //Publishers
     rclcpp::Publisher<interfaces::msg::MotorsOrder>::SharedPtr publisher_can_;
     rclcpp::Publisher<interfaces::msg::SteeringCalibration>::SharedPtr publisher_steeringCalibration_;
+    rclcpp::Publisher<interfaces::msg::VehicleSpeed>::SharedPtr publisher_vehicle_speed_;
+
 
     //Subscribers
     rclcpp::Subscription<interfaces::msg::JoystickOrder>::SharedPtr subscription_joystick_order_;
