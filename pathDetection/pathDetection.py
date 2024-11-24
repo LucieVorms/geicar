@@ -17,7 +17,7 @@ def detect_and_draw_path(image_path):
     height, width = edges.shape
     mid_x = width // 2
     half_y = 3 * height // 4
-    exclude_band_y = int(height * 0.87)  # Exclude bottom 10% of the image
+    exclude_band_y = int(height * 0.87)  # Exclude bottom 13% of the image
 
     # Categorize contours by part of the image, excluding the bottom band
     left_contours = [
