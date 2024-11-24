@@ -145,13 +145,20 @@ private:
 
             //Autonomous Mode
             } else if (mode==1){
-                leftRearPwmCmd = 60;        
-                rightRearPwmCmd = 60;
+                leftRearPwmCmd = 20;        
+                rightRearPwmCmd = 20;
+		float actualSpeed = 0;
                 steeringCmd(0 ,currentAngle, steeringPwmCmd);  //To calibrate the wheels always in the center
 
                 // Calculating the actual speed (this will depend on ta configuration or model)
-                float requestedSpeed = calculateActualSpeed(leftRearPwmCmd, rightRearPwmCmd); //Verifiy this function with the actual speed of the car
-                float actualSpeed = calculateActualSpeed(ActualleftMotorPwm, ActualrightMotorPwm);
+               
+		 float requestedSpeed = calculateActualSpeed(leftRearPwmCmd, rightRearPwmCmd); //Verifiy this function with the actual speed of the car
+                if (leftRearPwmCmd < 50 && rightRearPwmCmd < 50){
+			actualSpeed = calculateActualReverseSpeed(ActualleftMotorPwm,ActualrightMotorPwm);
+
+		}else {			
+			actualSpeed = calculateActualSpeed(ActualleftMotorPwm, ActualrightMotorPwm);
+		}
                 // Assign values to the message
                 interfaces::msg::VehicleSpeed vehicleSpeed;
 
@@ -177,12 +184,27 @@ private:
         // Une estimation simple basée sur les commandes PWM
         // Cela pourrait être plus complexe en fonction des caractéristiques réelles du véhicule.
         float averagePwm = (leftPwm + rightPwm) / 2.0;
-        float pwmCentered = averagePwm - 50.0;  // Valeur maximale de PWM
+        float pwmCentered = averagePwm - 50.0;
+				  // Valeur maximale de PWM
         float maxSpeed = 2.1;  // Vitesse maximale estimée (en km/h par exemple)
 
         
         return (pwmCentered / 50.0) * maxSpeed;
     }
+
+   float calculateActualReverseSpeed(uint8_t leftPwm, uint8_t rightPwm) {
+        // Une estimation simple basée sur les commandes PWM
+        // Cela pourrait être plus complexe en fonction des caractéristiques réelles du véhicule.
+        float averagePwm = (leftPwm + rightPwm) / 2.0;
+        float pwmCentered = 50 - averagePwm;  
+                                  // Valeur maximale de PWM
+        float maxSpeed = 2.1;  // Vitesse maximale estimée (en km/h par exemple)
+
+
+        return (pwmCentered / 50.0) * maxSpeed;
+    }
+
+
 
 
 
