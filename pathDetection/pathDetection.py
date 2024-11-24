@@ -4,25 +4,32 @@ import numpy as np
 def detect_and_draw_path(image_path):
     # Retrieve the image
     image = cv2.imread(image_path)
-
+    
     # Pre-process the image
-    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) #Original image to black and white image
-    blurred_image = cv2.GaussianBlur(gray_image, (7, 7), 0) #Black and white image to black and white and blured image 
-    edges = cv2.Canny(blurred_image, threshold1=50, threshold2=200) #Blured image to identify each edge
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    blurred_image = cv2.GaussianBlur(gray_image, (9, 9), 0)
+    edges = cv2.Canny(blurred_image, threshold1=50, threshold2=200)
 
     # Find the contours 
     contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    # Divide the image in 4 parts : half in width, 2/3 and 1/3 in the height
+    # Divide the image in 4 parts: half in width, 2/3 and 1/3 in height
     height, width = edges.shape
     mid_x = width // 2
-    half_y = 2*height // 3
+    half_y = 3 * height // 4
+    exclude_band_y = int(height * 0.87)  # Exclude bottom 10% of the image
 
-    # Categorise contours by part of the image 
-    left_contours = [pt for contour in contours for pt in contour if pt[0][0] < mid_x and half_y <= pt[0][1] ]
-    right_contours = [pt for contour in contours for pt in contour if pt[0][0] >= mid_x and half_y <= pt[0][1]]
+    # Categorize contours by part of the image, excluding the bottom band
+    left_contours = [
+        pt for contour in contours for pt in contour 
+        if pt[0][0] < mid_x and half_y <= pt[0][1] < exclude_band_y
+    ]
+    right_contours = [
+        pt for contour in contours for pt in contour 
+        if pt[0][0] >= mid_x and half_y <= pt[0][1] < exclude_band_y
+    ]
 
-    # Initialize points to trace the line to delimit the right and left sid of the path
+    # Initialize points to trace the line to delimit the right and left side of the path
     A1, A2, B1, B2 = None, None, None, None
 
     # Find the points to trace the line to delimit the right side of the path 
@@ -56,5 +63,8 @@ def detect_and_draw_path(image_path):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-# Apply the code to the image
-detect_and_draw_path("WIN_20241121_09_58_39_Pro.jpg")
+# Test with provided images
+detect_and_draw_path("images/camera/WIN_20241121_09_58_45_Pro.jpg")
+
+
+
