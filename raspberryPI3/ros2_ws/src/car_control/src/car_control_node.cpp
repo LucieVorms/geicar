@@ -177,10 +177,11 @@ private:
         // Une estimation simple basée sur les commandes PWM
         // Cela pourrait être plus complexe en fonction des caractéristiques réelles du véhicule.
         float averagePwm = (leftPwm + rightPwm) / 2.0;
-        float maxPwm = 100;  // Valeur maximale de PWM
+        float pwmCentered = averagePwm - 50.0;  // Valeur maximale de PWM
         float maxSpeed = 2.1;  // Vitesse maximale estimée (en km/h par exemple)
 
-        return (averagePwm / maxPwm) * maxSpeed;
+        
+        return (pwmCentered / 50.0) * maxSpeed;
     }
 
 
