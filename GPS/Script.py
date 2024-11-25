@@ -37,10 +37,10 @@ def generate_map_from_file(file_path, api_key):
     center_lat = latitudes.mean()
     center_lon = longitudes.mean()
 
-    correction_value = 0.00003  # Ajustez cette valeur selon vos besoins
+    correction_value = 0.000025  # Ajustez cette valeur selon vos besoins
     longitudes = longitudes + correction_value  # Appliquer la correction
 
-    correction_value = 0.00003  # Ajustez cette valeur selon vos besoins
+    correction_value = 0.000026  # Ajustez cette valeur selon vos besoins
     latitudes = latitudes + correction_value  # Appliquer la correction
 
     # Initialiser gmplot avec la clé API
