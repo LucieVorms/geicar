@@ -101,7 +101,16 @@ private:
         }
     }
 
-    /* Update currentAngle from motors feedback [callback function]  :
+
+    float calculateSpeedFromRpm(float rpm, float wheelRadius, float gearRatio) {
+        // Speed in m/s 
+        float speed_m_s = (2 * M_PI * wheelRadius * rpm) / (60.0 * gearRatio);
+        // Speed in km/h
+        return speed_m_s * 3.6;
+    }
+
+
+    /* Update currentAngle,leftand right wheel speed from motors feedback [callback function]  :
     *
     * This function is called when a message is published on the "/motors_feedback" topic
     * 
@@ -109,10 +118,16 @@ private:
     void motorsFeedbackCallback(const interfaces::msg::MotorsFeedback & motorsFeedback){
         currentAngle = motorsFeedback.steering_angle;
 
-        // Accéder aux PWM des moteurs
-        ActualleftMotorPwm = motorsFeedback.left_rear_speed;
-        ActualrightMotorPwm = motorsFeedback.right_rear_speed;
-}
+        const float wheelRadius = 0.08; // radius of 8cm
+        const float gearRatio = 1.0;   // Ratio of one 
+
+        // Speed Calculation
+        float leftWheelSpeed = calculateSpeedFromRpm(motorsFeedback.left_rear_speed, wheelRadius, gearRatio);
+        float rightWheelSpeed = calculateSpeedFromRpm(motorsFeedback.right_rear_speed, wheelRadius, gearRatio);
+
+        // Means of the Speed
+        actualSpeed = (leftWheelSpeed + rightWheelSpeed) / 2.0;
+    }
 
 
     /* Update PWM commands : leftRearPwmCmd, rightRearPwmCmd, steeringPwmCmd
@@ -145,27 +160,30 @@ private:
 
             //Autonomous Mode
             } else if (mode==1){
-                leftRearPwmCmd = 20;        
-                rightRearPwmCmd = 20;
-		float actualSpeed = 0;
+
+                // Max PWM in reverse
+                leftRearPwmCmd = 0;        
+                rightRearPwmCmd = 0;
+		        
                 steeringCmd(0 ,currentAngle, steeringPwmCmd);  //To calibrate the wheels always in the center
 
-                // Calculating the actual speed (this will depend on ta configuration or model)
-               
-		 float requestedSpeed = calculateActualSpeed(leftRearPwmCmd, rightRearPwmCmd); //Verifiy this function with the actual speed of the car
-                if (leftRearPwmCmd < 50 && rightRearPwmCmd < 50){
-			actualSpeed = calculateActualReverseSpeed(ActualleftMotorPwm,ActualrightMotorPwm);
+                // Calculating the actual speed in km/h
+		        float requestedSpeed = calculateActualSpeed(leftRearPwmCmd, rightRearPwmCmd); 
 
-		}else {			
-			actualSpeed = calculateActualSpeed(ActualleftMotorPwm, ActualrightMotorPwm);
-		}
                 // Assign values to the message
                 interfaces::msg::VehicleSpeed vehicleSpeed;
+                vehicleSpeed.requested_speed = requestedSpeed;
 
-                vehicleSpeed.requested_speed = requestedSpeed;  // Vitesse demandée (valeur fixe ici, mais pourrait être dynamique)
-                vehicleSpeed.actual_speed = actualSpeed;
+                // Negative speed if in reverse 
+                if(leftRearPwmCmd < 50){
 
-                // Publier la vitesse sur un topic
+                    vehicleSpeed.actual_speed = -actualSpeed;
+                }else {
+                    vehicleSpeed.actual_speed = actualSpeed;
+                }
+                vehicleSpeed.speed_unit = "km/h";
+
+                // Publish on the Topic
                 publisher_vehicle_speed_->publish(vehicleSpeed);
             }
         }
@@ -181,30 +199,15 @@ private:
 
 
     float calculateActualSpeed(uint8_t leftPwm, uint8_t rightPwm) {
-        // Une estimation simple basée sur les commandes PWM
-        // Cela pourrait être plus complexe en fonction des caractéristiques réelles du véhicule.
+        //Estimation of the speed
+        float maxSpeed = 2.1;
         float averagePwm = (leftPwm + rightPwm) / 2.0;
-        float pwmCentered = averagePwm - 50.0;
-				  // Valeur maximale de PWM
-        float maxSpeed = 2.1;  // Vitesse maximale estimée (en km/h par exemple)
-
-        
-        return (pwmCentered / 50.0) * maxSpeed;
+        if (averagePwm < 50){
+            return -((50 - averagePwm) / 50) * maxSpeed;
+        } else {
+            return ((averagePwm - 50)/(100-50))*maxSpeed;
+        }        
     }
-
-   float calculateActualReverseSpeed(uint8_t leftPwm, uint8_t rightPwm) {
-        // Une estimation simple basée sur les commandes PWM
-        // Cela pourrait être plus complexe en fonction des caractéristiques réelles du véhicule.
-        float averagePwm = (leftPwm + rightPwm) / 2.0;
-        float pwmCentered = 50 - averagePwm;  
-                                  // Valeur maximale de PWM
-        float maxSpeed = 2.1;  // Vitesse maximale estimée (en km/h par exemple)
-
-
-        return (pwmCentered / 50.0) * maxSpeed;
-    }
-
-
 
 
 
@@ -272,8 +275,7 @@ private:
     
     //Motors feedback variables
     float currentAngle;
-    float ActualleftMotorPwm;
-    float ActualrightMotorPwm;
+    float actualSpeed;  
 
     //Manual Mode variables (with joystick control)
     bool reverse;
