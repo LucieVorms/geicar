@@ -7,6 +7,7 @@
 #include "interfaces/msg/motors_feedback.hpp"
 #include "interfaces/msg/steering_calibration.hpp"
 #include "interfaces/msg/joystick_order.hpp"
+#include "std_msgs/msg/bool.hpp"  
 
 #include "std_srvs/srv/empty.hpp"
 
@@ -28,6 +29,7 @@ public:
         mode = 0;
         requestedThrottle = 0;
         requestedSteerAngle = 0;
+        obstacle_detected = false;
     
 
         publisher_can_= this->create_publisher<interfaces::msg::MotorsOrder>("motors_order", 10);
@@ -45,7 +47,8 @@ public:
         subscription_steering_calibration_ = this->create_subscription<interfaces::msg::SteeringCalibration>(
         "steering_calibration", 10, std::bind(&car_control::steeringCalibrationCallback, this, _1));
 
-
+        subscription_obstacle_detected_ = this->create_subscription<std_msgs::msg::Bool>(
+            "obstacle_detected", 10, std::bind(&car_control::obstacleDetectedCallback, this, _1));
         
 
         server_calibration_ = this->create_service<std_srvs::srv::Empty>(
@@ -106,6 +109,20 @@ private:
         currentAngle = motorsFeedback.steering_angle;
     }
 
+    /* Update obstacledetection from obstacledetected topic [callback function]  :
+    *
+    * This function is called when a message is published on the "/obstacle_detected" topic
+    * 
+    */
+     void obstacleDetectedCallback(const std_msgs::msg::Bool & msg) {
+        obstacle_detected = msg.data;  
+        if (obstacle_detected) {
+            RCLCPP_INFO(this->get_logger(), "Obstacle detected! Stopping the car.");
+        } else {
+            RCLCPP_INFO(this->get_logger(), "No obstacle detected. Resuming the car.");
+        }
+    }
+
 
     /* Update PWM commands : leftRearPwmCmd, rightRearPwmCmd, steeringPwmCmd
     *
@@ -119,7 +136,7 @@ private:
 
         auto motorsOrder = interfaces::msg::MotorsOrder();
 
-        if (!start){    //Car stopped
+        if (!start || obstacle_detected){    //Car stopped 
             leftRearPwmCmd = STOP;
             rightRearPwmCmd = STOP;
             steeringPwmCmd = STOP;
@@ -211,7 +228,7 @@ private:
     //General variables
     bool start;
     int mode;    //0 : Manual    1 : Auto    2 : Calibration
-
+    bool obstacle_detected;
     
     //Motors feedback variables
     float currentAngle;
@@ -234,6 +251,7 @@ private:
     rclcpp::Subscription<interfaces::msg::JoystickOrder>::SharedPtr subscription_joystick_order_;
     rclcpp::Subscription<interfaces::msg::MotorsFeedback>::SharedPtr subscription_motors_feedback_;
     rclcpp::Subscription<interfaces::msg::SteeringCalibration>::SharedPtr subscription_steering_calibration_;
+    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr subscription_obstacle_detected_ ;
 
     //Timer
     rclcpp::TimerBase::SharedPtr timer_;
