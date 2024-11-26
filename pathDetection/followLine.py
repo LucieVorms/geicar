@@ -1,129 +1,136 @@
 import cv2
+import os
 import numpy as np
 
+
 def detect_edges(image):
-    # Convertir l'image en niveaux de gris
+    # Convert the image to greyscale
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    
-    # Appliquer un flou pour réduire le bruit
+    # Apply a blur to reduce noise
     blurred = cv2.GaussianBlur(gray, (9, 9), 0)
-    
-    # Utiliser le détecteur de Canny pour détecter les bords
+    # Use the Canny detector to detect edges
     edges = cv2.Canny(blurred, threshold1=50, threshold2=200)
-    
+    cv2.imshow("edges", edges)
     return edges
 
+
 def find_contours(edges):
-    # Trouver les contours à partir des bords détectés
+    # Find contours from detected edges
     contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     return contours
 
-def draw_contours(frame, contours):
-    # Dessiner les contours sur l'image originale
-    cv2.drawContours(frame, contours,-1, (0, 255, 0), 1)
 
+def detect_and_draw_path(image):
+    # Image pre-processing
+    edges = detect_edges(image)
 
-def calculate_path_center(contours, frame):
-    # Calculer le centre du passage basé sur les deux contours les plus grands (supposant qu'ils encadrent le chemin)
-    height, width, _ = frame.shape
+    contours = find_contours(edges)
+
+    height, width = edges.shape
     center_x = width // 2
-    left_contour = None
-    right_contour = None
 
-    # Dessiner une ligne verticale au centre de l'image pour référence
-    cv2.line(frame, (center_x, 0), (center_x, height), (255, 0, 0), 2)
+    #  Draw a vertical line through the centre of the image for reference
+    cv2.line(image, (center_x, 0), (center_x, height), (255, 0, 0), 2)
 
-    if len(contours) > 1:
-        # Trier les contours par aire décroissante et sélectionner les deux plus grands
-        sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
-        left_contour = sorted_contours[0]
-        right_contour = sorted_contours[1]
+    # Divide the image into 4 parts: half the width, 3/4 and 1/4 the height
+    half_y = 3 * height // 4
+    exclude_band_y = int(height * 1)  # Exclude the bottom 13% of the image
 
-        # Calculer les moments pour obtenir le centre de chaque contour
-        M_left = cv2.moments(left_contour)
-        M_right = cv2.moments(right_contour)
+    # Categorise contours by part of the image, excluding the bottom band
+    left_contours = [
+        pt for contour in contours for pt in contour 
+        if pt[0][0] < center_x and half_y <= pt[0][1] < exclude_band_y
+    ]
+    right_contours = [
+        pt for contour in contours for pt in contour 
+        if pt[0][0] >= center_x and half_y <= pt[0][1] < exclude_band_y
+    ]
 
-        if M_left["m00"] != 0 and M_right["m00"] != 0:
-            left_center_x = int(M_left["m10"] / M_left["m00"])
-            right_center_x = int(M_right["m10"] / M_right["m00"])
-            path_center_x = (left_center_x + right_center_x) // 2
-            path_center = (path_center_x, height // 2)
+    # Initialise the points to draw the line to delimit the right and left sides of the path
+    A1, A2, B1, B2 = None, None, None, None
 
-            # Dessiner un cercle au centre du chemin
-            cv2.circle(frame, path_center, 5, (0, 0, 255), -1)
-            return path_center, center_x
+    # Find the points to draw the line to delimit the right-hand side of the path
+    if right_contours:
+        A1 = min(right_contours, key=lambda pt: (pt[0][1], pt[0][0]))[0]  # Top + right
+        B1 = max(right_contours, key=lambda pt: pt[0][1])[0]  # Bottom + right
 
-    return None, center_x
+    # Find the points to draw the line to delimit the left-hand side of the path
+    if left_contours:
+        A2 = min(left_contours, key=lambda pt: (pt[0][1], -pt[0][0]))[0]  # Top + left
+        B2 = max(left_contours, key=lambda pt: pt[0][1])[0]  # Bottom + left
 
-def adjust_direction(path_center, center_x):
-    # Ajuster la direction de la voiture en fonction de la position du centre du chemin
-    if path_center is not None:
-        if path_center[0] < center_x - 20:
-            print("Tourner à gauche")
-        elif path_center[0] > center_x + 20:
-            print("Tourner à droite")
+    # Draw lines and points
+    path_center_x = None
+    if A1 is not None and B1 is not None:
+        cv2.line(image, tuple(A1), tuple(B1), (255, 0, 0), 3)  # Blue line (right)
+        cv2.circle(image, tuple(A1), 10, (255, 255, 0), -1)  # A1
+        cv2.circle(image, tuple(B1), 10, (255, 255, 0), -1)  # B1
+    if A2 is not None and B2 is not None:
+        cv2.line(image, tuple(A2), tuple(B2), (0, 0, 255), 3)  # Red line (left)
+        cv2.circle(image, tuple(A2), 10, (0, 255, 255), -1)  # A2
+        cv2.circle(image, tuple(B2), 10, (0, 255, 255), -1)  # B2
+
+    # Compute the center of the path if detected
+    if A1 is not None and B1 is not None and A2 is not None and B2 is not None:
+        # Compute mean position of the lower points
+        path_center_x = (B1[0] + B2[0]) // 2
+        path_center_y = (B1[1] + B2[1]) // 2
+        path_center = (path_center_x, path_center_y)
+        cv2.circle(image, path_center, 5, (0, 255, 0), -1)  # Centre du chemin
+
+    return image, path_center_x, center_x
+
+
+def adjust_direction(path_center_x, center_x):
+    # Ajust direction 
+    if path_center_x is not None:
+        if path_center_x < center_x - 20:
+            print("Turn left")
+        elif path_center_x > center_x + 20:
+            print("Turn right")
         else:
-            print("Avancer tout droit")
+            print("Go forward")
     else:
-        print("Chemin non détecté")
+        print("Path not detected")
+
 
 def main():
-    # Charger les images fournies
+    # Directory with all images
+    dossier_images = "images/camera/test_1"
+
+    # Get all images in that directory
     image_paths = [
-        "images\WIN_20241121_09_58_39_Pro.jpg",
-        "images\WIN_20241121_09_58_45_Pro.jpg",
-        "images\WIN_20241121_09_59_00_Pro.jpg",
-        "images\WIN_20241121_09_59_12_Pro.jpg",
-        "images\WIN_20241121_09_59_24_Pro.jpg",
-        "images\WIN_20241121_09_59_36_Pro.jpg",
-        "images\WIN_20241121_10_00_02_Pro.jpg",
-        "images\WIN_20241121_10_00_13_Pro.jpg",
-        "images\WIN_20241121_10_00_23_Pro.jpg",
-        "images\WIN_20241121_10_00_34_Pro.jpg",
-        "images\WIN_20241121_10_00_47_Pro.jpg",
-        "images\WIN_20241121_10_00_56_Pro.jpg",
-        "images\WIN_20241121_10_01_08_Pro.jpg"
+        os.path.join(dossier_images, f)
+        for f in os.listdir(dossier_images)
+        if f.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp', '.tiff'))
     ]
-    
+
     for image_path in image_paths:
-        # Charger l'image
+        # Read the image
         full_frame = cv2.imread(image_path)
-        
+
         if full_frame is None:
             print(f"Erreur: Impossible de charger l'image {image_path}.")
             continue
-        
-        # Créer une copie de l'image complète pour l'affichage
+
+        # Make a copy to display
         display_frame = full_frame.copy()
-        
-        # Considérer uniquement le premier quart inférieur de l'image pour l'analyse
-        height, width, _ = full_frame.shape
-        analysis_frame = full_frame[3 * height // 4:, :]
-        
-        # Détecter les bords
-        edges = detect_edges(analysis_frame)
-        
-        # Trouver les contours à partir des bords détectés
-        contours = find_contours(edges)
-        
-        # Dessiner les contours sur la partie affichée
-        draw_contours(display_frame[3 * height // 4:, :], contours)
-        
-        # Calculer le centre du passage encadré par les deux plus grands contours et ajuster la direction
-        path_center, center_x = calculate_path_center(contours, display_frame[3 * height // 4:, :])
-        adjust_direction(path_center, center_x)
-        
-        # Afficher l'image complète avec les contours et la ligne centrale
+
+        # Detect and draw the path
+        display_frame, path_center_x, center_x = detect_and_draw_path(display_frame)
+        adjust_direction(path_center_x, center_x)
+
+        # Display the image with contours and the path delimitation
         cv2.imshow("Contours du chemin", display_frame)
-        
-        # Attendre que l'utilisateur appuie sur une touche pour passer à l'image suivante
+
+
+        # Wait action from the user to change image
         if cv2.waitKey(0) & 0xFF == ord('q'):
             break
-    
-    # Fermer les fenêtres
+
+    # Close windows
     cv2.destroyAllWindows()
+
 
 if __name__ == "__main__":
     main()
-
-
