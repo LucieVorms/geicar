@@ -7,6 +7,7 @@
 #include "interfaces/msg/motors_feedback.hpp"
 #include "interfaces/msg/steering_calibration.hpp"
 #include "interfaces/msg/joystick_order.hpp"
+#include "interfaces/msg/ultrasonic.hpp"
 #include "std_msgs/msg/bool.hpp"  
 
 #include "std_srvs/srv/empty.hpp"
@@ -17,7 +18,7 @@
 
 using namespace std;
 using placeholders::_1;
-
+#define OBSTACLE_THRESHOLD 30  
 
 class car_control : public rclcpp::Node {
 
@@ -49,6 +50,10 @@ public:
 
         subscription_obstacle_detected_ = this->create_subscription<std_msgs::msg::Bool>(
             "obstacle_detected", 10, std::bind(&car_control::obstacleDetectedCallback, this, _1));
+
+        // Abonnement pour les distances des capteurs à ultrasons
+        subscription_ultrasonic_ = this->create_subscription<interfaces::msg::Ultrasonic>(
+            "us_data", 10, std::bind(&car_control::ultrasonicCallback, this, _1));    
         
 
         server_calibration_ = this->create_service<std_srvs::srv::Empty>(
@@ -62,6 +67,54 @@ public:
 
     
 private:
+
+     /* Update obstacledetection from obstacledetected topic [callback function]  :
+    *
+    * This function is called when a message is published on the "/obstacle_detected" topic
+    * 
+    */
+     void obstacleDetectedCallback(const std_msgs::msg::Bool & msg) {
+        obstacle_detected = msg.data;  
+        if (obstacle_detected) {
+            RCLCPP_INFO(this->get_logger(), "Obstacle detected! Stopping the car.");
+        } else {
+            RCLCPP_INFO(this->get_logger(), "No obstacle detected. Resuming the car.");
+        }
+    }
+
+     void ultrasonicCallback(const interfaces::msg::Ultrasonic & ultrasonicMsg) {
+        // Accéder aux distances des capteurs
+        int16_t front_left = ultrasonicMsg.front_left;
+        int16_t front_center = ultrasonicMsg.front_center;
+        int16_t front_right = ultrasonicMsg.front_right;
+        int16_t rear_left = ultrasonicMsg.rear_left;
+        int16_t rear_center = ultrasonicMsg.rear_center;
+        int16_t rear_right = ultrasonicMsg.rear_right;
+
+        if(obstacle_detected){
+            if (front_left < OBSTACLE_THRESHOLD) {
+                RCLCPP_INFO(this->get_logger(), "Obstacle détecté à %d cm - Avant Gauche", front_left);
+            }
+            if (front_center < OBSTACLE_THRESHOLD) {
+                RCLCPP_INFO(this->get_logger(), "Obstacle détecté à %d cm - Avant Centre", front_center);
+            }
+            if (front_right < OBSTACLE_THRESHOLD) {
+                RCLCPP_INFO(this->get_logger(), "Obstacle détecté à %d cm - Avant Droit", front_right);
+            }
+            if (rear_left < OBSTACLE_THRESHOLD) {
+                RCLCPP_INFO(this->get_logger(), "Obstacle détecté à %d cm - Arrière Gauche", rear_left);
+            }
+            if (rear_center < OBSTACLE_THRESHOLD) {
+                RCLCPP_INFO(this->get_logger(), "Obstacle détecté à %d cm - Arrière Centre", rear_center);
+            }
+            if (rear_right < OBSTACLE_THRESHOLD) {
+                RCLCPP_INFO(this->get_logger(), "Obstacle détecté à %d cm - Arrière Droit", rear_right);
+            }
+        }
+    }
+
+
+
 
     /* Update start, mode, requestedThrottle, requestedSteerAngle and reverse from joystick order [callback function]  :
     *
@@ -109,19 +162,7 @@ private:
         currentAngle = motorsFeedback.steering_angle;
     }
 
-    /* Update obstacledetection from obstacledetected topic [callback function]  :
-    *
-    * This function is called when a message is published on the "/obstacle_detected" topic
-    * 
-    */
-     void obstacleDetectedCallback(const std_msgs::msg::Bool & msg) {
-        obstacle_detected = msg.data;  
-        if (obstacle_detected) {
-            RCLCPP_INFO(this->get_logger(), "Obstacle detected! Stopping the car.");
-        } else {
-            RCLCPP_INFO(this->get_logger(), "No obstacle detected. Resuming the car.");
-        }
-    }
+   
 
 
     /* Update PWM commands : leftRearPwmCmd, rightRearPwmCmd, steeringPwmCmd
@@ -252,6 +293,7 @@ private:
     rclcpp::Subscription<interfaces::msg::MotorsFeedback>::SharedPtr subscription_motors_feedback_;
     rclcpp::Subscription<interfaces::msg::SteeringCalibration>::SharedPtr subscription_steering_calibration_;
     rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr subscription_obstacle_detected_ ;
+    rclcpp::Subscription<interfaces::msg::Ultrasonic>::SharedPtr subscription_ultrasonic_;
 
     //Timer
     rclcpp::TimerBase::SharedPtr timer_;
