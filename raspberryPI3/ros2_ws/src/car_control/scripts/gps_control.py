@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-
 import csv
+from math import radians, cos, sin, sqrt, atan2
+import rclpy
 from rclpy.node import Node
 from interfaces.msg import Gnss  # Import du message correct
 
@@ -14,36 +15,63 @@ class GnssListener(Node):
             self.listener_callback,
             10  # Taille du buffer
         )
-        self.itinerary = [
-            (48.8566, 2.3522),  # Paris
-            (48.8584, 2.2945),  # Tour Eiffel
-            (48.8589, 2.3176),  # Champ de Mars
-        ]
+        
+        # Charger les points GPS depuis un fichier CSV
+        self.itinerary = self.load_itinerary_from_csv('gnss_data.csv')
+        
         self.current_target_index = 0  # Index du point de l'itinéraire à suivre
-        self.file = open('gnss_data.csv', mode='w', newline='')  # Ouverture du fichier CSV en mode écriture
-        self.writer = csv.writer(self.file)
-        self.writer.writerow(['latitude', 'longitude', 'altitude', 'quality', 'hacc', 'vacc'])  # En-têtes CSV
+        
+        if self.itinerary:
+            self.get_logger().info(f"Next target: {self.itinerary[self.current_target_index]}")
+        else:
+            self.get_logger().error("No itinerary points loaded!")
+
+    def load_itinerary_from_csv(self, file_name):
+        # Charger les points GPS depuis un fichier CSV
+        itinerary = []
+        try:
+            with open(file_name, mode='r') as file:
+                reader = csv.reader(file)
+                for row in reader:
+                    if row:  # Ignorer les lignes vides
+                        try:
+                            # Extraire uniquement la latitude et la longitude
+                            lat, lon = float(row[0]), float(row[1])
+                            itinerary.append((lat, lon))
+                        except ValueError as e:
+                            self.get_logger().error(f"Invalid data in row {row}: {e}")
+        except FileNotFoundError:
+            self.get_logger().error(f"File {file_name} not found.")
+        except Exception as e:
+            self.get_logger().error(f"Error reading {file_name}: {e}")
+        return itinerary
     
     def listener_callback(self, msg):
         # Récupère les coordonnées actuelles du véhicule
         current_lat = msg.latitude
         current_lon = msg.longitude
         current_alt = msg.altitude
-        current_quality = msg.quality
-        current_hacc = msg.hacc
-        current_vacc = msg.vacc
         
-        # Enregistrer les données GPS reçues dans le fichier CSV
-        self.writer.writerow([current_lat, current_lon, current_alt, current_quality, current_hacc, current_vacc])
-
-        # Vérifie la distance par rapport au point de l'itinéraire actuel
+        # Afficher la position actuelle
+        self.get_logger().info(f"Current Position: Latitude {current_lat}, Longitude {current_lon}, Altitude {current_alt}")
+        
+        if not self.itinerary:
+            self.get_logger().warn("Itinerary not loaded, skipping target processing.")
+            return
+        
+        # Afficher le prochain point et le point final
         target_lat, target_lon = self.itinerary[self.current_target_index]
-        distance = haversine(current_lat, current_lon, target_lat, target_lon)
+        final_lat, final_lon = self.itinerary[-1]  # Dernier point de l'itinéraire
         
-        self.get_logger().info(f"Distance to target: {distance:.2f} km")
+        self.get_logger().info(f"Next target: Latitude {target_lat}, Longitude {target_lon}")
+        self.get_logger().info(f"Final target: Latitude {final_lat}, Longitude {final_lon}")
+        
+        # Calculer la distance jusqu'au prochain point
+        distance = self.haversine(current_lat, current_lon, target_lat, target_lon)
+        self.get_logger().info(f"Distance to next target: {distance:.5f} km")
         
         # Si la distance est inférieure à 10 mètres, passer au prochain point
-        if distance < 0.01:  # 0.01 km = 10 mètres
+        if distance < 0.0001:  # 0.0001 km = 10 cm
             self.get_logger().info(f"Arrived at target {self.current_target_index + 1}")
             self.current_target_index += 1
             
@@ -51,8 +79,31 @@ class GnssListener(Node):
             if self.current_target_index >= len(self.itinerary):
                 self.get_logger().info("End of itinerary reached!")
                 self.current_target_index = 0  # Retour au début si nécessaire
+                self.get_logger().info(f"Starting over. Next target: {self.itinerary[self.current_target_index]}")
+    
+    def haversine(self, lat1, lon1, lat2, lon2):
+        # Convertir les coordonnées en radians
+        lat1 = radians(lat1)
+        lon1 = radians(lon1)
+        lat2 = radians(lat2)
+        lon2 = radians(lon2)
 
-    def __del__(self):
-        # Fermeture du fichier CSV à la fin
-        self.file.close()
+        # Calcul de la différence des latitudes et longitudes
+        dlat = lat2 - lat1
+        dlon = lon2 - lon1
 
+        # Haversine formula
+        a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
+        c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        R = 6371  # Rayon de la Terre en kilomètres
+        return R * c  # Distance en kilomètres
+
+def main(args=None):
+    rclpy.init(args=args)
+    gnss_listener = GnssListener()
+    rclpy.spin(gnss_listener)
+    gnss_listener.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
