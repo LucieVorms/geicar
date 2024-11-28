@@ -8,7 +8,9 @@
 #include "interfaces/msg/steering_calibration.hpp"
 #include "interfaces/msg/joystick_order.hpp"
 #include "interfaces/msg/ultrasonic.hpp"
+#include "interfaces/msg/obstacle_info.hpp"
 #include "std_msgs/msg/bool.hpp"  
+
 
 #include "std_srvs/srv/empty.hpp"
 
@@ -38,6 +40,7 @@ public:
         publisher_steeringCalibration_ = this->create_publisher<interfaces::msg::SteeringCalibration>("steering_calibration", 10);
 
         
+        publisher_obstacle_info_ = this->create_publisher<interfaces::msg::ObstacleInfo>("ObstacleInfo", 10);
 
         subscription_joystick_order_ = this->create_subscription<interfaces::msg::JoystickOrder>(
         "joystick_order", 10, std::bind(&car_control::joystickOrderCallback, this, _1));
@@ -74,15 +77,26 @@ private:
     * 
     */
      void obstacleDetectedCallback(const std_msgs::msg::Bool & msg) {
+
+        auto obstacle_info_msg = interfaces::msg::ObstacleInfo();
+
+        obstacle_info_msg.obstacle_detected = msg.data;
+    
+        publisher_obstacle_info_->publish(obstacle_info_msg);
+
+
         obstacle_detected = msg.data;  
+        /*
         if (obstacle_detected) {
             RCLCPP_INFO(this->get_logger(), "Obstacle detected! Stopping the car.");
         } else {
             RCLCPP_INFO(this->get_logger(), "No obstacle detected. Resuming the car.");
-        }
+        }*/
     }
 
      void ultrasonicCallback(const interfaces::msg::Ultrasonic & ultrasonicMsg) {
+
+        auto obstacle_info_msg = interfaces::msg::ObstacleInfo();
         // Accéder aux distances des capteurs
         int16_t front_left = ultrasonicMsg.front_left;
         int16_t front_center = ultrasonicMsg.front_center;
@@ -91,6 +105,30 @@ private:
         int16_t rear_center = ultrasonicMsg.rear_center;
         int16_t rear_right = ultrasonicMsg.rear_right;
 
+
+
+        
+            // Déterminer les côtés détectés
+            std::vector<std::string> detected_sides;
+
+            if (ultrasonicMsg.front_left < OBSTACLE_THRESHOLD) detected_sides.push_back("Avant Gauche");
+            if (ultrasonicMsg.front_center < OBSTACLE_THRESHOLD) detected_sides.push_back("Avant Centre");
+            if (ultrasonicMsg.front_right < OBSTACLE_THRESHOLD) detected_sides.push_back("Avant Droit");
+            if (ultrasonicMsg.rear_left < OBSTACLE_THRESHOLD) detected_sides.push_back("Arrière Gauche");
+            if (ultrasonicMsg.rear_center < OBSTACLE_THRESHOLD) detected_sides.push_back("Arrière Centre");
+            if (ultrasonicMsg.rear_right < OBSTACLE_THRESHOLD) detected_sides.push_back("Arrière Droit");
+
+            // Construire la chaîne de côtés détectés
+            if (!detected_sides.empty()) {
+                obstacle_info_msg.sides_detected = std::accumulate(
+                    detected_sides.begin(), detected_sides.end(), std::string(),
+                    [](const std::string &a, const std::string &b) { return a.empty() ? b : a + ", " + b; }
+                );
+            } else {
+                obstacle_info_msg.sides_detected = "Aucun obstacle";
+            }
+
+        /*
         if(obstacle_detected){
             if (front_left < OBSTACLE_THRESHOLD) {
                 RCLCPP_INFO(this->get_logger(), "Obstacle détecté à %d cm - Avant Gauche", front_left);
@@ -110,7 +148,7 @@ private:
             if (rear_right < OBSTACLE_THRESHOLD) {
                 RCLCPP_INFO(this->get_logger(), "Obstacle détecté à %d cm - Arrière Droit", rear_right);
             }
-        }
+        }*/
     }
 
 
@@ -287,6 +325,8 @@ private:
     //Publishers
     rclcpp::Publisher<interfaces::msg::MotorsOrder>::SharedPtr publisher_can_;
     rclcpp::Publisher<interfaces::msg::SteeringCalibration>::SharedPtr publisher_steeringCalibration_;
+    rclcpp::Publisher<interfaces::msg::ObstacleInfo>::SharedPtr publisher_obstacle_info_;
+
 
     //Subscribers
     rclcpp::Subscription<interfaces::msg::JoystickOrder>::SharedPtr subscription_joystick_order_;
