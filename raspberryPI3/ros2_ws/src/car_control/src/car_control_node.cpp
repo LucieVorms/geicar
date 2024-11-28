@@ -20,7 +20,7 @@
 
 using namespace std;
 using placeholders::_1;
-#define OBSTACLE_THRESHOLD 30  
+#define OBSTACLE_THRESHOLD 50  
 
 class car_control : public rclcpp::Node {
 
@@ -82,8 +82,9 @@ private:
 
         obstacle_info_msg.obstacle_detected = msg.data;
 
-        if (obstacle_detected) {
-            std::string detected_sides;
+        if (msg.data) {
+            std::string detected_sides; 
+            
 
             if (front_left < OBSTACLE_THRESHOLD) detected_sides += "Avant Gauche, ";
             if (front_center < OBSTACLE_THRESHOLD) detected_sides += "Avant Centre, ";
