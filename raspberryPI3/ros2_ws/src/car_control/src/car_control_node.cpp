@@ -118,7 +118,7 @@ private:
     void motorsFeedbackCallback(const interfaces::msg::MotorsFeedback & motorsFeedback){
         currentAngle = motorsFeedback.steering_angle;
 
-        const float wheelRadius = 0.08; // radius of 8cm
+        const float wheelRadius = 0.10; // radius of 8cm
         const float gearRatio = 1.0;   // Ratio of one 
 
         // Speed Calculation
@@ -167,16 +167,13 @@ private:
 		        
                 steeringCmd(0 ,currentAngle, steeringPwmCmd);  //To calibrate the wheels always in the center
 
-                // Calculating the actual speed in km/h
-		        float requestedSpeed = calculateActualSpeed(leftRearPwmCmd, rightRearPwmCmd); 
 
                 // Assign values to the message
                 interfaces::msg::VehicleSpeed vehicleSpeed;
-                vehicleSpeed.requested_speed = requestedSpeed;
+                
 
                 // Negative speed if in reverse 
                 if(leftRearPwmCmd < 50){
-
                     vehicleSpeed.actual_speed = -actualSpeed;
                 }else {
                     vehicleSpeed.actual_speed = actualSpeed;
