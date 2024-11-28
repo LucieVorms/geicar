@@ -14,7 +14,6 @@ network:
             dhcp4: true
             optional: true
             access-points:
-              "iPhoneAntoine":
-                password: "toinou13"
+             
               "IOT":
                 password: "aBcDeFgHiJINSA18"
