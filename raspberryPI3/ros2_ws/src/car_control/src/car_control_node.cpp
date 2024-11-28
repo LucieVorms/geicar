@@ -81,6 +81,29 @@ private:
         auto obstacle_info_msg = interfaces::msg::ObstacleInfo();
 
         obstacle_info_msg.obstacle_detected = msg.data;
+
+        if (obstacle_detected) {
+            std::string detected_sides;
+
+            if (front_left < OBSTACLE_THRESHOLD) detected_sides += "Avant Gauche, ";
+            if (front_center < OBSTACLE_THRESHOLD) detected_sides += "Avant Centre, ";
+            if (front_right < OBSTACLE_THRESHOLD) detected_sides += "Avant Droit, ";
+            if (rear_left < OBSTACLE_THRESHOLD) detected_sides += "Arrière Gauche, ";
+            if (rear_center < OBSTACLE_THRESHOLD) detected_sides += "Arrière Centre, ";
+            if (rear_right < OBSTACLE_THRESHOLD) detected_sides += "Arrière Droit, ";
+
+            // Supprimer la dernière virgule et espace, si nécessaire
+            if (!detected_sides.empty()) {
+                detected_sides = detected_sides.substr(0, detected_sides.size() - 2);
+            } else {
+                detected_sides = "Aucun obstacle";
+            }
+
+            obstacle_info_msg.sides_detected = detected_sides;
+        } else {
+            obstacle_info_msg.sides_detected = "Aucun obstacle";
+        }
+
     
         publisher_obstacle_info_->publish(obstacle_info_msg);
 
@@ -96,37 +119,13 @@ private:
 
      void ultrasonicCallback(const interfaces::msg::Ultrasonic & ultrasonicMsg) {
 
-        auto obstacle_info_msg = interfaces::msg::ObstacleInfo();
         // Accéder aux distances des capteurs
-        int16_t front_left = ultrasonicMsg.front_left;
-        int16_t front_center = ultrasonicMsg.front_center;
-        int16_t front_right = ultrasonicMsg.front_right;
-        int16_t rear_left = ultrasonicMsg.rear_left;
-        int16_t rear_center = ultrasonicMsg.rear_center;
-        int16_t rear_right = ultrasonicMsg.rear_right;
-
-
-
-        
-            // Déterminer les côtés détectés
-            std::vector<std::string> detected_sides;
-
-            if (ultrasonicMsg.front_left < OBSTACLE_THRESHOLD) detected_sides.push_back("Avant Gauche");
-            if (ultrasonicMsg.front_center < OBSTACLE_THRESHOLD) detected_sides.push_back("Avant Centre");
-            if (ultrasonicMsg.front_right < OBSTACLE_THRESHOLD) detected_sides.push_back("Avant Droit");
-            if (ultrasonicMsg.rear_left < OBSTACLE_THRESHOLD) detected_sides.push_back("Arrière Gauche");
-            if (ultrasonicMsg.rear_center < OBSTACLE_THRESHOLD) detected_sides.push_back("Arrière Centre");
-            if (ultrasonicMsg.rear_right < OBSTACLE_THRESHOLD) detected_sides.push_back("Arrière Droit");
-
-            // Construire la chaîne de côtés détectés
-            if (!detected_sides.empty()) {
-                obstacle_info_msg.sides_detected = std::accumulate(
-                    detected_sides.begin(), detected_sides.end(), std::string(),
-                    [](const std::string &a, const std::string &b) { return a.empty() ? b : a + ", " + b; }
-                );
-            } else {
-                obstacle_info_msg.sides_detected = "Aucun obstacle";
-            }
+        front_left = ultrasonicMsg.front_left;
+        front_center = ultrasonicMsg.front_center;
+        front_right = ultrasonicMsg.front_right;
+        rear_left = ultrasonicMsg.rear_left;
+        rear_center = ultrasonicMsg.rear_center;
+        rear_right = ultrasonicMsg.rear_right;
 
         /*
         if(obstacle_detected){
@@ -321,6 +320,14 @@ private:
     uint8_t leftRearPwmCmd;
     uint8_t rightRearPwmCmd;
     uint8_t steeringPwmCmd;
+
+    //Us Sensors variables  
+    int16_t front_left ;
+    int16_t front_center ;
+    int16_t front_right ;
+    int16_t rear_left;
+    int16_t rear_center ;
+    int16_t rear_right ;
 
     //Publishers
     rclcpp::Publisher<interfaces::msg::MotorsOrder>::SharedPtr publisher_can_;
