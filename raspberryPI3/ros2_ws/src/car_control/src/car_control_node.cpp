@@ -10,8 +10,6 @@
 #include "interfaces/msg/ultrasonic.hpp"
 #include "interfaces/msg/obstacle_info.hpp"
 #include "std_msgs/msg/bool.hpp"  
-
-
 #include "std_srvs/srv/empty.hpp"
 
 #include "../include/car_control/steeringCmd.h"
@@ -20,48 +18,43 @@
 
 using namespace std;
 using placeholders::_1;
-#define OBSTACLE_THRESHOLD 50  
+#define OBSTACLE_THRESHOLD 50   // Threshold for obstacle detection in centimeters
 
 class car_control : public rclcpp::Node {
 
 public:
     car_control()
     : Node("car_control_node")
-    {
+    {   
+        // Initialize variables
         start = false;
         mode = 0;
         requestedThrottle = 0;
         requestedSteerAngle = 0;
         obstacle_detected = false;
     
-
+        // Create publishers
         publisher_can_= this->create_publisher<interfaces::msg::MotorsOrder>("motors_order", 10);
-
         publisher_steeringCalibration_ = this->create_publisher<interfaces::msg::SteeringCalibration>("steering_calibration", 10);
-
-        
         publisher_obstacle_info_ = this->create_publisher<interfaces::msg::ObstacleInfo>("ObstacleInfo", 10);
 
+        // Create subscriptions
         subscription_joystick_order_ = this->create_subscription<interfaces::msg::JoystickOrder>(
-        "joystick_order", 10, std::bind(&car_control::joystickOrderCallback, this, _1));
-
+            "joystick_order", 10, std::bind(&car_control::joystickOrderCallback, this, _1));
         subscription_motors_feedback_ = this->create_subscription<interfaces::msg::MotorsFeedback>(
-        "motors_feedback", 10, std::bind(&car_control::motorsFeedbackCallback, this, _1));
-
+            "motors_feedback", 10, std::bind(&car_control::motorsFeedbackCallback, this, _1));
         subscription_steering_calibration_ = this->create_subscription<interfaces::msg::SteeringCalibration>(
-        "steering_calibration", 10, std::bind(&car_control::steeringCalibrationCallback, this, _1));
-
+            "steering_calibration", 10, std::bind(&car_control::steeringCalibrationCallback, this, _1));
         subscription_obstacle_detected_ = this->create_subscription<std_msgs::msg::Bool>(
             "obstacle_detected", 10, std::bind(&car_control::obstacleDetectedCallback, this, _1));
-
-        // Abonnement pour les distances des capteurs à ultrasons
         subscription_ultrasonic_ = this->create_subscription<interfaces::msg::Ultrasonic>(
             "us_data", 10, std::bind(&car_control::ultrasonicCallback, this, _1));    
         
-
+        // Create service for steering calibration
         server_calibration_ = this->create_service<std_srvs::srv::Empty>(
                             "steering_calibration", std::bind(&car_control::steeringCalibration, this, std::placeholders::_1, std::placeholders::_2));
 
+        // Create timer to update commands periodically
         timer_ = this->create_wall_timer(PERIOD_UPDATE_CMD, std::bind(&car_control::updateCmd, this));
 
         
@@ -77,15 +70,13 @@ private:
     * 
     */
      void obstacleDetectedCallback(const std_msgs::msg::Bool & msg) {
-
         auto obstacle_info_msg = interfaces::msg::ObstacleInfo();
-
         obstacle_info_msg.obstacle_detected = msg.data;
 
-        if (msg.data) {
+        if (msg.data) { // If an obstacle is detected
             std::string detected_sides; 
-            
-
+        
+            // Determine which sides have obstacles
             if (front_left < OBSTACLE_THRESHOLD) detected_sides += "Avant Gauche, ";
             if (front_center < OBSTACLE_THRESHOLD) detected_sides += "Avant Centre, ";
             if (front_right < OBSTACLE_THRESHOLD) detected_sides += "Avant Droit, ";
@@ -93,7 +84,7 @@ private:
             if (rear_center < OBSTACLE_THRESHOLD) detected_sides += "Arrière Centre, ";
             if (rear_right < OBSTACLE_THRESHOLD) detected_sides += "Arrière Droit, ";
 
-            // Supprimer la dernière virgule et espace, si nécessaire
+            // Remove trailing comma and space if present
             if (!detected_sides.empty()) {
                 detected_sides = detected_sides.substr(0, detected_sides.size() - 2);
             } else {
@@ -107,58 +98,20 @@ private:
 
     
         publisher_obstacle_info_->publish(obstacle_info_msg);
-
-
         obstacle_detected = msg.data;  
-        /*
-        if (obstacle_detected) {
-            RCLCPP_INFO(this->get_logger(), "Obstacle detected! Stopping the car.");
-        } else {
-            RCLCPP_INFO(this->get_logger(), "No obstacle detected. Resuming the car.");
-        }*/
     }
 
+    /* Callback to handle ultrasonic sensor data */
      void ultrasonicCallback(const interfaces::msg::Ultrasonic & ultrasonicMsg) {
-
-        // Accéder aux distances des capteurs
         front_left = ultrasonicMsg.front_left;
         front_center = ultrasonicMsg.front_center;
         front_right = ultrasonicMsg.front_right;
         rear_left = ultrasonicMsg.rear_left;
         rear_center = ultrasonicMsg.rear_center;
         rear_right = ultrasonicMsg.rear_right;
-
-        /*
-        if(obstacle_detected){
-            if (front_left < OBSTACLE_THRESHOLD) {
-                RCLCPP_INFO(this->get_logger(), "Obstacle détecté à %d cm - Avant Gauche", front_left);
-            }
-            if (front_center < OBSTACLE_THRESHOLD) {
-                RCLCPP_INFO(this->get_logger(), "Obstacle détecté à %d cm - Avant Centre", front_center);
-            }
-            if (front_right < OBSTACLE_THRESHOLD) {
-                RCLCPP_INFO(this->get_logger(), "Obstacle détecté à %d cm - Avant Droit", front_right);
-            }
-            if (rear_left < OBSTACLE_THRESHOLD) {
-                RCLCPP_INFO(this->get_logger(), "Obstacle détecté à %d cm - Arrière Gauche", rear_left);
-            }
-            if (rear_center < OBSTACLE_THRESHOLD) {
-                RCLCPP_INFO(this->get_logger(), "Obstacle détecté à %d cm - Arrière Centre", rear_center);
-            }
-            if (rear_right < OBSTACLE_THRESHOLD) {
-                RCLCPP_INFO(this->get_logger(), "Obstacle détecté à %d cm - Arrière Droit", rear_right);
-            }
-        }*/
     }
 
-
-
-
-    /* Update start, mode, requestedThrottle, requestedSteerAngle and reverse from joystick order [callback function]  :
-    *
-    * This function is called when a message is published on the "/joystick_order" topic
-    * 
-    */
+    /* Callback to handle joystick commands */
     void joystickOrderCallback(const interfaces::msg::JoystickOrder & joyOrder) {
 
         if (joyOrder.start != start){
@@ -171,7 +124,7 @@ private:
         }
         
 
-        if (joyOrder.mode != mode && joyOrder.mode != -1){ //if mode change
+        if (joyOrder.mode != mode && joyOrder.mode != -1){ 
             mode = joyOrder.mode;
 
             if (mode==0){
@@ -191,11 +144,7 @@ private:
         }
     }
 
-    /* Update currentAngle from motors feedback [callback function]  :
-    *
-    * This function is called when a message is published on the "/motors_feedback" topic
-    * 
-    */
+    /* Callback to handle motor feedback */
     void motorsFeedbackCallback(const interfaces::msg::MotorsFeedback & motorsFeedback){
         currentAngle = motorsFeedback.steering_angle;
     }
@@ -203,33 +152,22 @@ private:
    
 
 
-    /* Update PWM commands : leftRearPwmCmd, rightRearPwmCmd, steeringPwmCmd
-    *
-    * This function is called periodically by the timer [see PERIOD_UPDATE_CMD in "car_control_node.h"]
-    * 
-    * In MANUAL mode, the commands depends on :
-    * - requestedThrottle, reverse, requestedSteerAngle [from joystick orders]
-    * - currentAngle [from motors feedback]
-    */
+    /* Periodic function to update motor commands */
     void updateCmd(){
-
         auto motorsOrder = interfaces::msg::MotorsOrder();
 
-        if (!start || obstacle_detected){    //Car stopped 
+        if (!start || obstacle_detected){ 
+            // Stop the car 
             leftRearPwmCmd = STOP;
             rightRearPwmCmd = STOP;
             steeringPwmCmd = STOP;
 
 
-        }else{ //Car started
-
-            //Manual Mode
+        }else{ 
+            // Handle manual mode
             if (mode==0){
-                
                 manualPropulsionCmd(requestedThrottle, reverse, leftRearPwmCmd,rightRearPwmCmd);
-
                 steeringCmd(requestedSteerAngle,currentAngle, steeringPwmCmd);
-
 
             //Autonomous Mode
             } else if (mode==1){
@@ -247,12 +185,8 @@ private:
     }
 
 
-    /* Start the steering calibration process :
-    *
-    * Publish a calibration request on the "/steering_calibration" topic
-    */
+    /* Start the steering calibration process */
     void startSteeringCalibration(){
-
         auto calibrationMsg = interfaces::msg::SteeringCalibration();
         calibrationMsg.request = true;
 
@@ -261,10 +195,7 @@ private:
     }
 
 
-    /* Function called by "steering_calibration" service
-    * 1. Switch to calibration mode
-    * 2. Call startSteeringCalibration function
-    */
+    /* Callback to handle the steering calibration process */
     void steeringCalibration([[maybe_unused]] std_srvs::srv::Empty::Request::SharedPtr req,
                             [[maybe_unused]] std_srvs::srv::Empty::Response::SharedPtr res)
     {
