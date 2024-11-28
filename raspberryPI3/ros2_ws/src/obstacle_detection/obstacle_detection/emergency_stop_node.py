@@ -22,12 +22,12 @@ class EmergencyStopNode(Node):
     def listener_callback(self, msg):
         
         obstacle_detected = any([
-            msg.front_left < 30,
-            msg.front_center < 30,
-            msg.front_right < 30,
-            msg.rear_left < 30,
-            msg.rear_center < 30,
-            msg.rear_right < 30,
+            msg.front_left < 50,
+            msg.front_center < 50,
+            msg.front_right < 50,
+            msg.rear_left < 50,
+            msg.rear_center < 50,
+            msg.rear_right < 50,
         ])
         
         
