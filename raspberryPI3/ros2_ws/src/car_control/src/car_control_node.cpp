@@ -162,8 +162,8 @@ private:
             } else if (mode==1){
 
                 // Max PWM in reverse
-                leftRearPwmCmd = 0;        
-                rightRearPwmCmd = 0;
+                leftRearPwmCmd = 100;        
+                rightRearPwmCmd = 100;
 		        
                 steeringCmd(0 ,currentAngle, steeringPwmCmd);  //To calibrate the wheels always in the center
 
