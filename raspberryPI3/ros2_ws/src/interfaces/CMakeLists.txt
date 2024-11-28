@@ -21,6 +21,7 @@ set(msg_files
   "msg/Ultrasonic.msg"
   "msg/Gnss.msg"
   "msg/SystemCheck.msg"
+  "msg/VehicleSpeed.msg"
   "msg/ObstacleInfo.msg"
 )
 
