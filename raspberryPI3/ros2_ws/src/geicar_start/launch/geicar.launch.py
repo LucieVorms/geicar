@@ -36,6 +36,12 @@ def generate_launch_description():
         emulate_tty=True
     )
 
+    gnss_listener_node = Node(
+    package="car_control",
+    executable="gps_control.py",
+    emulate_tty=True
+    )
+
 
     config_dir = os.path.join(get_package_share_directory('imu_filter_madgwick'), 'config')
 
@@ -61,5 +67,6 @@ def generate_launch_description():
     ld.add_action(car_control_node)
     ld.add_action(imu_filter_madgwick_node)
     ld.add_action(system_check_node)
+    ld.add_action(gnss_listener_node)
 
     return ld

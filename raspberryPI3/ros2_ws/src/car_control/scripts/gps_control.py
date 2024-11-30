@@ -5,6 +5,7 @@ from math import radians, cos, sin, sqrt, atan2
 import rclpy
 from rclpy.node import Node
 from interfaces.msg import Gnss  # Import du message correct
+from interfaces.msg import GnssStatus
 
 class GnssListener(Node):
     def __init__(self):
@@ -16,15 +17,13 @@ class GnssListener(Node):
             10  # Taille du buffer
         )
         
+        self.publisher = self.create_publisher(GnssStatus, '/gnss_status', 10)  
+
         # Charger les points GPS depuis un fichier CSV
         self.itinerary = self.load_itinerary_from_csv('gnss_data.csv')
         
         self.current_target_index = 0  # Index du point de l'itinéraire à suivre
         
-        if self.itinerary:
-            self.get_logger().info(f"Next target: {self.itinerary[self.current_target_index]}")
-        else:
-            self.get_logger().error("No itinerary points loaded!")
 
     def load_itinerary_from_csv(self, file_name):
         # Charger les points GPS depuis un fichier CSV
@@ -52,35 +51,44 @@ class GnssListener(Node):
         current_lon = msg.longitude
         current_alt = msg.altitude
         
-        # Afficher la position actuelle
-        self.get_logger().info(f"Current Position: Latitude {current_lat}, Longitude {current_lon}, Altitude {current_alt}")
-        
-        if not self.itinerary:
-            self.get_logger().warn("Itinerary not loaded, skipping target processing.")
-            return
-        
-        # Afficher le prochain point et le point final
+  
         target_lat, target_lon = self.itinerary[self.current_target_index]
         final_lat, final_lon = self.itinerary[-1]  # Dernier point de l'itinéraire
-        
-        self.get_logger().info(f"Next target: Latitude {target_lat}, Longitude {target_lon}")
-        self.get_logger().info(f"Final target: Latitude {final_lat}, Longitude {final_lon}")
+        distance = self.haversine(current_lat, current_lon, target_lat, target_lon)
+
+        status_msg = GnssStatus()
+        status_msg.current_latitude = current_lat
+        status_msg.current_longitude = current_lon
+        status_msg.current_altitude = current_alt
+        status_msg.target_latitude = target_lat
+        status_msg.target_longitude = target_lon
+        status_msg.distance_to_target = distance
+
+        #self.get_logger().info(f"Next target: Latitude {target_lat}, Longitude {target_lon}")
+        #self.get_logger().info(f"Final target: Latitude {final_lat}, Longitude {final_lon}")
         
         # Calculer la distance jusqu'au prochain point
-        distance = self.haversine(current_lat, current_lon, target_lat, target_lon)
-        self.get_logger().info(f"Distance to next target: {distance:.5f} km")
+        
+        #self.get_logger().info(f"Distance to next target: {distance:.5f} km")
         
         # Si la distance est inférieure à 10 mètres, passer au prochain point
         if distance < 0.0001:  # 0.0001 km = 10 cm
-            self.get_logger().info(f"Arrived at target {self.current_target_index + 1}")
+            
             self.current_target_index += 1
             
             # Si on a terminé l'itinéraire
             if self.current_target_index >= len(self.itinerary):
-                self.get_logger().info("End of itinerary reached!")
+                status_msg.status_message = "End of itinerary reached!"
+                #self.get_logger().info("End of itinerary reached!")
                 self.current_target_index = 0  # Retour au début si nécessaire
-                self.get_logger().info(f"Starting over. Next target: {self.itinerary[self.current_target_index]}")
-    
+            else : 
+                #self.get_logger().info(f"Arrived at target {self.current_target_index + 1}")
+                status_msg.status_message = f"Arrived at target {self.current_target_index}. Moving to next target."
+        else : 
+            status_msg.status_message = f"Navigating to target {self.current_target_index}."
+            #self.get_logger().info(f"Starting over. Next target: {self.itinerary[self.current_target_index]}")
+        self.publisher.publish(status_msg)
+
     def haversine(self, lat1, lon1, lat2, lon2):
         # Convertir les coordonnées en radians
         lat1 = radians(lat1)
