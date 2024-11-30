@@ -59,6 +59,12 @@ def generate_launch_description():
         emulate_tty=True
     )
 
+    emergency_stop_node = Node(
+        package="obstacle_detection",  
+        executable="emergency_stop_node",  
+        emulate_tty=True
+    )
+
 
     ld.add_action(joystick_node)
     ld.add_action(joystick_to_cmd_node)
@@ -66,7 +72,8 @@ def generate_launch_description():
     ld.add_action(can_tx_node)
     ld.add_action(car_control_node)
     ld.add_action(imu_filter_madgwick_node)
-    ld.add_action(system_check_node)
     ld.add_action(gnss_listener_node)
+    ld.add_action(emergency_stop_node)
+
 
     return ld
