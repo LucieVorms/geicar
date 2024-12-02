@@ -1,0 +1,7 @@
+float64 current_latitude
+float64 current_longitude
+float64 current_altitude
+float64 target_latitude
+float64 target_longitude
+float64 distance_to_target
+string status_message
