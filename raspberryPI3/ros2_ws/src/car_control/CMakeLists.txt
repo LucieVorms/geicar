@@ -17,7 +17,6 @@ add_executable(car_control_node
   src/car_control_node.cpp
   src/steeringCmd.cpp
   src/propulsionCmd.cpp
-  scripts/gps_control.py
 )
 
 
@@ -34,7 +33,7 @@ install(TARGETS car_control_node
   DESTINATION lib/${PROJECT_NAME})
 
 install(PROGRAMS
-  scripts/gps_control.py  # Remplace par le nom de ton script
+   
   DESTINATION lib/${PROJECT_NAME}
 )
 
