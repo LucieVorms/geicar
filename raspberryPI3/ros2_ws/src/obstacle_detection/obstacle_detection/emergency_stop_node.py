@@ -22,10 +22,12 @@ class EmergencyStopNode(Node):
     def listener_callback(self, msg):
         
         obstacle_detected = any([
-            msg.front_left < 60,
-            msg.front_center < 60,
-            msg.front_right < 60,
-        ])
+
+            msg.front_left < 80,
+            msg.front_center < 80,
+            msg.front_right < 80,
+                       ])
+
         
         
         self.publisher_.publish(Bool(data=obstacle_detected))
