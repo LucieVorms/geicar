@@ -217,8 +217,8 @@ private:
                 manualPropulsionCmd(requestedThrottle, reverse, leftRearPwmCmd,rightRearPwmCmd);
                 steeringCmd(requestedSteerAngle,currentAngle, steeringPwmCmd);
             } else if (mode==1){    //Autonomous Mode
-                leftRearPwmCmd = 100;        
-                rightRearPwmCmd = 100;
+                leftRearPwmCmd = 70;        
+                rightRearPwmCmd = 70;
                 steeringCmd(0 ,currentAngle, steeringPwmCmd);  // Center the wheels
 
 
