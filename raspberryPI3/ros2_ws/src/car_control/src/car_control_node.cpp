@@ -22,7 +22,7 @@
 
 using namespace std;
 using placeholders::_1;
-#define OBSTACLE_THRESHOLD 42   // Threshold for obstacle detection in centimeters
+#define OBSTACLE_THRESHOLD 38   // Threshold for obstacle detection in centimeters
 #define REVERSE_DURATION 2000  
 #define REVERSE_PWM 30  
 #define REVERSE_OBSTACLE_THRESHOLD 50  // Distance minimale pour éviter les collisions à l'arrière en cm
@@ -221,10 +221,10 @@ private:
                 rightRearPwmCmd = REVERSE_PWM;
                 steeringPwmCmd = STOP;
             } else {
-                RCLCPP_WARN(this->get_logger(), "Obstacle détecté à l'arrière ! Annulation de la marche arrière.");
+                RCLCPP_WARN(this->get_logger(), "Obstacle detected at the Rear, Stopping the car");
                 leftRearPwmCmd = STOP;
                 rightRearPwmCmd = STOP;
-                reversing = false;  // Arrête la marche arrière
+                reversing = false; 
             } 
         }
         else if (!start || obstacle_detected){ 
