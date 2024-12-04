@@ -25,6 +25,8 @@ using placeholders::_1;
 #define OBSTACLE_THRESHOLD 42   // Threshold for obstacle detection in centimeters
 #define REVERSE_DURATION 2000  
 #define REVERSE_PWM 30  
+#define REVERSE_OBSTACLE_THRESHOLD 50  // Distance minimale pour éviter les collisions à l'arrière en cm
+
 class car_control : public rclcpp::Node {
 
 public:
@@ -213,9 +215,17 @@ private:
 
         if (start && reversing && (this->now() - reverse_timer).nanoseconds() / 1e6 < REVERSE_DURATION) {
         
-           leftRearPwmCmd = REVERSE_PWM;
-           rightRearPwmCmd = REVERSE_PWM;
-           steeringPwmCmd = STOP; 
+            
+            if (rear_left > REVERSE_OBSTACLE_THRESHOLD && rear_center > REVERSE_OBSTACLE_THRESHOLD && rear_right > REVERSE_OBSTACLE_THRESHOLD) {
+                leftRearPwmCmd = REVERSE_PWM;
+                rightRearPwmCmd = REVERSE_PWM;
+                steeringPwmCmd = STOP;
+            } else {
+                RCLCPP_WARN(this->get_logger(), "Obstacle détecté à l'arrière ! Annulation de la marche arrière.");
+                leftRearPwmCmd = STOP;
+                rightRearPwmCmd = STOP;
+                reversing = false;  // Arrête la marche arrière
+            } 
         }
         else if (!start || obstacle_detected){ 
             // Stop the car 
