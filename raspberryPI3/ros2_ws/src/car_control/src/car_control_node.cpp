@@ -23,7 +23,8 @@
 using namespace std;
 using placeholders::_1;
 #define OBSTACLE_THRESHOLD 60   // Threshold for obstacle detection in centimeters
-#define REVERSE_SPEED 20
+#define REVERSE_DURATION 3000  
+#define REVERSE_PWM 30  
 class car_control : public rclcpp::Node {
 
 public:
@@ -338,6 +339,11 @@ private:
     float currentAngle;
     float actualSpeed;  
 
+
+    bool reversing;  // Indique si la voiture est en marche arrière
+    rclcpp::Time reverse_timer;  // Timer pour la marche arrière
+
+    
     //Manual Mode variables (with joystick control)
     bool reverse;
     float requestedThrottle;
