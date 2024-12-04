@@ -8,7 +8,7 @@ def pick_color(event, x, y, flags, param):
         print(f"HSV value at ({x}, {y}): {pixel_hsv}")
 
 # Charger l'image
-image = cv2.imread('images/WIN_20241121_09_59_12_Pro.jpg')
+image = cv2.imread('images/camera/1_2MP/stpi_gei/WIN_20241129_10_38_37_Pro.jpg')
 
 # Créer une fenêtre et définir la fonction de rappel pour les clics de souris
 cv2.imshow('Image', image)

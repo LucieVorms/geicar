@@ -29,7 +29,7 @@ def detect_and_draw_path(image):
     height, width = edges.shape
     center_x = width // 2
 
-    #  Draw a vertical line through the centre of the image for reference
+    # Draw a vertical line through the centre of the image for reference
     cv2.line(image, (center_x, 0), (center_x, height), (255, 0, 0), 2)
 
     # Divide the image into 4 parts: half the width, 3/4 and 1/4 the height
@@ -59,6 +59,17 @@ def detect_and_draw_path(image):
         A2 = min(left_contours, key=lambda pt: (pt[0][1], -pt[0][0]))[0]  # Top + left
         B2 = max(left_contours, key=lambda pt: pt[0][1])[0]  # Bottom + left
 
+    # Align the heights of A1 and A2, B1 and B2
+    if A1 is not None and A2 is not None:
+        avg_top_y = (A1[1] + A2[1]) // 2
+        A1[1] = avg_top_y
+        A2[1] = avg_top_y
+
+    if B1 is not None and B2 is not None:
+        avg_bottom_y = (B1[1] + B2[1]) // 2
+        B1[1] = avg_bottom_y
+        B2[1] = avg_bottom_y
+
     # Draw lines and points
     path_center_x = None
     if A1 is not None and B1 is not None:
@@ -70,7 +81,7 @@ def detect_and_draw_path(image):
         cv2.circle(image, tuple(A2), 10, (0, 255, 255), -1)  # A2
         cv2.circle(image, tuple(B2), 10, (0, 255, 255), -1)  # B2
 
-    # Compute the center of the path if detected
+    # Compute the middle of the path if detected
     if A1 is not None and B1 is not None and A2 is not None and B2 is not None:
         # Compute mean position of the lower points
         path_center_x = (B1[0] + B2[0]) // 2
@@ -78,7 +89,7 @@ def detect_and_draw_path(image):
         path_center = (path_center_x, path_center_y)
         cv2.circle(image, path_center, 5, (0, 255, 0), -1)  # Centre du chemin
 
-    return image, path_center_x, center_x
+    return image, path_center_x, center_x, A1, B1, A2, B2
 
 
 def adjust_direction(path_center_x, center_x):
@@ -94,9 +105,63 @@ def adjust_direction(path_center_x, center_x):
         print("Path not detected")
 
 
+def measure_width_path(pointA1, pointA2, pointB1, pointB2, rgb_image):
+        #calculating the distance between points ( Pythagorean theorem ) 
+        height_1 = np.sqrt(((pointA1[0] - pointB1[0]) ** 2) + ((pointA1[1] - pointB1[1]) ** 2))
+        height_2 = np.sqrt(((pointA2[0] - pointB2[0]) ** 2) + ((pointA2[1] - pointB2[1]) ** 2))
+
+        width_1 = np.sqrt(((pointA1[0] - pointA2[0]) ** 2) + ((pointA1[1] - pointA2[1]) ** 2))
+        width_2 = np.sqrt(((pointB1[0] - pointB2[0]) ** 2) + ((pointB1[1] - pointB2[1]) ** 2))
+
+        max_height=max(int(height_1), int(height_2))
+        max_width = max(int(width_1), int(width_2))
+
+        # four input point 
+        input_pts=np.float32([pointA1,pointB1,pointA2,pointB2])
+
+        # output points for new transformed image
+        output_pts = np.float32([[0, 0],
+                                [0, max_width],
+                                [max_height , 0],
+                                [max_height , max_width]])
+
+
+        # Compute the perspective transform M
+        M = cv2.getPerspectiveTransform(input_pts,output_pts)
+
+        ############################"
+
+        # Dimensions d'un pixel dans l'image originale (en cm/pixel)
+        original_pixel_size_cm = 0.0385  # Exemple : 0.5 cm/pixel dans l'image originale
+
+        # Transformons deux points adjacents dans l'image originale
+        point1 = np.array([pointA1[0] - 15, pointA1[1] - 15, 1])  # point
+        point2 = np.array([pointA1[0] - 16, pointA1[1] - 15, 1])  # Voisin immédiat en x
+
+        # Transformation des points
+        transformed_point1 = np.dot(M, point1)
+        transformed_point1 /= transformed_point1[2]  # Normalisation homogène
+
+        transformed_point2 = np.dot(M, point2)
+        transformed_point2 /= transformed_point2[2]  # Normalisation homogène
+
+        # Distance entre les points transformés (en pixels dans l'image transformée)
+        distance_pixels_transformed = np.linalg.norm(transformed_point1[:2] - transformed_point2[:2])
+
+        # Dimension d'un pixel transformé (en cm/pixel)
+        transformed_pixel_size_cm = original_pixel_size_cm / distance_pixels_transformed
+
+        print(f"Dimension d'un pixel transformé : {transformed_pixel_size_cm:.4f} cm/pixel")
+        ###############################""#"
+
+        out = cv2.warpPerspective(rgb_image,M,(max_height, max_width),flags=cv2.INTER_LINEAR)
+
+        return out
+
+
 def main():
     # Directory with all images
-    dossier_images = "images/camera/test_1"
+    dossier_images = "images/camera/1280_720"
 
     # Get all images in that directory
     image_paths = [
@@ -117,12 +182,15 @@ def main():
         display_frame = full_frame.copy()
 
         # Detect and draw the path
-        display_frame, path_center_x, center_x = detect_and_draw_path(display_frame)
+        display_frame, path_center_x, center_x, pA1, pB1, pA2, pB2 = detect_and_draw_path(display_frame)
         adjust_direction(path_center_x, center_x)
 
         # Display the image with contours and the path delimitation
         cv2.imshow("Contours du chemin", display_frame)
 
+        image_without_perspective = measure_width_path(pA1, pA2, pB1, pB2, display_frame)
+        cv2.imshow("Perspective transformation", image_without_perspective)
+        cv2.imwrite("image_without_perspective.jpg", image_without_perspective)
 
         # Wait action from the user to change image
         if cv2.waitKey(0) & 0xFF == ord('q'):
