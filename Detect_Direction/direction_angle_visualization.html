@@ -1,0 +1,133 @@
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>Google Maps - gmplot</title>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=visualization&key=AIzaSyAo-m8Mk5lrClWDpeZLStCNDPbmjyPTkYg"></script>
+<script type="text/javascript">
+    function initialize() {
+        var map = new google.maps.Map(document.getElementById("map_canvas"), {
+            zoom: 20,
+            center: new google.maps.LatLng(43.571504, 1.466492)
+        });
+
+        var marker_icon_FF0000 = {
+            url: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAiCAYAAACwaJKDAAAABmJLR0QA/wD/AP+gvaeTAAACBklEQVRIia3VzUtUURgH4GdG/AiyZZShtWgXUbSIFtGqRYtqWRLhXyBYf0K6MaJQ2gRtayHtijYpleHKSCgIcRHoIiOSKEzLKea0OOeqTfPlzPzg5Qwz9zz3nXPvPTeneo7gNA4gjyI+Ygbva8z9L2cxi9BHOE+4msY+gliz6biayWE0R7GfMEcoEkJJzRH6CbnY+WiaVxEc6yY8KQOVq8eE7tj1WCV4qIswUyeY1QyhK8JDpWAP1m7vEMzqTkTXkrOZkYOEQoNogXAowiPE2wQuDqC9nktZJu0YSE72XRs2phrsMqup2OkG2vLpRB19DXaZJc3vQHv294Um0e3z8yigsNQkmuYXUMie5/npJtE0fz55YLiXsNHELdUbV2B4+4n2Y/Vmg+itCK4m558MdhBe7hCcJnRGdLDS0ox3E17XCb4h7IngeLX1zuFhD2G5BriytY4Tqmx9WXbh3Tnl99KsLkdwAbtrgVmO4/eDCuCkzd3/TL1glru9hF8lYJFwMoKPdgrCXqzfL0GfR7CIo42gcO9YCXopolONgnAC4W0Cv9l8dVxpBoWFGwmdiOC6Glc8X+3HlKeT6cOzOLzAjyaaBBc602ZzOHZ6vVkQ9kl7Qi6ip1qBwpdrEfwjPnFVU8+awuKrOC7hZ6vQlQ9baM3Ui379HsfVVqKf07jcSvRTGhfrOfgvIP3ECS77BDoAAAAASUVORK5CYII=",
+            labelOrigin: new google.maps.Point(10, 11)
+        };
+
+        new google.maps.Marker({
+            position: new google.maps.LatLng(43.571499, 1.466375),
+            title: "Current Position",
+            icon: marker_icon_FF0000,
+            map: map
+        });
+
+        var marker_icon_0000FF = {
+            url: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAiCAYAAACwaJKDAAAABmJLR0QA/wD/AP+gvaeTAAAB/UlEQVRIia3VMWsUQRgG4GcvJCqopZhITgs7EcVCLMTKwkJTqoj4C4ToT1AbRZSIjWCrRbCL2JigRlJFDCiIpBCSwogYRFGjiXKfxewSOS93l9t7Ydhjdr7n5nZn5jLNsweHsQMV1PAeU3jTova/HMU0gmpwPDibX6uR+k3n41omw1WyGqeDmaAWRF2biXQ/q6XxsmbgCFuChw2gRm0s0ngja8HDbAym2gSLNhWpznA9OIAf3FgnWLSbkeoN/IteYWew0iG6EuyK5KRlAkOcQ287L7NBeqV6Q0VPD5aZ6HCWRZuI5Oip5F/TR7XDWRapSo7eympnlERX6ytYSW2+JDqvsIr9/JbJkuik5KgVPZcZDJZLLKnBSM5q+vGNax2i1yPV66+f/3n6gmfrBCeDDZHqG+dWOiBetAm+DLZGqls7Ge4zECy0ABeL5ziqydFXZBNecywan6VFOxWYxeZWYJH9+M29NcDxkFb7kXbBIrfTz/tVB9aCg4EH6wVhG5a4W4c+CWmB7+0EhTvsq0NPBiY6BeEAglc5+CXyv44zZVCY5VKOjgaWtHjjlWY38zxiPP/4GJ7ie6lp4kTahsvB7sDFsiBsR34mZIFD3UDhExcCf6Qd1zTtPFOY4znpeP/ZLXSRdwXaMu2in/lKOoi7hn7MrwvdRD/k17l2Bv8FssfECaMr+zoAAAAASUVORK5CYII=",
+            labelOrigin: new google.maps.Point(10, 11)
+        };
+
+        new google.maps.Marker({
+            position: new google.maps.LatLng(43.571509, 1.466608),
+            title: "Next Position",
+            icon: marker_icon_0000FF,
+            map: map
+        });
+
+        new google.maps.Polyline({
+            clickable: false,
+            geodesic: true,
+            strokeColor: "#FFA500",
+            strokeOpacity: 1.000000,
+            strokeWeight: 2,
+            map: map,
+            path: [
+                new google.maps.LatLng(43.571258, 1.466515),
+                new google.maps.LatLng(43.571269, 1.466511),
+                new google.maps.LatLng(43.571278, 1.466501),
+                new google.maps.LatLng(43.571282, 1.466486),
+                new google.maps.LatLng(43.571285, 1.466471),
+                new google.maps.LatLng(43.571285, 1.466471),
+                new google.maps.LatLng(43.571292, 1.466460),
+                new google.maps.LatLng(43.571292, 1.466460),
+                new google.maps.LatLng(43.571301, 1.466455),
+                new google.maps.LatLng(43.571311, 1.466454),
+                new google.maps.LatLng(43.571323, 1.466455),
+                new google.maps.LatLng(43.571333, 1.466452),
+                new google.maps.LatLng(43.571343, 1.466444),
+                new google.maps.LatLng(43.571351, 1.466432),
+                new google.maps.LatLng(43.571359, 1.466422),
+                new google.maps.LatLng(43.571359, 1.466422),
+                new google.maps.LatLng(43.571368, 1.466414),
+                new google.maps.LatLng(43.571368, 1.466414),
+                new google.maps.LatLng(43.571376, 1.466405),
+                new google.maps.LatLng(43.571383, 1.466397),
+                new google.maps.LatLng(43.571389, 1.466391),
+                new google.maps.LatLng(43.571394, 1.466387),
+                new google.maps.LatLng(43.571398, 1.466384),
+                new google.maps.LatLng(43.571401, 1.466382),
+                new google.maps.LatLng(43.571406, 1.466379),
+                new google.maps.LatLng(43.571406, 1.466379),
+                new google.maps.LatLng(43.571413, 1.466370),
+                new google.maps.LatLng(43.571413, 1.466370),
+                new google.maps.LatLng(43.571420, 1.466360),
+                new google.maps.LatLng(43.571427, 1.466352),
+                new google.maps.LatLng(43.571436, 1.466344),
+                new google.maps.LatLng(43.571444, 1.466335),
+                new google.maps.LatLng(43.571453, 1.466331),
+                new google.maps.LatLng(43.571463, 1.466333),
+                new google.maps.LatLng(43.571471, 1.466339),
+                new google.maps.LatLng(43.571471, 1.466339),
+                new google.maps.LatLng(43.571479, 1.466346),
+                new google.maps.LatLng(43.571479, 1.466346),
+                new google.maps.LatLng(43.571487, 1.466356),
+                new google.maps.LatLng(43.571494, 1.466364),
+                new google.maps.LatLng(43.571499, 1.466375),
+                new google.maps.LatLng(43.571510, 1.466400),
+                new google.maps.LatLng(43.571516, 1.466412),
+                new google.maps.LatLng(43.571521, 1.466423),
+                new google.maps.LatLng(43.571521, 1.466423),
+                new google.maps.LatLng(43.571525, 1.466430),
+                new google.maps.LatLng(43.571525, 1.466430),
+                new google.maps.LatLng(43.571525, 1.466431),
+                new google.maps.LatLng(43.571526, 1.466433),
+                new google.maps.LatLng(43.571528, 1.466436),
+                new google.maps.LatLng(43.571532, 1.466443),
+                new google.maps.LatLng(43.571537, 1.466453),
+                new google.maps.LatLng(43.571543, 1.466466),
+                new google.maps.LatLng(43.571543, 1.466466),
+                new google.maps.LatLng(43.571550, 1.466479),
+                new google.maps.LatLng(43.571550, 1.466479),
+                new google.maps.LatLng(43.571556, 1.466492),
+                new google.maps.LatLng(43.571562, 1.466505),
+                new google.maps.LatLng(43.571567, 1.466516),
+                new google.maps.LatLng(43.571571, 1.466525),
+                new google.maps.LatLng(43.571570, 1.466534),
+                new google.maps.LatLng(43.571564, 1.466542),
+                new google.maps.LatLng(43.571557, 1.466552),
+                new google.maps.LatLng(43.571557, 1.466552),
+                new google.maps.LatLng(43.571549, 1.466563),
+                new google.maps.LatLng(43.571549, 1.466563),
+                new google.maps.LatLng(43.571542, 1.466574),
+                new google.maps.LatLng(43.571542, 1.466574),
+                new google.maps.LatLng(43.571525, 1.466593),
+                new google.maps.LatLng(43.571517, 1.466602),
+                new google.maps.LatLng(43.571509, 1.466608),
+                new google.maps.LatLng(43.571501, 1.466616),
+                new google.maps.LatLng(43.571494, 1.466626),
+                new google.maps.LatLng(43.571494, 1.466626),
+                new google.maps.LatLng(43.571486, 1.466635),
+                new google.maps.LatLng(43.571478, 1.466643),
+                new google.maps.LatLng(43.571478, 1.466643),
+                new google.maps.LatLng(43.571467, 1.466650),
+            ]
+        });
+
+    }
+</script>
+</head>
+<body style="margin:0px; padding:0px;" onload="initialize()">
+    <div id="map_canvas" style="width: 100%; height: 100%;" />
+</body>
+</html>
