@@ -22,7 +22,7 @@
 
 using namespace std;
 using placeholders::_1;
-#define OBSTACLE_THRESHOLD 45   // Threshold for obstacle detection in centimeters
+#define OBSTACLE_THRESHOLD 42   // Threshold for obstacle detection in centimeters
 #define REVERSE_DURATION 2000  
 #define REVERSE_PWM 30  
 class car_control : public rclcpp::Node {
