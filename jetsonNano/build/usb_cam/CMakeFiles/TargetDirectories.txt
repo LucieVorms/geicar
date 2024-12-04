@@ -1,0 +1,12 @@
+/home/Git/geicar/jetsonNano/build/usb_cam/CMakeFiles/uninstall.dir
+/home/Git/geicar/jetsonNano/build/usb_cam/CMakeFiles/usb_cam_uninstall.dir
+/home/Git/geicar/jetsonNano/build/usb_cam/CMakeFiles/usb_cam.dir
+/home/Git/geicar/jetsonNano/build/usb_cam/CMakeFiles/usb_cam_node.dir
+/home/Git/geicar/jetsonNano/build/usb_cam/CMakeFiles/usb_cam_node_exe.dir
+/home/Git/geicar/jetsonNano/build/usb_cam/CMakeFiles/test.dir
+/home/Git/geicar/jetsonNano/build/usb_cam/CMakeFiles/edit_cache.dir
+/home/Git/geicar/jetsonNano/build/usb_cam/CMakeFiles/rebuild_cache.dir
+/home/Git/geicar/jetsonNano/build/usb_cam/CMakeFiles/list_install_components.dir
+/home/Git/geicar/jetsonNano/build/usb_cam/CMakeFiles/install.dir
+/home/Git/geicar/jetsonNano/build/usb_cam/CMakeFiles/install/local.dir
+/home/Git/geicar/jetsonNano/build/usb_cam/CMakeFiles/install/strip.dir

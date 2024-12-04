@@ -1,0 +1,6 @@
+Invoking command in '/home/Git/geicar/jetsonNano/build/rplidar_ros': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/Git/geicar/jetsonNano/ros2_ws/src/rplidar_ros2 -DCMAKE_INSTALL_PREFIX=/home/Git/geicar/jetsonNano/install/rplidar_ros
+Invoked command in '/home/Git/geicar/jetsonNano/build/rplidar_ros' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/Git/geicar/jetsonNano/ros2_ws/src/rplidar_ros2 -DCMAKE_INSTALL_PREFIX=/home/Git/geicar/jetsonNano/install/rplidar_ros
+Invoking command in '/home/Git/geicar/jetsonNano/build/rplidar_ros': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/Git/geicar/jetsonNano/build/rplidar_ros -- -j12 -l12
+Invoked command in '/home/Git/geicar/jetsonNano/build/rplidar_ros' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/Git/geicar/jetsonNano/build/rplidar_ros -- -j12 -l12
+Invoking command in '/home/Git/geicar/jetsonNano/build/rplidar_ros': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/Git/geicar/jetsonNano/build/rplidar_ros
+Invoked command in '/home/Git/geicar/jetsonNano/build/rplidar_ros' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/Git/geicar/jetsonNano/build/rplidar_ros

@@ -1,0 +1,173 @@
+[0.030s] Invoking command in '/home/Git/geicar/jetsonNano/build/usb_cam': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam -DCMAKE_INSTALL_PREFIX=/home/Git/geicar/jetsonNano/install/usb_cam
+[0.096s] -- The C compiler identification is GNU 11.4.0
+[0.186s] -- The CXX compiler identification is GNU 11.4.0
+[0.197s] -- Detecting C compiler ABI info
+[0.294s] -- Detecting C compiler ABI info - done
+[0.303s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.304s] -- Detecting C compile features
+[0.304s] -- Detecting C compile features - done
+[0.309s] -- Detecting CXX compiler ABI info
+[0.411s] -- Detecting CXX compiler ABI info - done
+[0.418s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.419s] -- Detecting CXX compile features
+[0.419s] -- Detecting CXX compile features - done
+[0.432s] -- Found ament_cmake_auto: 1.3.10 (/opt/ros/humble/share/ament_cmake_auto/cmake)
+[0.613s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[0.834s] -- Found rosidl_generator_c: 3.1.5 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[0.839s] -- Found rosidl_adapter: 3.1.5 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.857s] -- Found rosidl_generator_cpp: 3.1.5 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[0.888s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.919s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.007s] -- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[1.013s] -- Found rmw_fastrtps_cpp: 6.2.7 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[1.170s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  
+[1.226s] -- Found FastRTPS: /opt/ros/humble/include  
+[1.270s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[1.304s] -- Looking for pthread.h
+[1.401s] -- Looking for pthread.h - found
+[1.402s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+[1.509s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+[1.510s] -- Found Threads: TRUE  
+[1.881s] -- Found PkgConfig: /usr/bin/pkg-config (found version "0.29.2") 
+[1.883s] -- Checking for module 'libavcodec'
+[1.928s] --   Found libavcodec, version 58.134.100
+[1.989s] -- Checking for module 'libswscale'
+[2.023s] --   Found libswscale, version 5.9.100
+[2.171s] -- Configuring done
+[2.235s] -- Generating done
+[2.238s] -- Build files have been written to: /home/Git/geicar/jetsonNano/build/usb_cam
+[2.259s] Invoked command in '/home/Git/geicar/jetsonNano/build/usb_cam' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam -DCMAKE_INSTALL_PREFIX=/home/Git/geicar/jetsonNano/install/usb_cam
+[2.263s] Invoking command in '/home/Git/geicar/jetsonNano/build/usb_cam': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/Git/geicar/jetsonNano/build/usb_cam -- -j12 -l12
+[2.363s] [ 33%] [32mBuilding CXX object CMakeFiles/usb_cam.dir/src/usb_cam.cpp.o[0m
+[2.363s] [ 33%] [32mBuilding CXX object CMakeFiles/usb_cam_node_exe.dir/rclcpp_components/node_main_usb_cam_node_exe.cpp.o[0m
+[6.912s] [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/src/usb_cam.cpp:[m[K In member function ‘[01m[Kint usb_cam::UsbCam::init_decoder(int, int, usb_cam::UsbCam::color_format, AVCodecID, const char*)[m[K’:
+[6.912s] [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/src/usb_cam.cpp:75:23:[m[K [01;35m[Kwarning: [m[K‘[01m[Kvoid avcodec_register_all()[m[K’ is deprecated [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wdeprecated-declarations-Wdeprecated-declarations]8;;[m[K]
+[6.913s]    75 |   [01;35m[Kavcodec_register_all()[m[K;
+[6.914s]       |   [01;35m[K~~~~~~~~~~~~~~~~~~~~^~[m[K
+[6.914s] In file included from [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/include/usb_cam/usb_cam.hpp:39[m[K,
+[6.914s]                  from [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/src/usb_cam.cpp:31[m[K:
+[6.915s] [01m[K/usr/include/x86_64-linux-gnu/libavcodec/avcodec.h:2767:6:[m[K [01;36m[Knote: [m[Kdeclared here
+[6.915s]  2767 | void [01;36m[Kavcodec_register_all[m[K(void);
+[6.915s]       |      [01;36m[K^~~~~~~~~~~~~~~~~~~~[m[K
+[6.915s] [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/src/usb_cam.cpp:104:18:[m[K [01;35m[Kwarning: [m[K‘[01m[Kint avpicture_alloc(AVPicture*, AVPixelFormat, int, int)[m[K’ is deprecated [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wdeprecated-declarations-Wdeprecated-declarations]8;;[m[K]
+[6.916s]   104 |   [01;35m[Kavpicture_alloc([m[K
+[6.916s]       |   [01;35m[K~~~~~~~~~~~~~~~^[m[K
+[6.916s]   105 | [01;35m[K    reinterpret_cast<AVPicture *>(avframe_rgb_), AV_PIX_FMT_RGB24, image_width, image_height)[m[K;
+[6.916s]       |     [01;35m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[6.916s] In file included from [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/include/usb_cam/usb_cam.hpp:39[m[K,
+[6.916s]                  from [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/src/usb_cam.cpp:31[m[K:
+[6.917s] [01m[K/usr/include/x86_64-linux-gnu/libavcodec/avcodec.h:3751:5:[m[K [01;36m[Knote: [m[Kdeclared here
+[6.917s]  3751 | int [01;36m[Kavpicture_alloc[m[K(AVPicture *picture, enum AVPixelFormat pix_fmt, int width, int height);
+[6.917s]       |     [01;36m[K^~~~~~~~~~~~~~~[m[K
+[6.918s] [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/src/usb_cam.cpp:129:46:[m[K [01;35m[Kwarning: [m[K‘[01m[Kint avpicture_get_size(AVPixelFormat, int, int)[m[K’ is deprecated [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wdeprecated-declarations-Wdeprecated-declarations]8;;[m[K]
+[6.918s]   129 |     avframe_camera_size_ = [01;35m[Kavpicture_get_size(AV_PIX_FMT_YUV420P, image_width, image_height)[m[K;
+[6.918s]       |                            [01;35m[K~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[6.918s] In file included from [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/include/usb_cam/usb_cam.hpp:39[m[K,
+[6.918s]                  from [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/src/usb_cam.cpp:31[m[K:
+[6.918s] [01m[K/usr/include/x86_64-linux-gnu/libavcodec/avcodec.h:3778:5:[m[K [01;36m[Knote: [m[Kdeclared here
+[6.918s]  3778 | int [01;36m[Kavpicture_get_size[m[K(enum AVPixelFormat pix_fmt, int width, int height);
+[6.919s]       |     [01;36m[K^~~~~~~~~~~~~~~~~~[m[K
+[6.919s] [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/src/usb_cam.cpp:131:46:[m[K [01;35m[Kwarning: [m[K‘[01m[Kint avpicture_get_size(AVPixelFormat, int, int)[m[K’ is deprecated [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wdeprecated-declarations-Wdeprecated-declarations]8;;[m[K]
+[6.919s]   131 |     avframe_camera_size_ = [01;35m[Kavpicture_get_size(AV_PIX_FMT_YUV422P, image_width, image_height)[m[K;
+[6.919s]       |                            [01;35m[K~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[6.920s] In file included from [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/include/usb_cam/usb_cam.hpp:39[m[K,
+[6.920s]                  from [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/src/usb_cam.cpp:31[m[K:
+[6.920s] [01m[K/usr/include/x86_64-linux-gnu/libavcodec/avcodec.h:3778:5:[m[K [01;36m[Knote: [m[Kdeclared here
+[6.920s]  3778 | int [01;36m[Kavpicture_get_size[m[K(enum AVPixelFormat pix_fmt, int width, int height);
+[6.920s]       |     [01;36m[K^~~~~~~~~~~~~~~~~~[m[K
+[6.921s] [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/src/usb_cam.cpp:132:41:[m[K [01;35m[Kwarning: [m[K‘[01m[Kint avpicture_get_size(AVPixelFormat, int, int)[m[K’ is deprecated [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wdeprecated-declarations-Wdeprecated-declarations]8;;[m[K]
+[6.921s]   132 |   avframe_rgb_size_ = [01;35m[Kavpicture_get_size(AV_PIX_FMT_RGB24, image_width, image_height)[m[K;
+[6.921s]       |                       [01;35m[K~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[6.921s] In file included from [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/include/usb_cam/usb_cam.hpp:39[m[K,
+[6.921s]                  from [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/src/usb_cam.cpp:31[m[K:
+[6.922s] [01m[K/usr/include/x86_64-linux-gnu/libavcodec/avcodec.h:3778:5:[m[K [01;36m[Knote: [m[Kdeclared here
+[6.922s]  3778 | int [01;36m[Kavpicture_get_size[m[K(enum AVPixelFormat pix_fmt, int width, int height);
+[6.922s]       |     [01;36m[K^~~~~~~~~~~~~~~~~~[m[K
+[6.922s] [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/src/usb_cam.cpp:[m[K In member function ‘[01m[Kbool usb_cam::UsbCam::mjpeg2rgb(char*, int, char*, int)[m[K’:
+[6.922s] [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/src/usb_cam.cpp:167:17:[m[K [01;35m[Kwarning: [m[K‘[01m[Kvoid av_init_packet(AVPacket*)[m[K’ is deprecated [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wdeprecated-declarations-Wdeprecated-declarations]8;;[m[K]
+[6.922s]   167 |   [01;35m[Kav_init_packet(&avpkt)[m[K;
+[6.923s]       |   [01;35m[K~~~~~~~~~~~~~~^~~~~~~~[m[K
+[6.923s] In file included from [01m[K/usr/include/x86_64-linux-gnu/libavcodec/bsf.h:30[m[K,
+[6.923s]                  from [01m[K/usr/include/x86_64-linux-gnu/libavcodec/avcodec.h:44[m[K,
+[6.923s]                  from [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/include/usb_cam/usb_cam.hpp:39[m[K,
+[6.923s]                  from [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/src/usb_cam.cpp:31[m[K:
+[6.923s] [01m[K/usr/include/x86_64-linux-gnu/libavcodec/packet.h:488:6:[m[K [01;36m[Knote: [m[Kdeclared here
+[6.923s]   488 | void [01;36m[Kav_init_packet[m[K(AVPacket *pkt);
+[6.923s]       |      [01;36m[K^~~~~~~~~~~~~~[m[K
+[6.923s] [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/src/usb_cam.cpp:173:38:[m[K [01;35m[Kwarning: [m[K‘[01m[Kint avcodec_decode_video2(AVCodecContext*, AVFrame*, int*, const AVPacket*)[m[K’ is deprecated [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wdeprecated-declarations-Wdeprecated-declarations]8;;[m[K]
+[6.924s]   173 |   decoded_len = [01;35m[Kavcodec_decode_video2(avcodec_context_, avframe_camera_, &got_picture, &avpkt)[m[K;
+[6.924s]       |                 [01;35m[K~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[6.924s] In file included from [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/include/usb_cam/usb_cam.hpp:39[m[K,
+[6.924s]                  from [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/src/usb_cam.cpp:31[m[K:
+[6.924s] [01m[K/usr/include/x86_64-linux-gnu/libavcodec/avcodec.h:3096:5:[m[K [01;36m[Knote: [m[Kdeclared here
+[6.924s]  3096 | int [01;36m[Kavcodec_decode_video2[m[K(AVCodecContext *avctx, AVFrame *picture,
+[6.924s]       |     [01;36m[K^~~~~~~~~~~~~~~~~~~~~[m[K
+[6.925s] [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/src/usb_cam.cpp:192:36:[m[K [01;35m[Kwarning: [m[K‘[01m[Kint avpicture_get_size(AVPixelFormat, int, int)[m[K’ is deprecated [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wdeprecated-declarations-Wdeprecated-declarations]8;;[m[K]
+[6.925s]   192 |   int pic_size = [01;35m[Kavpicture_get_size(avcodec_context_->pix_fmt, xsize, ysize)[m[K;
+[6.925s]       |                  [01;35m[K~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[6.925s] In file included from [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/include/usb_cam/usb_cam.hpp:39[m[K,
+[6.925s]                  from [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/src/usb_cam.cpp:31[m[K:
+[6.925s] [01m[K/usr/include/x86_64-linux-gnu/libavcodec/avcodec.h:3778:5:[m[K [01;36m[Knote: [m[Kdeclared here
+[6.925s]  3778 | int [01;36m[Kavpicture_get_size[m[K(enum AVPixelFormat pix_fmt, int width, int height);
+[6.925s]       |     [01;36m[K^~~~~~~~~~~~~~~~~~[m[K
+[6.926s] [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/src/usb_cam.cpp:218:30:[m[K [01;35m[Kwarning: [m[K‘[01m[Kint avpicture_layout(const AVPicture*, AVPixelFormat, int, int, unsigned char*, int)[m[K’ is deprecated [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wdeprecated-declarations-Wdeprecated-declarations]8;;[m[K]
+[6.926s]   218 |   int size = [01;35m[Kavpicture_layout([m[K
+[6.926s]       |              [01;35m[K~~~~~~~~~~~~~~~~^[m[K
+[6.926s]   219 | [01;35m[K    reinterpret_cast<AVPicture *>(avframe_rgb_), AV_PIX_FMT_RGB24,[m[K
+[6.926s]       |     [01;35m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[6.926s]   220 | [01;35m[K    xsize, ysize, reinterpret_cast<uint8_t *>(RGB), avframe_rgb_size_)[m[K;
+[6.926s]       |     [01;35m[K~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[6.926s] In file included from [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/include/usb_cam/usb_cam.hpp:39[m[K,
+[6.926s]                  from [01m[K/home/Git/geicar/jetsonNano/ros2_ws/src/usb_cam/src/usb_cam.cpp:31[m[K:
+[6.926s] [01m[K/usr/include/x86_64-linux-gnu/libavcodec/avcodec.h:3770:5:[m[K [01;36m[Knote: [m[Kdeclared here
+[6.927s]  3770 | int [01;36m[Kavpicture_layout[m[K(const AVPicture *src, enum AVPixelFormat pix_fmt,
+[6.927s]       |     [01;36m[K^~~~~~~~~~~~~~~~[m[K
+[8.634s] [ 50%] [32m[1mLinking CXX shared library libusb_cam.so[0m
+[8.847s] [ 66%] [32m[1mLinking CXX executable usb_cam_node_exe[0m
+[8.994s] [ 66%] Built target usb_cam
+[9.088s] [ 83%] [32mBuilding CXX object CMakeFiles/usb_cam_node.dir/src/usb_cam_node.cpp.o[0m
+[9.311s] [ 83%] Built target usb_cam_node_exe
+[18.227s] [100%] [32m[1mLinking CXX shared library libusb_cam_node.so[0m
+[18.612s] [100%] Built target usb_cam_node
+[18.637s] Invoked command in '/home/Git/geicar/jetsonNano/build/usb_cam' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/Git/geicar/jetsonNano/build/usb_cam -- -j12 -l12
+[18.707s] Invoking command in '/home/Git/geicar/jetsonNano/build/usb_cam': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/Git/geicar/jetsonNano/build/usb_cam
+[18.724s] -- Install configuration: ""
+[18.725s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/lib/usb_cam/usb_cam_node_exe
+[18.725s] -- Set runtime path of "/home/Git/geicar/jetsonNano/install/usb_cam/lib/usb_cam/usb_cam_node_exe" to ""
+[18.726s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/lib/usb_cam/show_image.py
+[18.727s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/include
+[18.727s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/include/usb_cam
+[18.728s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/include/usb_cam/usb_cam_utils.hpp
+[18.728s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/include/usb_cam/usb_cam.hpp
+[18.728s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/include/usb_cam/usb_cam_node.hpp
+[18.728s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/environment/library_path.sh
+[18.744s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/environment/library_path.dsv
+[18.744s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/lib/libusb_cam.so
+[18.745s] -- Set runtime path of "/home/Git/geicar/jetsonNano/install/usb_cam/lib/libusb_cam.so" to ""
+[18.745s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/lib/libusb_cam_node.so
+[18.748s] -- Set runtime path of "/home/Git/geicar/jetsonNano/install/usb_cam/lib/libusb_cam_node.so" to ""
+[18.749s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/launch
+[18.749s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/launch/demo_launch.py
+[18.749s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/config
+[18.749s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/config/camera_info.yaml
+[18.750s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/config/params.yaml
+[18.751s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/ament_index/resource_index/package_run_dependencies/usb_cam
+[18.752s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/ament_index/resource_index/parent_prefix_path/usb_cam
+[18.753s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/environment/ament_prefix_path.sh
+[18.754s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/environment/ament_prefix_path.dsv
+[18.754s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/environment/path.sh
+[18.755s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/environment/path.dsv
+[18.756s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/local_setup.bash
+[18.756s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/local_setup.sh
+[18.756s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/local_setup.zsh
+[18.757s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/local_setup.dsv
+[18.758s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/package.dsv
+[18.760s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/ament_index/resource_index/packages/usb_cam
+[18.761s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/ament_index/resource_index/rclcpp_components/usb_cam
+[18.761s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/cmake/ament_cmake_export_dependencies-extras.cmake
+[18.761s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/cmake/ament_cmake_export_include_directories-extras.cmake
+[18.761s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/cmake/ament_cmake_export_libraries-extras.cmake
+[18.762s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/cmake/usb_camConfig.cmake
+[18.762s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/cmake/usb_camConfig-version.cmake
+[18.762s] -- Installing: /home/Git/geicar/jetsonNano/install/usb_cam/share/usb_cam/package.xml
+[18.765s] Invoked command in '/home/Git/geicar/jetsonNano/build/usb_cam' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/Git/geicar/jetsonNano/build/usb_cam

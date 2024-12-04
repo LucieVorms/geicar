@@ -1,0 +1,434 @@
+[0.043s] Invoking command in '/home/Git/geicar/jetsonNano/build/interfaces': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/Git/geicar/jetsonNano/ros2_ws/src/interfaces -DCMAKE_INSTALL_PREFIX=/home/Git/geicar/jetsonNano/install/interfaces
+[0.129s] -- The C compiler identification is GNU 11.4.0
+[0.220s] -- The CXX compiler identification is GNU 11.4.0
+[0.230s] -- Detecting C compiler ABI info
+[0.331s] -- Detecting C compiler ABI info - done
+[0.340s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.341s] -- Detecting C compile features
+[0.341s] -- Detecting C compile features - done
+[0.346s] -- Detecting CXX compiler ABI info
+[0.440s] -- Detecting CXX compiler ABI info - done
+[0.450s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.451s] -- Detecting CXX compile features
+[0.451s] -- Detecting CXX compile features - done
+[0.454s] -- Found ament_cmake: 1.3.10 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.632s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[0.754s] -- Found rclcpp: 16.0.10 (/opt/ros/humble/share/rclcpp/cmake)
+[0.858s] -- Found rosidl_generator_c: 3.1.5 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[0.871s] -- Found rosidl_adapter: 3.1.5 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.891s] -- Found rosidl_generator_cpp: 3.1.5 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[0.922s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.953s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.041s] -- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[1.047s] -- Found rmw_fastrtps_cpp: 6.2.7 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[1.204s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  
+[1.259s] -- Found FastRTPS: /opt/ros/humble/include  
+[1.304s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[1.339s] -- Looking for pthread.h
+[1.436s] -- Looking for pthread.h - found
+[1.436s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+[1.537s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+[1.538s] -- Found Threads: TRUE  
+[1.642s] -- Found rosidl_default_generators: 1.2.0 (/opt/ros/humble/share/rosidl_default_generators/cmake)
+[2.150s] -- Found ament_cmake_ros: 0.10.0 (/opt/ros/humble/share/ament_cmake_ros/cmake)
+[2.829s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[3.146s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[3.192s] -- Found PythonInterp: /usr/bin/python3 (found suitable version "3.10.12", minimum required is "3.6") 
+[3.204s] -- Found python_cmake_module: 0.10.0 (/opt/ros/humble/share/python_cmake_module/cmake)
+[3.263s] -- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.10.so (found suitable version "3.10.12", minimum required is "3.5") 
+[3.263s] -- Using PYTHON_EXECUTABLE: /usr/bin/python3
+[3.263s] -- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.10
+[3.264s] -- Using PYTHON_LIBRARIES: /usr/lib/x86_64-linux-gnu/libpython3.10.so
+[3.300s] -- Found PythonExtra: .so  
+[3.379s] -- Found ament_lint_auto: 0.12.11 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[3.419s] -- Added test 'lint_cmake' to check CMake code style
+[3.422s] -- Added test 'xmllint' to check XML markup files
+[3.430s] -- Configuring done
+[3.509s] -- Generating done
+[3.513s] -- Build files have been written to: /home/Git/geicar/jetsonNano/build/interfaces
+[3.537s] Invoked command in '/home/Git/geicar/jetsonNano/build/interfaces' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/Git/geicar/jetsonNano/ros2_ws/src/interfaces -DCMAKE_INSTALL_PREFIX=/home/Git/geicar/jetsonNano/install/interfaces
+[3.541s] Invoking command in '/home/Git/geicar/jetsonNano/build/interfaces': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/Git/geicar/jetsonNano/build/interfaces -- -j12 -l12
+[3.604s] [  1%] [34m[1mGenerating C code for ROS interfaces[0m
+[3.617s] [  2%] [34m[1mGenerating C++ code for ROS interfaces[0m
+[3.632s] [  2%] Built target ament_cmake_python_copy_interfaces
+[4.004s] running egg_info
+[4.005s] creating interfaces.egg-info
+[4.006s] writing interfaces.egg-info/PKG-INFO
+[4.006s] writing dependency_links to interfaces.egg-info/dependency_links.txt
+[4.007s] writing top-level names to interfaces.egg-info/top_level.txt
+[4.007s] writing manifest file 'interfaces.egg-info/SOURCES.txt'
+[4.015s] reading manifest file 'interfaces.egg-info/SOURCES.txt'
+[4.016s] writing manifest file 'interfaces.egg-info/SOURCES.txt'
+[4.071s] [  2%] Built target ament_cmake_python_build_interfaces_egg
+[5.862s] [  2%] Built target interfaces__cpp
+[5.881s] [  4%] [34m[1mGenerating C++ type support for eProsima Fast-RTPS[0m
+[5.881s] [  4%] [34m[1mGenerating C++ introspection for ROS interfaces[0m
+[5.881s] [  5%] [34m[1mGenerating C++ type support dispatch for ROS interfaces[0m
+[6.054s] [  6%] [32mBuilding C object CMakeFiles/interfaces__rosidl_generator_c.dir/rosidl_generator_c/interfaces/msg/detail/motors_feedback__functions.c.o[0m
+[6.054s] [  8%] [32mBuilding C object CMakeFiles/interfaces__rosidl_generator_c.dir/rosidl_generator_c/interfaces/msg/detail/joystick_order__functions.c.o[0m
+[6.055s] [  9%] [32mBuilding C object CMakeFiles/interfaces__rosidl_generator_c.dir/rosidl_generator_c/interfaces/msg/detail/motors_order__functions.c.o[0m
+[6.055s] [ 10%] [32mBuilding C object CMakeFiles/interfaces__rosidl_generator_c.dir/rosidl_generator_c/interfaces/msg/detail/general_data__functions.c.o[0m
+[6.058s] [ 11%] [32mBuilding C object CMakeFiles/interfaces__rosidl_generator_c.dir/rosidl_generator_c/interfaces/msg/detail/ultrasonic__functions.c.o[0m
+[6.059s] [ 12%] [32mBuilding C object CMakeFiles/interfaces__rosidl_generator_c.dir/rosidl_generator_c/interfaces/msg/detail/steering_calibration__functions.c.o[0m
+[6.070s] [ 13%] [32mBuilding C object CMakeFiles/interfaces__rosidl_generator_c.dir/rosidl_generator_c/interfaces/msg/detail/system_check__functions.c.o[0m
+[6.074s] [ 14%] [32mBuilding C object CMakeFiles/interfaces__rosidl_generator_c.dir/rosidl_generator_c/interfaces/msg/detail/gnss__functions.c.o[0m
+[6.252s] [ 16%] [32m[1mLinking C shared library libinterfaces__rosidl_generator_c.so[0m
+[6.304s] [ 16%] Built target interfaces__rosidl_generator_c
+[6.320s] [ 17%] [34m[1mGenerating C introspection for ROS interfaces[0m
+[6.323s] [ 18%] [34m[1mGenerating C type support dispatch for ROS interfaces[0m
+[6.323s] [ 19%] [34m[1mGenerating C type support for eProsima Fast-RTPS[0m
+[7.929s] [ 21%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/interfaces/msg/motors_feedback__type_support.cpp.o[0m
+[7.930s] [ 21%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/interfaces/msg/motors_order__type_support.cpp.o[0m
+[7.930s] [ 22%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/interfaces/msg/joystick_order__type_support.cpp.o[0m
+[7.934s] [ 24%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/interfaces/msg/steering_calibration__type_support.cpp.o[0m
+[7.945s] [ 25%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/interfaces/msg/general_data__type_support.cpp.o[0m
+[7.961s] [ 26%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/interfaces/msg/ultrasonic__type_support.cpp.o[0m
+[8.015s] [ 27%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/interfaces/msg/gnss__type_support.cpp.o[0m
+[8.730s] [ 28%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/interfaces/msg/joystick_order__type_support.cpp.o[0m
+[8.744s] [ 29%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/interfaces/msg/motors_order__type_support.cpp.o[0m
+[8.812s] [ 31%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/interfaces/msg/detail/joystick_order__type_support.cpp.o[0m
+[8.821s] [ 32%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/interfaces/msg/detail/dds_fastrtps/joystick_order__type_support.cpp.o[0m
+[8.834s] [ 34%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/interfaces/msg/general_data__type_support.cpp.o[0m
+[8.839s] [ 35%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_cpp.dir/rosidl_typesupport_cpp/interfaces/msg/system_check__type_support.cpp.o[0m
+[8.841s] [ 35%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/interfaces/msg/motors_feedback__type_support.cpp.o[0m
+[8.844s] [ 36%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/interfaces/msg/detail/motors_order__type_support.cpp.o[0m
+[8.859s] [ 37%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/interfaces/msg/detail/motors_feedback__type_support.cpp.o[0m
+[8.871s] [ 39%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/interfaces/msg/detail/dds_fastrtps/motors_order__type_support.cpp.o[0m
+[8.920s] [ 40%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/interfaces/msg/steering_calibration__type_support.cpp.o[0m
+[8.925s] [ 41%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/interfaces/msg/ultrasonic__type_support.cpp.o[0m
+[8.931s] [ 42%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/interfaces/msg/detail/dds_fastrtps/motors_feedback__type_support.cpp.o[0m
+[8.967s] [ 43%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/interfaces/msg/gnss__type_support.cpp.o[0m
+[9.031s] [ 44%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_c.dir/rosidl_typesupport_c/interfaces/msg/system_check__type_support.cpp.o[0m
+[9.073s] [ 45%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/interfaces/msg/detail/dds_fastrtps/general_data__type_support.cpp.o[0m
+[9.087s] [ 47%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/interfaces/msg/detail/general_data__type_support.cpp.o[0m
+[9.103s] [ 48%] [32mBuilding C object CMakeFiles/interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/interfaces/msg/detail/joystick_order__type_support.c.o[0m
+[9.170s] [ 49%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/interfaces/msg/detail/joystick_order__type_support_c.cpp.o[0m
+[9.216s] [ 50%] [32m[1mLinking CXX shared library libinterfaces__rosidl_typesupport_c.so[0m
+[9.330s] [ 51%] [32mBuilding C object CMakeFiles/interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/interfaces/msg/detail/motors_order__type_support.c.o[0m
+[9.505s] [ 51%] Built target interfaces__rosidl_typesupport_c
+[9.510s] [ 52%] [32mBuilding C object CMakeFiles/interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/interfaces/msg/detail/motors_feedback__type_support.c.o[0m
+[9.545s] [ 54%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/interfaces/msg/detail/motors_order__type_support_c.cpp.o[0m
+[9.585s] [ 55%] [32m[1mLinking CXX shared library libinterfaces__rosidl_typesupport_cpp.so[0m
+[9.757s] [ 56%] [32mBuilding C object CMakeFiles/interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/interfaces/msg/detail/general_data__type_support.c.o[0m
+[9.893s] [ 56%] Built target interfaces__rosidl_typesupport_cpp
+[9.903s] [ 58%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/interfaces/msg/detail/dds_fastrtps/steering_calibration__type_support.cpp.o[0m
+[9.916s] [ 58%] [32mBuilding C object CMakeFiles/interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/interfaces/msg/detail/steering_calibration__type_support.c.o[0m
+[9.917s] [ 59%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/interfaces/msg/detail/motors_feedback__type_support_c.cpp.o[0m
+[9.937s] [ 60%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/interfaces/msg/detail/general_data__type_support_c.cpp.o[0m
+[9.946s] [ 62%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/interfaces/msg/detail/steering_calibration__type_support.cpp.o[0m
+[9.972s] [ 63%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/interfaces/msg/detail/steering_calibration__type_support_c.cpp.o[0m
+[10.060s] [ 64%] [32mBuilding C object CMakeFiles/interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/interfaces/msg/detail/ultrasonic__type_support.c.o[0m
+[10.083s] [ 65%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/interfaces/msg/detail/dds_fastrtps/ultrasonic__type_support.cpp.o[0m
+[10.163s] [ 66%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/interfaces/msg/detail/dds_fastrtps/gnss__type_support.cpp.o[0m
+[10.184s] [ 67%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_fastrtps_cpp.dir/rosidl_typesupport_fastrtps_cpp/interfaces/msg/detail/dds_fastrtps/system_check__type_support.cpp.o[0m
+[10.191s] [ 68%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/interfaces/msg/detail/ultrasonic__type_support.cpp.o[0m
+[10.198s] [ 70%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/interfaces/msg/detail/ultrasonic__type_support_c.cpp.o[0m
+[10.202s] [ 71%] [32mBuilding C object CMakeFiles/interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/interfaces/msg/detail/gnss__type_support.c.o[0m
+[10.448s] [ 72%] [32mBuilding C object CMakeFiles/interfaces__rosidl_typesupport_introspection_c.dir/rosidl_typesupport_introspection_c/interfaces/msg/detail/system_check__type_support.c.o[0m
+[10.470s] [ 73%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/interfaces/msg/detail/gnss__type_support_c.cpp.o[0m
+[10.707s] [ 74%] [32m[1mLinking C shared library libinterfaces__rosidl_typesupport_introspection_c.so[0m
+[10.915s] [ 74%] Built target interfaces__rosidl_typesupport_introspection_c
+[10.915s] [ 75%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/interfaces/msg/detail/gnss__type_support.cpp.o[0m
+[10.936s] [ 77%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_fastrtps_c.dir/rosidl_typesupport_fastrtps_c/interfaces/msg/detail/system_check__type_support_c.cpp.o[0m
+[10.949s] [ 78%] [32mBuilding CXX object CMakeFiles/interfaces__rosidl_typesupport_introspection_cpp.dir/rosidl_typesupport_introspection_cpp/interfaces/msg/detail/system_check__type_support.cpp.o[0m
+[11.431s] [ 79%] [32m[1mLinking CXX shared library libinterfaces__rosidl_typesupport_fastrtps_cpp.so[0m
+[11.619s] [ 79%] Built target interfaces__rosidl_typesupport_fastrtps_cpp
+[11.752s] [ 80%] [32m[1mLinking CXX shared library libinterfaces__rosidl_typesupport_fastrtps_c.so[0m
+[11.848s] [ 81%] [32m[1mLinking CXX shared library libinterfaces__rosidl_typesupport_introspection_cpp.so[0m
+[11.888s] [ 81%] Built target interfaces__rosidl_typesupport_fastrtps_c
+[11.983s] [ 81%] Built target interfaces__rosidl_typesupport_introspection_cpp
+[12.011s] [ 81%] Built target interfaces
+[12.049s] [ 82%] [34m[1mGenerating Python code for ROS interfaces[0m
+[16.286s] [ 82%] Built target interfaces__py
+[16.323s] [ 83%] [32mBuilding C object CMakeFiles/interfaces__rosidl_generator_py.dir/rosidl_generator_py/interfaces/msg/_motors_order_s.c.o[0m
+[16.326s] [ 85%] [32mBuilding C object CMakeFiles/interfaces__rosidl_generator_py.dir/rosidl_generator_py/interfaces/msg/_system_check_s.c.o[0m
+[16.329s] [ 86%] [32mBuilding C object CMakeFiles/interfaces__rosidl_generator_py.dir/rosidl_generator_py/interfaces/msg/_joystick_order_s.c.o[0m
+[16.334s] [ 87%] [32mBuilding C object CMakeFiles/interfaces__rosidl_generator_py.dir/rosidl_generator_py/interfaces/msg/_ultrasonic_s.c.o[0m
+[16.336s] [ 89%] [32mBuilding C object CMakeFiles/interfaces__rosidl_generator_py.dir/rosidl_generator_py/interfaces/msg/_general_data_s.c.o[0m
+[16.337s] [ 90%] [32mBuilding C object CMakeFiles/interfaces__rosidl_generator_py.dir/rosidl_generator_py/interfaces/msg/_steering_calibration_s.c.o[0m
+[16.337s] [ 90%] [32mBuilding C object CMakeFiles/interfaces__rosidl_generator_py.dir/rosidl_generator_py/interfaces/msg/_gnss_s.c.o[0m
+[16.338s] [ 91%] [32mBuilding C object CMakeFiles/interfaces__rosidl_generator_py.dir/rosidl_generator_py/interfaces/msg/_motors_feedback_s.c.o[0m
+[16.750s] [ 93%] [32m[1mLinking C shared library rosidl_generator_py/interfaces/libinterfaces__rosidl_generator_py.so[0m
+[16.807s] [ 93%] Built target interfaces__rosidl_generator_py
+[16.840s] [ 94%] [32mBuilding C object CMakeFiles/interfaces__rosidl_typesupport_c__pyext.dir/rosidl_generator_py/interfaces/_interfaces_s.ep.rosidl_typesupport_c.c.o[0m
+[16.842s] [ 95%] [32mBuilding C object CMakeFiles/interfaces__rosidl_typesupport_introspection_c__pyext.dir/rosidl_generator_py/interfaces/_interfaces_s.ep.rosidl_typesupport_introspection_c.c.o[0m
+[16.844s] [ 96%] [32mBuilding C object CMakeFiles/interfaces__rosidl_typesupport_fastrtps_c__pyext.dir/rosidl_generator_py/interfaces/_interfaces_s.ep.rosidl_typesupport_fastrtps_c.c.o[0m
+[17.121s] [ 97%] [32m[1mLinking C shared library rosidl_generator_py/interfaces/interfaces_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so[0m
+[17.124s] [ 98%] [32m[1mLinking C shared library rosidl_generator_py/interfaces/interfaces_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so[0m
+[17.132s] [100%] [32m[1mLinking C shared library rosidl_generator_py/interfaces/interfaces_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so[0m
+[17.182s] [100%] Built target interfaces__rosidl_typesupport_c__pyext
+[17.201s] [100%] Built target interfaces__rosidl_typesupport_introspection_c__pyext
+[17.202s] [100%] Built target interfaces__rosidl_typesupport_fastrtps_c__pyext
+[17.237s] Invoked command in '/home/Git/geicar/jetsonNano/build/interfaces' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/Git/geicar/jetsonNano/build/interfaces -- -j12 -l12
+[17.675s] Invoking command in '/home/Git/geicar/jetsonNano/build/interfaces': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/Git/geicar/jetsonNano/build/interfaces
+[17.692s] -- Install configuration: ""
+[17.694s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/ament_index/resource_index/rosidl_interfaces/interfaces
+[17.694s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces
+[17.696s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg
+[17.697s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/general_data.h
+[17.697s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/motors_order.h
+[17.699s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/gnss.h
+[17.701s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/rosidl_generator_c__visibility_control.h
+[17.701s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/ultrasonic.h
+[17.702s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/motors_feedback.h
+[17.704s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/steering_calibration.h
+[17.704s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail
+[17.705s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/system_check__struct.h
+[17.707s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_feedback__type_support.h
+[17.707s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/joystick_order__functions.h
+[17.708s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/general_data__struct.h
+[17.709s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/general_data__functions.c
+[17.709s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/steering_calibration__functions.c
+[17.709s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/ultrasonic__functions.h
+[17.711s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/gnss__functions.c
+[17.712s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/general_data__type_support.h
+[17.714s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/joystick_order__type_support.h
+[17.715s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/system_check__functions.c
+[17.716s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_feedback__functions.h
+[17.717s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/gnss__struct.h
+[17.717s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_order__functions.h
+[17.719s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/ultrasonic__type_support.h
+[17.719s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_feedback__functions.c
+[17.719s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/gnss__type_support.h
+[17.720s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/ultrasonic__functions.c
+[17.721s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/system_check__functions.h
+[17.721s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/joystick_order__struct.h
+[17.721s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_order__functions.c
+[17.721s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_order__struct.h
+[17.722s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/steering_calibration__struct.h
+[17.723s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/steering_calibration__functions.h
+[17.724s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/joystick_order__functions.c
+[17.724s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_order__type_support.h
+[17.725s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/steering_calibration__type_support.h
+[17.726s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/ultrasonic__struct.h
+[17.727s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_feedback__struct.h
+[17.727s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/gnss__functions.h
+[17.727s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/system_check__type_support.h
+[17.727s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/general_data__functions.h
+[17.727s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/joystick_order.h
+[17.728s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/system_check.h
+[17.728s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/environment/library_path.sh
+[17.728s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/environment/library_path.dsv
+[17.728s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/lib/libinterfaces__rosidl_generator_c.so
+[17.728s] -- Set runtime path of "/home/Git/geicar/jetsonNano/install/interfaces/lib/libinterfaces__rosidl_generator_c.so" to ""
+[17.728s] -- Up-to-date: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces
+[17.728s] -- Up-to-date: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg
+[17.728s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/rosidl_typesupport_fastrtps_c__visibility_control.h
+[17.728s] -- Up-to-date: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail
+[17.729s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/joystick_order__rosidl_typesupport_fastrtps_c.h
+[17.729s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/ultrasonic__rosidl_typesupport_fastrtps_c.h
+[17.729s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/general_data__rosidl_typesupport_fastrtps_c.h
+[17.729s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_feedback__rosidl_typesupport_fastrtps_c.h
+[17.730s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_order__rosidl_typesupport_fastrtps_c.h
+[17.730s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/steering_calibration__rosidl_typesupport_fastrtps_c.h
+[17.730s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/system_check__rosidl_typesupport_fastrtps_c.h
+[17.730s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/gnss__rosidl_typesupport_fastrtps_c.h
+[17.731s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/lib/libinterfaces__rosidl_typesupport_fastrtps_c.so
+[17.731s] -- Set runtime path of "/home/Git/geicar/jetsonNano/install/interfaces/lib/libinterfaces__rosidl_typesupport_fastrtps_c.so" to ""
+[17.731s] -- Up-to-date: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces
+[17.731s] -- Up-to-date: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg
+[17.732s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/ultrasonic.hpp
+[17.732s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/joystick_order.hpp
+[17.732s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/general_data.hpp
+[17.733s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/motors_feedback.hpp
+[17.733s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/gnss.hpp
+[17.733s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/system_check.hpp
+[17.733s] -- Up-to-date: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail
+[17.734s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/steering_calibration__builder.hpp
+[17.734s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/gnss__traits.hpp
+[17.734s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_feedback__builder.hpp
+[17.734s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_feedback__traits.hpp
+[17.735s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/general_data__struct.hpp
+[17.735s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/ultrasonic__builder.hpp
+[17.735s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/system_check__struct.hpp
+[17.736s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/gnss__struct.hpp
+[17.736s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/gnss__builder.hpp
+[17.736s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_feedback__struct.hpp
+[17.737s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/joystick_order__struct.hpp
+[17.737s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/joystick_order__builder.hpp
+[17.737s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/general_data__builder.hpp
+[17.737s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/ultrasonic__struct.hpp
+[17.738s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/system_check__builder.hpp
+[17.738s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/steering_calibration__struct.hpp
+[17.738s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/ultrasonic__traits.hpp
+[17.738s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_order__traits.hpp
+[17.739s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/steering_calibration__traits.hpp
+[17.739s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/system_check__traits.hpp
+[17.739s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_order__struct.hpp
+[17.739s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/general_data__traits.hpp
+[17.739s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_order__builder.hpp
+[17.740s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/joystick_order__traits.hpp
+[17.740s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/steering_calibration.hpp
+[17.740s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/motors_order.hpp
+[17.740s] -- Up-to-date: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces
+[17.741s] -- Up-to-date: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg
+[17.741s] -- Up-to-date: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail
+[17.741s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/gnss__rosidl_typesupport_fastrtps_cpp.hpp
+[17.741s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/steering_calibration__rosidl_typesupport_fastrtps_cpp.hpp
+[17.741s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/ultrasonic__rosidl_typesupport_fastrtps_cpp.hpp
+[17.742s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/joystick_order__rosidl_typesupport_fastrtps_cpp.hpp
+[17.742s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/general_data__rosidl_typesupport_fastrtps_cpp.hpp
+[17.742s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_order__rosidl_typesupport_fastrtps_cpp.hpp
+[17.742s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/system_check__rosidl_typesupport_fastrtps_cpp.hpp
+[17.742s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/dds_fastrtps
+[17.743s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_feedback__rosidl_typesupport_fastrtps_cpp.hpp
+[17.743s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h
+[17.743s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/lib/libinterfaces__rosidl_typesupport_fastrtps_cpp.so
+[17.743s] -- Set runtime path of "/home/Git/geicar/jetsonNano/install/interfaces/lib/libinterfaces__rosidl_typesupport_fastrtps_cpp.so" to ""
+[17.743s] -- Up-to-date: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces
+[17.744s] -- Up-to-date: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg
+[17.744s] -- Up-to-date: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail
+[17.744s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/ultrasonic__rosidl_typesupport_introspection_c.h
+[17.744s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/general_data__rosidl_typesupport_introspection_c.h
+[17.744s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/ultrasonic__type_support.c
+[17.744s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/system_check__rosidl_typesupport_introspection_c.h
+[17.744s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/steering_calibration__rosidl_typesupport_introspection_c.h
+[17.744s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_feedback__rosidl_typesupport_introspection_c.h
+[17.745s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_order__rosidl_typesupport_introspection_c.h
+[17.745s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/gnss__type_support.c
+[17.745s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/joystick_order__type_support.c
+[17.745s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/gnss__rosidl_typesupport_introspection_c.h
+[17.745s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/system_check__type_support.c
+[17.745s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_feedback__type_support.c
+[17.745s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/general_data__type_support.c
+[17.745s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/joystick_order__rosidl_typesupport_introspection_c.h
+[17.745s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/steering_calibration__type_support.c
+[17.745s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_order__type_support.c
+[17.745s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/rosidl_typesupport_introspection_c__visibility_control.h
+[17.746s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/lib/libinterfaces__rosidl_typesupport_introspection_c.so
+[17.746s] -- Set runtime path of "/home/Git/geicar/jetsonNano/install/interfaces/lib/libinterfaces__rosidl_typesupport_introspection_c.so" to ""
+[17.746s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/lib/libinterfaces__rosidl_typesupport_c.so
+[17.746s] -- Set runtime path of "/home/Git/geicar/jetsonNano/install/interfaces/lib/libinterfaces__rosidl_typesupport_c.so" to ""
+[17.746s] -- Up-to-date: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces
+[17.746s] -- Up-to-date: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg
+[17.746s] -- Up-to-date: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail
+[17.746s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/ultrasonic__type_support.cpp
+[17.746s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_order__type_support.cpp
+[17.747s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/steering_calibration__rosidl_typesupport_introspection_cpp.hpp
+[17.747s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_feedback__rosidl_typesupport_introspection_cpp.hpp
+[17.747s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/general_data__type_support.cpp
+[17.747s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/ultrasonic__rosidl_typesupport_introspection_cpp.hpp
+[17.747s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/steering_calibration__type_support.cpp
+[17.747s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/system_check__type_support.cpp
+[17.747s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_feedback__type_support.cpp
+[17.748s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/gnss__rosidl_typesupport_introspection_cpp.hpp
+[17.748s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/system_check__rosidl_typesupport_introspection_cpp.hpp
+[17.748s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/general_data__rosidl_typesupport_introspection_cpp.hpp
+[17.748s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/joystick_order__rosidl_typesupport_introspection_cpp.hpp
+[17.748s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/gnss__type_support.cpp
+[17.748s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/motors_order__rosidl_typesupport_introspection_cpp.hpp
+[17.748s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/include/interfaces/interfaces/msg/detail/joystick_order__type_support.cpp
+[17.748s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/lib/libinterfaces__rosidl_typesupport_introspection_cpp.so
+[17.748s] -- Set runtime path of "/home/Git/geicar/jetsonNano/install/interfaces/lib/libinterfaces__rosidl_typesupport_introspection_cpp.so" to ""
+[17.748s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/lib/libinterfaces__rosidl_typesupport_cpp.so
+[17.749s] -- Set runtime path of "/home/Git/geicar/jetsonNano/install/interfaces/lib/libinterfaces__rosidl_typesupport_cpp.so" to ""
+[17.749s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/environment/pythonpath.sh
+[17.749s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/environment/pythonpath.dsv
+[17.749s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces-0.0.0-py3.10.egg-info
+[17.749s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces-0.0.0-py3.10.egg-info/top_level.txt
+[17.749s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces-0.0.0-py3.10.egg-info/PKG-INFO
+[17.749s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces-0.0.0-py3.10.egg-info/SOURCES.txt
+[17.749s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces-0.0.0-py3.10.egg-info/dependency_links.txt
+[17.749s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces
+[17.749s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/__init__.py
+[17.750s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/_interfaces_s.ep.rosidl_typesupport_c.c
+[17.750s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg
+[17.750s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/__init__.py
+[17.750s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_motors_order_s.c
+[17.750s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_motors_feedback_s.c
+[17.750s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_gnss_s.c
+[17.750s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_joystick_order_s.c
+[17.750s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_ultrasonic_s.c
+[17.750s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_gnss.py
+[17.750s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_motors_order.py
+[17.750s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_steering_calibration.py
+[17.751s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_system_check_s.c
+[17.751s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_general_data.py
+[17.751s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_steering_calibration_s.c
+[17.751s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_system_check.py
+[17.751s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_joystick_order.py
+[17.751s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_ultrasonic.py
+[17.751s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_general_data_s.c
+[17.751s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_motors_feedback.py
+[17.751s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/_interfaces_s.ep.rosidl_typesupport_fastrtps_c.c
+[17.751s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/interfaces_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so
+[17.752s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/interfaces_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so
+[17.752s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/_interfaces_s.ep.rosidl_typesupport_introspection_c.c
+[17.752s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/libinterfaces__rosidl_generator_py.so
+[17.752s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/interfaces_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so
+[17.816s] Listing '/home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces'...
+[17.816s] Compiling '/home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/__init__.py'...
+[17.816s] Listing '/home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg'...
+[17.816s] Compiling '/home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/__init__.py'...
+[17.816s] Compiling '/home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_general_data.py'...
+[17.816s] Compiling '/home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_gnss.py'...
+[17.817s] Compiling '/home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_joystick_order.py'...
+[17.817s] Compiling '/home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_motors_feedback.py'...
+[17.817s] Compiling '/home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_motors_order.py'...
+[17.817s] Compiling '/home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_steering_calibration.py'...
+[17.817s] Compiling '/home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_system_check.py'...
+[17.817s] Compiling '/home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/msg/_ultrasonic.py'...
+[17.828s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/interfaces_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so
+[17.828s] -- Set runtime path of "/home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/interfaces_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so" to ""
+[17.828s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/interfaces_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so
+[17.829s] -- Set runtime path of "/home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/interfaces_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so" to ""
+[17.829s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/interfaces_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so
+[17.830s] -- Set runtime path of "/home/Git/geicar/jetsonNano/install/interfaces/local/lib/python3.10/dist-packages/interfaces/interfaces_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so" to ""
+[17.831s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/lib/libinterfaces__rosidl_generator_py.so
+[17.831s] -- Set runtime path of "/home/Git/geicar/jetsonNano/install/interfaces/lib/libinterfaces__rosidl_generator_py.so" to ""
+[17.832s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/msg/JoystickOrder.idl
+[17.832s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/msg/MotorsOrder.idl
+[17.832s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/msg/MotorsFeedback.idl
+[17.833s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/msg/GeneralData.idl
+[17.833s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/msg/SteeringCalibration.idl
+[17.834s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/msg/Ultrasonic.idl
+[17.834s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/msg/Gnss.idl
+[17.835s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/msg/SystemCheck.idl
+[17.837s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/msg/JoystickOrder.msg
+[17.838s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/msg/MotorsOrder.msg
+[17.838s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/msg/MotorsFeedback.msg
+[17.839s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/msg/GeneralData.msg
+[17.839s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/msg/SteeringCalibration.msg
+[17.840s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/msg/Ultrasonic.msg
+[17.841s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/msg/Gnss.msg
+[17.841s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/msg/SystemCheck.msg
+[17.841s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/ament_index/resource_index/package_run_dependencies/interfaces
+[17.842s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/ament_index/resource_index/parent_prefix_path/interfaces
+[17.842s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/environment/ament_prefix_path.sh
+[17.843s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/environment/ament_prefix_path.dsv
+[17.844s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/environment/path.sh
+[17.845s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/environment/path.dsv
+[17.846s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/local_setup.bash
+[17.846s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/local_setup.sh
+[17.847s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/local_setup.zsh
+[17.848s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/local_setup.dsv
+[17.848s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/package.dsv
+[17.848s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/ament_index/resource_index/packages/interfaces
+[17.848s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/export_interfaces__rosidl_generator_cExport.cmake
+[17.849s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/export_interfaces__rosidl_generator_cExport-noconfig.cmake
+[17.849s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/export_interfaces__rosidl_typesupport_fastrtps_cExport.cmake
+[17.849s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/export_interfaces__rosidl_typesupport_fastrtps_cExport-noconfig.cmake
+[17.849s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/export_interfaces__rosidl_generator_cppExport.cmake
+[17.850s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/export_interfaces__rosidl_typesupport_fastrtps_cppExport.cmake
+[17.851s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/export_interfaces__rosidl_typesupport_fastrtps_cppExport-noconfig.cmake
+[17.851s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/interfaces__rosidl_typesupport_introspection_cExport.cmake
+[17.852s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/interfaces__rosidl_typesupport_introspection_cExport-noconfig.cmake
+[17.852s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/interfaces__rosidl_typesupport_cExport.cmake
+[17.852s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/interfaces__rosidl_typesupport_cExport-noconfig.cmake
+[17.853s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/interfaces__rosidl_typesupport_introspection_cppExport.cmake
+[17.853s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/interfaces__rosidl_typesupport_introspection_cppExport-noconfig.cmake
+[17.853s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/interfaces__rosidl_typesupport_cppExport.cmake
+[17.854s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/interfaces__rosidl_typesupport_cppExport-noconfig.cmake
+[17.856s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/export_interfaces__rosidl_generator_pyExport.cmake
+[17.859s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/export_interfaces__rosidl_generator_pyExport-noconfig.cmake
+[17.860s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/rosidl_cmake-extras.cmake
+[17.860s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/ament_cmake_export_include_directories-extras.cmake
+[17.860s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/ament_cmake_export_libraries-extras.cmake
+[17.861s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/ament_cmake_export_targets-extras.cmake
+[17.861s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake
+[17.861s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/ament_cmake_export_dependencies-extras.cmake
+[17.861s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake
+[17.861s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/interfacesConfig.cmake
+[17.861s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/cmake/interfacesConfig-version.cmake
+[17.862s] -- Installing: /home/Git/geicar/jetsonNano/install/interfaces/share/interfaces/package.xml
+[17.862s] Invoked command in '/home/Git/geicar/jetsonNano/build/interfaces' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/Git/geicar/jetsonNano/build/interfaces

@@ -1,0 +1,10 @@
+/home/Git/geicar/jetsonNano/build/system_check_ack/CMakeFiles/uninstall.dir
+/home/Git/geicar/jetsonNano/build/system_check_ack/CMakeFiles/system_check_ack_uninstall.dir
+/home/Git/geicar/jetsonNano/build/system_check_ack/CMakeFiles/system_check_ack_node.dir
+/home/Git/geicar/jetsonNano/build/system_check_ack/CMakeFiles/test.dir
+/home/Git/geicar/jetsonNano/build/system_check_ack/CMakeFiles/edit_cache.dir
+/home/Git/geicar/jetsonNano/build/system_check_ack/CMakeFiles/rebuild_cache.dir
+/home/Git/geicar/jetsonNano/build/system_check_ack/CMakeFiles/list_install_components.dir
+/home/Git/geicar/jetsonNano/build/system_check_ack/CMakeFiles/install.dir
+/home/Git/geicar/jetsonNano/build/system_check_ack/CMakeFiles/install/local.dir
+/home/Git/geicar/jetsonNano/build/system_check_ack/CMakeFiles/install/strip.dir

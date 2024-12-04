@@ -1,0 +1,6 @@
+Invoking command in '/home/Git/geicar/jetsonNano/build/interfaces': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/Git/geicar/jetsonNano/ros2_ws/src/interfaces -DCMAKE_INSTALL_PREFIX=/home/Git/geicar/jetsonNano/install/interfaces
+Invoked command in '/home/Git/geicar/jetsonNano/build/interfaces' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/Git/geicar/jetsonNano/ros2_ws/src/interfaces -DCMAKE_INSTALL_PREFIX=/home/Git/geicar/jetsonNano/install/interfaces
+Invoking command in '/home/Git/geicar/jetsonNano/build/interfaces': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/Git/geicar/jetsonNano/build/interfaces -- -j12 -l12
+Invoked command in '/home/Git/geicar/jetsonNano/build/interfaces' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/Git/geicar/jetsonNano/build/interfaces -- -j12 -l12
+Invoking command in '/home/Git/geicar/jetsonNano/build/interfaces': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/Git/geicar/jetsonNano/build/interfaces
+Invoked command in '/home/Git/geicar/jetsonNano/build/interfaces' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/Git/geicar/jetsonNano/build/interfaces

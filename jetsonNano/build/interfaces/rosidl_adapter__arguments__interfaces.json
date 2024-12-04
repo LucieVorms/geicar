@@ -1,0 +1,13 @@
+{
+  "package_name": "interfaces",
+  "non_idl_tuples": [
+    "/home/Git/geicar/jetsonNano/ros2_ws/src/interfaces:msg/JoystickOrder.msg",
+    "/home/Git/geicar/jetsonNano/ros2_ws/src/interfaces:msg/MotorsOrder.msg",
+    "/home/Git/geicar/jetsonNano/ros2_ws/src/interfaces:msg/MotorsFeedback.msg",
+    "/home/Git/geicar/jetsonNano/ros2_ws/src/interfaces:msg/GeneralData.msg",
+    "/home/Git/geicar/jetsonNano/ros2_ws/src/interfaces:msg/SteeringCalibration.msg",
+    "/home/Git/geicar/jetsonNano/ros2_ws/src/interfaces:msg/Ultrasonic.msg",
+    "/home/Git/geicar/jetsonNano/ros2_ws/src/interfaces:msg/Gnss.msg",
+    "/home/Git/geicar/jetsonNano/ros2_ws/src/interfaces:msg/SystemCheck.msg"
+  ]
+}

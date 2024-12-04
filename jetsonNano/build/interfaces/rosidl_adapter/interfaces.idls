@@ -1,0 +1,8 @@
+/home/Git/geicar/jetsonNano/build/interfaces/rosidl_adapter/interfaces:msg/JoystickOrder.idl
+/home/Git/geicar/jetsonNano/build/interfaces/rosidl_adapter/interfaces:msg/MotorsOrder.idl
+/home/Git/geicar/jetsonNano/build/interfaces/rosidl_adapter/interfaces:msg/MotorsFeedback.idl
+/home/Git/geicar/jetsonNano/build/interfaces/rosidl_adapter/interfaces:msg/GeneralData.idl
+/home/Git/geicar/jetsonNano/build/interfaces/rosidl_adapter/interfaces:msg/SteeringCalibration.idl
+/home/Git/geicar/jetsonNano/build/interfaces/rosidl_adapter/interfaces:msg/Ultrasonic.idl
+/home/Git/geicar/jetsonNano/build/interfaces/rosidl_adapter/interfaces:msg/Gnss.idl
+/home/Git/geicar/jetsonNano/build/interfaces/rosidl_adapter/interfaces:msg/SystemCheck.idl

@@ -1,0 +1,16 @@
+/home/Git/geicar/jetsonNano/install/system_check_ack/lib/system_check_ack/system_check_ack_node
+/home/Git/geicar/jetsonNano/install/system_check_ack/share/ament_index/resource_index/package_run_dependencies/system_check_ack
+/home/Git/geicar/jetsonNano/install/system_check_ack/share/ament_index/resource_index/parent_prefix_path/system_check_ack
+/home/Git/geicar/jetsonNano/install/system_check_ack/share/system_check_ack/environment/ament_prefix_path.sh
+/home/Git/geicar/jetsonNano/install/system_check_ack/share/system_check_ack/environment/ament_prefix_path.dsv
+/home/Git/geicar/jetsonNano/install/system_check_ack/share/system_check_ack/environment/path.sh
+/home/Git/geicar/jetsonNano/install/system_check_ack/share/system_check_ack/environment/path.dsv
+/home/Git/geicar/jetsonNano/install/system_check_ack/share/system_check_ack/local_setup.bash
+/home/Git/geicar/jetsonNano/install/system_check_ack/share/system_check_ack/local_setup.sh
+/home/Git/geicar/jetsonNano/install/system_check_ack/share/system_check_ack/local_setup.zsh
+/home/Git/geicar/jetsonNano/install/system_check_ack/share/system_check_ack/local_setup.dsv
+/home/Git/geicar/jetsonNano/install/system_check_ack/share/system_check_ack/package.dsv
+/home/Git/geicar/jetsonNano/install/system_check_ack/share/ament_index/resource_index/packages/system_check_ack
+/home/Git/geicar/jetsonNano/install/system_check_ack/share/system_check_ack/cmake/system_check_ackConfig.cmake
+/home/Git/geicar/jetsonNano/install/system_check_ack/share/system_check_ack/cmake/system_check_ackConfig-version.cmake
+/home/Git/geicar/jetsonNano/install/system_check_ack/share/system_check_ack/package.xml

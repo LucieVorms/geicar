@@ -1,0 +1,9 @@
+/home/Git/geicar/jetsonNano/build/geicar_start_jetson/CMakeFiles/uninstall.dir
+/home/Git/geicar/jetsonNano/build/geicar_start_jetson/CMakeFiles/geicar_start_jetson_uninstall.dir
+/home/Git/geicar/jetsonNano/build/geicar_start_jetson/CMakeFiles/test.dir
+/home/Git/geicar/jetsonNano/build/geicar_start_jetson/CMakeFiles/edit_cache.dir
+/home/Git/geicar/jetsonNano/build/geicar_start_jetson/CMakeFiles/rebuild_cache.dir
+/home/Git/geicar/jetsonNano/build/geicar_start_jetson/CMakeFiles/list_install_components.dir
+/home/Git/geicar/jetsonNano/build/geicar_start_jetson/CMakeFiles/install.dir
+/home/Git/geicar/jetsonNano/build/geicar_start_jetson/CMakeFiles/install/local.dir
+/home/Git/geicar/jetsonNano/build/geicar_start_jetson/CMakeFiles/install/strip.dir
