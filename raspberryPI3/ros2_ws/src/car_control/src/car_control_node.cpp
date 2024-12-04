@@ -213,9 +213,9 @@ private:
 
         if (reversing && (this->now() - reverse_timer).nanoseconds() / 1e6 < REVERSE_DURATION) {
         
-            motorsOrder.left_rear_pwm = REVERSE_PWM;
-            motorsOrder.right_rear_pwm = REVERSE_PWM;
-            motorsOrder.steering_pwm = STOP; 
+           leftRearPwmCmd = REVERSE_PWM;
+            rightRearPwmCmd = REVERSE_PWM;
+            steeringPwmCmd = STOP; 
         }
         else if (!start || obstacle_detected){ 
             // Stop the car 
@@ -343,7 +343,7 @@ private:
     bool reversing;  // Indique si la voiture est en marche arrière
     rclcpp::Time reverse_timer;  // Timer pour la marche arrière
 
-    
+
     //Manual Mode variables (with joystick control)
     bool reverse;
     float requestedThrottle;
