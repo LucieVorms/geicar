@@ -23,7 +23,7 @@
 using namespace std;
 using placeholders::_1;
 #define OBSTACLE_THRESHOLD 60   // Threshold for obstacle detection in centimeters
-#define REVERSE_DURATION 3000  
+#define REVERSE_DURATION 2000  
 #define REVERSE_PWM 30  
 class car_control : public rclcpp::Node {
 
@@ -211,7 +211,7 @@ private:
     void updateCmd(){
         auto motorsOrder = interfaces::msg::MotorsOrder();
 
-        if (!start || reversing && (this->now() - reverse_timer).nanoseconds() / 1e6 < REVERSE_DURATION) {
+        if (!start && reversing && (this->now() - reverse_timer).nanoseconds() / 1e6 < REVERSE_DURATION) {
         
            leftRearPwmCmd = REVERSE_PWM;
             rightRearPwmCmd = REVERSE_PWM;
