@@ -23,7 +23,7 @@
 using namespace std;
 using placeholders::_1;
 #define OBSTACLE_THRESHOLD 60   // Threshold for obstacle detection in centimeters
-
+#define REVERSE_SPEED 20
 class car_control : public rclcpp::Node {
 
 public:
@@ -102,6 +102,12 @@ private:
             if (rear_center < OBSTACLE_THRESHOLD) detected_sides += "Arrière Centre, ";
             if (rear_right < OBSTACLE_THRESHOLD) detected_sides += "Arrière Droit, ";
 
+            if (front_left < OBSTACLE_THRESHOLD || front_center < OBSTACLE_THRESHOLD || front_right < OBSTACLE_THRESHOLD) {
+                reversing = true; 
+                reverse_timer = this->now(); 
+                detected_sides += "Obstacle devant, ";
+            }
+
             // Remove trailing comma and space if present
             if (!detected_sides.empty()) {
                 detected_sides = detected_sides.substr(0, detected_sides.size() - 2);
@@ -112,6 +118,7 @@ private:
             obstacle_info_msg.sides_detected = detected_sides;
         } else {
             obstacle_info_msg.sides_detected = "Aucun obstacle";
+            reversing = false;
         }
 
     
@@ -203,13 +210,18 @@ private:
     void updateCmd(){
         auto motorsOrder = interfaces::msg::MotorsOrder();
 
-
-        if (!start || obstacle_detected){ 
+        if (reversing && (this->now() - reverse_timer).nanoseconds() / 1e6 < REVERSE_DURATION) {
+        
+            motorsOrder.left_rear_pwm = REVERSE_PWM;
+            motorsOrder.right_rear_pwm = REVERSE_PWM;
+            motorsOrder.steering_pwm = STOP; 
+        }
+        else if (!start || obstacle_detected){ 
             // Stop the car 
             leftRearPwmCmd = STOP;
             rightRearPwmCmd = STOP;
             steeringPwmCmd = STOP;
-
+            
 
         }else{ 
             // Handle manual mode
