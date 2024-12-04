@@ -211,11 +211,11 @@ private:
     void updateCmd(){
         auto motorsOrder = interfaces::msg::MotorsOrder();
 
-        if (!start && reversing && (this->now() - reverse_timer).nanoseconds() / 1e6 < REVERSE_DURATION) {
+        if (start && reversing && (this->now() - reverse_timer).nanoseconds() / 1e6 < REVERSE_DURATION) {
         
            leftRearPwmCmd = REVERSE_PWM;
-            rightRearPwmCmd = REVERSE_PWM;
-            steeringPwmCmd = STOP; 
+           rightRearPwmCmd = REVERSE_PWM;
+           steeringPwmCmd = STOP; 
         }
         else if (!start || obstacle_detected){ 
             // Stop the car 
