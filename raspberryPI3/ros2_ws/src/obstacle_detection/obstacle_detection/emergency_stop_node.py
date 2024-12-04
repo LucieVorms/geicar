@@ -23,9 +23,9 @@ class EmergencyStopNode(Node):
         
         obstacle_detected = any([
 
-            msg.front_left < 52,
-            msg.front_center < 52,
-            msg.front_right < 52,
+            msg.front_left < 55,
+            msg.front_center < 55,
+            msg.front_right < 55,
                        ])
 
         
