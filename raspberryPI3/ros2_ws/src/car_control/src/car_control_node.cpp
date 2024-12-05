@@ -22,7 +22,10 @@
 
 using namespace std;
 using placeholders::_1;
-#define OBSTACLE_THRESHOLD 60   // Threshold for obstacle detection in centimeters
+#define OBSTACLE_THRESHOLD 38   // Threshold for obstacle detection in centimeters
+#define REVERSE_DURATION 2000  
+#define REVERSE_PWM 30  
+#define REVERSE_OBSTACLE_THRESHOLD 50  // Distance minimale pour éviter les collisions à l'arrière en cm
 
 class car_control : public rclcpp::Node {
 
@@ -102,6 +105,12 @@ private:
             if (rear_center < OBSTACLE_THRESHOLD) detected_sides += "Arrière Centre, ";
             if (rear_right < OBSTACLE_THRESHOLD) detected_sides += "Arrière Droit, ";
 
+            if (front_left < OBSTACLE_THRESHOLD || front_center < OBSTACLE_THRESHOLD || front_right < OBSTACLE_THRESHOLD) {
+                reversing = true; 
+                reverse_timer = this->now(); 
+                detected_sides += "Obstacle devant, ";
+            }
+
             // Remove trailing comma and space if present
             if (!detected_sides.empty()) {
                 detected_sides = detected_sides.substr(0, detected_sides.size() - 2);
@@ -112,6 +121,7 @@ private:
             obstacle_info_msg.sides_detected = detected_sides;
         } else {
             obstacle_info_msg.sides_detected = "Aucun obstacle";
+            reversing = false;
         }
 
     
@@ -203,13 +213,26 @@ private:
     void updateCmd(){
         auto motorsOrder = interfaces::msg::MotorsOrder();
 
-
-        if (!start || obstacle_detected){ 
+        if (start && reversing && (this->now() - reverse_timer).nanoseconds() / 1e6 < REVERSE_DURATION) {
+        
+            
+            if (rear_left > REVERSE_OBSTACLE_THRESHOLD && rear_center > REVERSE_OBSTACLE_THRESHOLD && rear_right > REVERSE_OBSTACLE_THRESHOLD) {
+                leftRearPwmCmd = REVERSE_PWM;
+                rightRearPwmCmd = REVERSE_PWM;
+                steeringPwmCmd = STOP;
+            } else {
+                RCLCPP_WARN(this->get_logger(), "Obstacle detected at the Rear, Stopping the car");
+                leftRearPwmCmd = STOP;
+                rightRearPwmCmd = STOP;
+                reversing = false; 
+            } 
+        }
+        else if (!start || obstacle_detected){ 
             // Stop the car 
             leftRearPwmCmd = STOP;
             rightRearPwmCmd = STOP;
             steeringPwmCmd = STOP;
-
+            
 
         }else{ 
             // Handle manual mode
@@ -217,8 +240,8 @@ private:
                 manualPropulsionCmd(requestedThrottle, reverse, leftRearPwmCmd,rightRearPwmCmd);
                 steeringCmd(requestedSteerAngle,currentAngle, steeringPwmCmd);
             } else if (mode==1){    //Autonomous Mode
-                leftRearPwmCmd = 100;        
-                rightRearPwmCmd = 100;
+                leftRearPwmCmd = 70;        
+                rightRearPwmCmd = 70;
                 steeringCmd(0 ,currentAngle, steeringPwmCmd);  // Center the wheels
 
 
@@ -325,6 +348,11 @@ private:
     //Motors feedback variables
     float currentAngle;
     float actualSpeed;  
+
+
+    bool reversing;  // Indique si la voiture est en marche arrière
+    rclcpp::Time reverse_timer;  // Timer pour la marche arrière
+
 
     //Manual Mode variables (with joystick control)
     bool reverse;
