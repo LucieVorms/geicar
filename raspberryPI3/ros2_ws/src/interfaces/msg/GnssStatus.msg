@@ -4,4 +4,8 @@ float64 current_altitude
 float64 target_latitude
 float64 target_longitude
 float64 distance_to_target
+float64 current_direction  
+float64 target_direction
+float64 angle_difference
+string direction_message
 string status_message

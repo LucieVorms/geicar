@@ -1,36 +1,49 @@
 #!/usr/bin/env python3
 import csv
-from math import radians, cos, sin, sqrt, atan2
+from math import radians, degrees, cos, sin, sqrt, atan2
 import rclpy
 from rclpy.node import Node
-from interfaces.msg import Gnss  # Import du message correct
+from interfaces.msg import Gnss 
 from interfaces.msg import GnssStatus
+
 class GnssListener(Node):
     def __init__(self):
         super().__init__('gnss_listener')
+        
+        # Create a subscription to listen to GNSS data from the topic '/gnss_data'
         self.subscription = self.create_subscription(
             Gnss,
             '/gnss_data',
             self.listener_callback,
-            10  # Taille du buffer
+            10  # Buffer size
         )
         
-        self.publisher = self.create_publisher(GnssStatus, '/gnss_status', 10)  
-        # Charger les points GPS depuis un fichier CSV
+        # Create a publisher to send GNSS status messages
+        self.publisher = self.create_publisher(GnssStatus, '/gnss_status', 10)
+        
+        # Load the GPS points from the itinerary CSV file
         self.itinerary = self.load_itinerary_from_csv('gnss_data.csv')
+
+        if not self.itinerary:
+            self.get_logger().error("No valid GPS points loaded from the itinerary!")
+            rclpy.shutdown()
         
-        self.current_target_index = 0  # Index du point de l'itinéraire à suivre
+        self.current_target_index = 0  # Start at the first target in the itinerary
         
+        # Define fixed offsets for latitude and longitude corrections (adjust as needed)
+        self.lat_offset = 0.000026  # Example offset in latitude
+        self.lon_offset = 0.000025  # Example offset in longitude
+
     def load_itinerary_from_csv(self, file_name):
-        # Charger les points GPS depuis un fichier CSV
+        # Load GPS points from a CSV file
         itinerary = []
         try:
             with open(file_name, mode='r') as file:
                 reader = csv.reader(file)
                 for row in reader:
-                    if row:  # Ignorer les lignes vides
+                    if row:  # Skip empty rows
                         try:
-                            # Extraire uniquement la latitude et la longitude
+                            # Extract latitude and longitude from the row
                             lat, lon = float(row[0]), float(row[1])
                             itinerary.append((lat, lon))
                         except ValueError as e:
@@ -42,65 +55,103 @@ class GnssListener(Node):
         return itinerary
     
     def listener_callback(self, msg):
-        # Récupère les coordonnées actuelles du véhicule
-        current_lat = msg.latitude
-        current_lon = msg.longitude
+        # Retrieve the current vehicle coordinates and apply the offset
+        current_lat = msg.latitude + self.lat_offset  # Apply latitude correction
+        current_lon = msg.longitude + self.lon_offset  # Apply longitude correction
         current_alt = msg.altitude
         
-  
+        # Get the coordinates of the current target and the final destination
         target_lat, target_lon = self.itinerary[self.current_target_index]
-        final_lat, final_lon = self.itinerary[-1]  # Dernier point de l'itinéraire
+        final_lat, final_lon = self.itinerary[-1]  # Last point in the itinerary
+        
+        # Calculate the distance to the target using the Haversine formula
         distance = self.haversine(current_lat, current_lon, target_lat, target_lon)
+
+        # If there's a previous target, calculate the direction (bearing) towards the current position
+        if self.current_target_index > 0:
+            prev_lat, prev_lon = self.itinerary[self.current_target_index - 1]
+            current_direction = self.calculate_bearing(prev_lat, prev_lon, current_lat, current_lon)
+        else:
+            current_direction =  314.41  # Default value for initial direction
+
+        # Calculate the direction (bearing) towards the current target
+        target_direction = self.calculate_bearing(current_lat, current_lon, target_lat, target_lon)
+        
+        # Calculate the angle difference between current and target directions
+        angle_difference = self.calculate_angle_difference(current_direction, target_direction)
+
+        # Create a new status message
         status_msg = GnssStatus()
         status_msg.current_latitude = current_lat
         status_msg.current_longitude = current_lon
-        status_msg.current_altitude = current_alt
         status_msg.target_latitude = target_lat
         status_msg.target_longitude = target_lon
         status_msg.distance_to_target = distance
-        #self.get_logger().info(f"Next target: Latitude {target_lat}, Longitude {target_lon}")
-        #self.get_logger().info(f"Final target: Latitude {final_lat}, Longitude {final_lon}")
-        
-        # Calculer la distance jusqu'au prochain point
-        
-        #self.get_logger().info(f"Distance to next target: {distance:.5f} km")
-        
-        # Si la distance est inférieure à 10 mètres, passer au prochain point
+        status_msg.current_direction = float(current_direction)
+        status_msg.target_direction = target_direction
+        status_msg.angle_difference = angle_difference
+
+        # Set the direction message based on the angle difference
+        if angle_difference > 5:
+            status_msg.direction_message = "Turn Right"
+        elif angle_difference < -5:
+            status_msg.direction_message = "Turn Left"
+        else:
+            status_msg.direction_message = "Go Straight"
+
+        # Check if the vehicle is close enough to the target (within 10 cm)
         if distance < 0.0001:  # 0.0001 km = 10 cm
-            
+            # Move to the next target in the itinerary
             self.current_target_index += 1
-            
-            # Si on a terminé l'itinéraire
             if self.current_target_index >= len(self.itinerary):
                 status_msg.status_message = "End of itinerary reached!"
-                #self.get_logger().info("End of itinerary reached!")
-                self.current_target_index = 0  # Retour au début si nécessaire
-            else : 
-                #self.get_logger().info(f"Arrived at target {self.current_target_index + 1}")
+                self.current_target_index = 0  # Restart from the beginning of the itinerary
+            else:
                 status_msg.status_message = f"Arrived at target {self.current_target_index}. Moving to next target."
-        else : 
+        else:
             status_msg.status_message = f"Navigating to target {self.current_target_index}."
-            #self.get_logger().info(f"Starting over. Next target: {self.itinerary[self.current_target_index]}")
+
+        # Publish the status message
         self.publisher.publish(status_msg)
+
     def haversine(self, lat1, lon1, lat2, lon2):
-        # Convertir les coordonnées en radians
+        # Convert coordinates to radians
         lat1 = radians(lat1)
         lon1 = radians(lon1)
         lat2 = radians(lat2)
         lon2 = radians(lon2)
-        # Calcul de la différence des latitudes et longitudes
+        
+        # Calculate the differences in latitudes and longitudes
         dlat = lat2 - lat1
         dlon = lon2 - lon1
-        # Haversine formula
+        
+        # Apply the Haversine formula
         a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
         c = 2 * atan2(sqrt(a), sqrt(1 - a))
-        R = 6371  # Rayon de la Terre en kilomètres
-        return R * c  # Distance en kilomètres
+        R = 6371  # Earth radius in kilometers
+        return R * c  # Return distance in kilometers
+
+    def calculate_bearing(self, lat1, lon1, lat2, lon2):
+        """Calculate the bearing (angle) between two GPS points."""
+        lat1, lat2 = map(radians, [lat1, lat2])
+        delta_lon = radians(lon2 - lon1)
+        x = sin(delta_lon) * cos(lat2)
+        y = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(delta_lon)
+        return (degrees(atan2(x, y)) + 360) % 360
+
+    def calculate_angle_difference(self, current_direction, target_direction):
+        """Calculate the difference in angle between the current and target directions."""
+        angle_difference = (target_direction - current_direction + 360) % 360
+        if angle_difference > 180:
+            angle_difference -= 360
+        return angle_difference
+
 def main(args=None):
     rclpy.init(args=args)
     gnss_listener = GnssListener()
     rclpy.spin(gnss_listener)
     gnss_listener.destroy_node()
     rclpy.shutdown()
+
 if __name__ == '__main__':
     main()

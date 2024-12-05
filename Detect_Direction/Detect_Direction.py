@@ -2,8 +2,8 @@ import pandas as pd
 import math
 import gmplot
 
-start_index = 40  # Starting point index
-end_index = 70    # Destination point index
+start_index = 180  # Starting point index
+end_index = 179    # Destination point index
 
 # Calculate the bearing (angle) between two GPS points
 def calculate_bearing(lat1, lon1, lat2, lon2):
@@ -23,7 +23,7 @@ def calculate_average_bearing(points):
     return sum(bearings) / len(bearings)
 
 # Load GPS data from the CSV file
-file_path = "tetest7.csv"
+file_path = "./Detect_Direction/GPS/tetest77.csv"
 columns = ['latitude', 'longitude', 'altitude', 'quality', 'hacc', 'vacc']
 data = pd.read_csv(file_path, header=None, names=columns)
 
