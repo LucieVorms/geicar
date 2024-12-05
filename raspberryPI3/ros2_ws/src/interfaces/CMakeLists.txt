@@ -24,7 +24,7 @@ set(msg_files
   "msg/GnssStatus.msg"
   "msg/VehicleSpeed.msg"
   "msg/ObstacleInfo.msg"
-
+  "msg/CarMotionOrder.msg"
 )
 
 rosidl_generate_interfaces(${PROJECT_NAME}
