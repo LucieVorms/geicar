@@ -6,6 +6,7 @@ from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 import torch
 import os
+import numpy as np
 
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 
@@ -14,15 +15,21 @@ train_img_folder = 'cityscape/leftImg8bit/train'
 train_lbl_folder = 'cityscape/gtFine/train'
 train_images, train_labels = get_cityscapes_pairs(train_img_folder, train_lbl_folder)
 
-transform = transforms.Compose([
+# Définir les transformations pour les images et les labels
+image_transform = transforms.Compose([
     transforms.ToPILImage(),
-    transforms.Resize(256),  # Redimensionner pour que la hauteur soit 256 pixels, et ajuster la largeur pour garder le ratio d'aspect
+    transforms.Resize((256, 512)),  # Fixer la hauteur et la largeur
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
+label_transform = transforms.Compose([
+    transforms.ToPILImage(),
+    transforms.Resize((256, 512), interpolation=F.InterpolationMode.NEAREST)  # Utiliser l'interpolation NEAREST pour les labels
+])
+
 # Créer le dataset et le DataLoader
-train_dataset = CityscapesDataset(train_images, train_labels, transform=transform)
+train_dataset = CityscapesDataset(train_images, train_labels, image_transform=image_transform, label_transform=label_transform)
 train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=4)
 
 # Vérification et Validation des Données
@@ -32,7 +39,7 @@ def visualize_sample(dataset, idx=0):
 
     # Convertir Tensor en image pour affichage
     image = denormalize(image)  # Dé-normaliser l'image
-    image = image.permute(1, 2, 0)  # Convertir (C, H, W) à (H, W, C) pour matplotlib
+    image = image.permute(1, 2, 0).numpy()  # Convertir (C, H, W) à (H, W, C) pour matplotlib
     label = label.numpy()  # Convertir le masque en NumPy pour affichage
 
     plt.figure(figsize=(10, 5))
@@ -41,7 +48,7 @@ def visualize_sample(dataset, idx=0):
     plt.title("Input Image")
 
     plt.subplot(1, 2, 2)
-    plt.imshow(label, cmap='gray')
+    plt.imshow(label, cmap='gray', vmin=0, vmax=18)  # Utiliser tab20 pour mieux distinguer les classes
     plt.title("Segmentation Mask")
 
     plt.show()
@@ -54,5 +61,22 @@ def denormalize(image):
     image = F.normalize(image, mean=(-mean / std), std=(1 / std))
     return image
 
+def visualize_remapped_label(dataset, idx=0):
+    # Obtenir l'image et le label remappé à partir du dataset
+    _, label = dataset[idx]
+
+    # Convertir le label en NumPy pour l'affichage
+    label = label.numpy()
+
+    # Afficher le masque d'annotation
+    plt.figure(figsize=(8, 8))
+    plt.imshow(label, cmap='tab20', vmin=0, vmax=18)  # Utiliser un colormap distinct pour bien voir les différentes classes
+    plt.title(f"Remapped Label for Sample {idx}")
+    plt.colorbar()  # Ajouter une barre de couleurs pour voir la distribution des classes
+    plt.show()
+
 # Visualiser un échantillon du dataset
 visualize_sample(train_dataset)
+visualize_remapped_label(train_dataset, idx=0)
+
+
