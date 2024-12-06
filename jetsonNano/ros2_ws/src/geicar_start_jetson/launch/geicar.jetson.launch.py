@@ -33,9 +33,16 @@ def generate_launch_description():
         emulate_tty=True
     )
 
+    space_environment = Node(
+        package="space_environment",
+        executable="space_environment_node",
+        emulate_tty=True
+    )
+
 
     ld.add_action(lidar_node)
     ld.add_action(camera_node)
     ld.add_action(system_check_ack_node)
+    ld.add_action(space_environment)
 
     return ld
