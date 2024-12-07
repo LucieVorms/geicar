@@ -251,9 +251,14 @@ private:
                 steeringCmd(requestedSteerAngle,currentAngle, steeringPwmCmd);
             } else if (mode==1){    //Autonomous Mode
 
-
-                steeringCmd(turn_angle ,currentAngle, steeringPwmCmd);  // Center the wheels
-
+                if (abs(turn_angle) > 10){
+                    steeringCmd(turn_angle ,currentAngle, steeringPwmCmd);
+                    leftRearPwmCmd = 60;
+                    rightRearPwmCmd = 60;
+                }else {
+                    leftRearPwmCmd = 70;
+                    rightRearPwmCmd = 70;
+                }
 
                 // Publish vehicle speed
                 interfaces::msg::VehicleSpeed vehicleSpeed;
