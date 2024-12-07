@@ -7,10 +7,7 @@
 #include "interfaces/msg/motors_feedback.hpp"
 #include "interfaces/msg/steering_calibration.hpp"
 #include "interfaces/msg/joystick_order.hpp"
-
 #include "interfaces/msg/vehicle_speed.hpp"
-
-#include "interfaces/msg/ultrasonic.hpp"
 #include "interfaces/msg/obstacle_info.hpp"
 #include "std_msgs/msg/bool.hpp"  
 
@@ -22,10 +19,8 @@
 
 using namespace std;
 using placeholders::_1;
-#define OBSTACLE_THRESHOLD 38   // Threshold for obstacle detection in centimeters
 #define REVERSE_DURATION 2000  
 #define REVERSE_PWM 30  
-#define REVERSE_OBSTACLE_THRESHOLD 50  // Distance minimale pour éviter les collisions à l'arrière en cm
 
 class car_control : public rclcpp::Node {
 
@@ -39,15 +34,14 @@ public:
         mode = 0;
         requestedThrottle = 0;
         requestedSteerAngle = 0;
-        obstacle_detected = false;
+        reversing = false;
+        rear_obstacle = false;
     
         // Create publishers
         publisher_can_= this->create_publisher<interfaces::msg::MotorsOrder>("motors_order", 10);
         publisher_steeringCalibration_ = this->create_publisher<interfaces::msg::SteeringCalibration>("steering_calibration", 10);
-
         publisher_vehicle_speed_ = this->create_publisher<interfaces::msg::VehicleSpeed>("vehicle_speed", 10);
 
-        publisher_obstacle_info_ = this->create_publisher<interfaces::msg::ObstacleInfo>("ObstacleInfo", 10);
 
 
         // Create subscriptions
@@ -56,20 +50,16 @@ public:
         subscription_motors_feedback_ = this->create_subscription<interfaces::msg::MotorsFeedback>(
             "motors_feedback", 10, std::bind(&car_control::motorsFeedbackCallback, this, _1));
         subscription_steering_calibration_ = this->create_subscription<interfaces::msg::SteeringCalibration>(
-
-        "steering_calibration", 10, std::bind(&car_control::steeringCalibrationCallback, this, _1));
+            "steering_calibration", 10, std::bind(&car_control::steeringCalibrationCallback, this, _1));
         
         // Create service
         server_calibration_ = this->create_service<std_srvs::srv::Empty>(
-                            "steering_calibration", std::bind(&car_control::steeringCalibration, this, std::placeholders::_1, std::placeholders::_2));
+            "steering_calibration", std::bind(&car_control::steeringCalibration, this, std::placeholders::_1, std::placeholders::_2));
        
-        // 
-        subscription_obstacle_detected_ = this->create_subscription<std_msgs::msg::Bool>(
-            "obstacle_detected", 10, std::bind(&car_control::obstacleDetectedCallback, this, _1));
-        subscription_ultrasonic_ = this->create_subscription<interfaces::msg::Ultrasonic>(
-            "us_data", 10, std::bind(&car_control::ultrasonicCallback, this, _1));    
-        
-        // Create service for steering calibration
+ 
+        subscription_obstacle_info_ = this->create_subscription<interfaces::msg::ObstacleInfo>(
+            "obstacle_info", 10, std::bind(&car_control::ObstacleInfoCallback, this, _1));
+  
        
 
         // Create timer to update commands periodically
@@ -90,53 +80,22 @@ private:
     * This function is called when a message is published on the "/obstacle_detected" topic
     * 
     */
-     void obstacleDetectedCallback(const std_msgs::msg::Bool & msg) {
-        auto obstacle_info_msg = interfaces::msg::ObstacleInfo();
-        obstacle_info_msg.obstacle_detected = msg.data;
+     void ObstacleInfoCallback(const interfaces::msg::ObstacleInfo & Obstaclemsg) {
 
-        if (msg.data) { // If an obstacle is detected
-            std::string detected_sides; 
-        
-            // Determine which sides have obstacles
-            if (front_left < OBSTACLE_THRESHOLD) detected_sides += "Avant Gauche, ";
-            if (front_center < OBSTACLE_THRESHOLD) detected_sides += "Avant Centre, ";
-            if (front_right < OBSTACLE_THRESHOLD) detected_sides += "Avant Droit, ";
-            if (rear_left < OBSTACLE_THRESHOLD) detected_sides += "Arrière Gauche, ";
-            if (rear_center < OBSTACLE_THRESHOLD) detected_sides += "Arrière Centre, ";
-            if (rear_right < OBSTACLE_THRESHOLD) detected_sides += "Arrière Droit, ";
-
-            if (front_left < OBSTACLE_THRESHOLD || front_center < OBSTACLE_THRESHOLD || front_right < OBSTACLE_THRESHOLD) {
+        if (Obstaclemsg.obstacle_detected) { // If an obstacle is detected
+            if (Obstaclemsg.critical_detected) {
                 reversing = true; 
                 reverse_timer = this->now(); 
-                detected_sides += "Obstacle devant, ";
+                if(Obstaclemsg.rear_obstacles_detected){
+                    rear_obstacle = true;
+                }else {
+                    rear_obstacle = false;
+                }
             }
-
-            // Remove trailing comma and space if present
-            if (!detected_sides.empty()) {
-                detected_sides = detected_sides.substr(0, detected_sides.size() - 2);
-            } else {
-                detected_sides = "Aucun obstacle";
-            }
-
-            obstacle_info_msg.sides_detected = detected_sides;
         } else {
-            obstacle_info_msg.sides_detected = "Aucun obstacle";
             reversing = false;
         }
-
-    
-        publisher_obstacle_info_->publish(obstacle_info_msg);
-        obstacle_detected = msg.data;  
-    }
-
-    /* Callback to handle ultrasonic sensor data */
-     void ultrasonicCallback(const interfaces::msg::Ultrasonic & ultrasonicMsg) {
-        front_left = ultrasonicMsg.front_left;
-        front_center = ultrasonicMsg.front_center;
-        front_right = ultrasonicMsg.front_right;
-        rear_left = ultrasonicMsg.rear_left;
-        rear_center = ultrasonicMsg.rear_center;
-        rear_right = ultrasonicMsg.rear_right;
+        obstacle_detected = Obstaclemsg.obstacle_detected; 
     }
 
     /* Callback to handle joystick commands */
@@ -215,8 +174,7 @@ private:
 
         if (start && reversing && (this->now() - reverse_timer).nanoseconds() / 1e6 < REVERSE_DURATION) {
         
-            
-            if (rear_left > REVERSE_OBSTACLE_THRESHOLD && rear_center > REVERSE_OBSTACLE_THRESHOLD && rear_right > REVERSE_OBSTACLE_THRESHOLD) {
+            if (!rear_obstacle) {
                 leftRearPwmCmd = REVERSE_PWM;
                 rightRearPwmCmd = REVERSE_PWM;
                 steeringPwmCmd = STOP;
@@ -349,7 +307,7 @@ private:
     float currentAngle;
     float actualSpeed;  
 
-
+    bool rear_obstacle;
     bool reversing;  // Indique si la voiture est en marche arrière
     rclcpp::Time reverse_timer;  // Timer pour la marche arrière
 
@@ -364,30 +322,17 @@ private:
     uint8_t rightRearPwmCmd;
     uint8_t steeringPwmCmd;
 
-    //Us Sensors variables  
-    int16_t front_left ;
-    int16_t front_center ;
-    int16_t front_right ;
-    int16_t rear_left;
-    int16_t rear_center ;
-    int16_t rear_right ;
 
     //Publishers
     rclcpp::Publisher<interfaces::msg::MotorsOrder>::SharedPtr publisher_can_;
     rclcpp::Publisher<interfaces::msg::SteeringCalibration>::SharedPtr publisher_steeringCalibration_;
-
     rclcpp::Publisher<interfaces::msg::VehicleSpeed>::SharedPtr publisher_vehicle_speed_;
-
-    rclcpp::Publisher<interfaces::msg::ObstacleInfo>::SharedPtr publisher_obstacle_info_;
-
-
 
     //Subscribers
     rclcpp::Subscription<interfaces::msg::JoystickOrder>::SharedPtr subscription_joystick_order_;
     rclcpp::Subscription<interfaces::msg::MotorsFeedback>::SharedPtr subscription_motors_feedback_;
     rclcpp::Subscription<interfaces::msg::SteeringCalibration>::SharedPtr subscription_steering_calibration_;
-    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr subscription_obstacle_detected_ ;
-    rclcpp::Subscription<interfaces::msg::Ultrasonic>::SharedPtr subscription_ultrasonic_;
+    rclcpp::Subscription<interfaces::msg::ObstacleInfo>::SharedPtr subscription_obstacle_info_;
 
     //Timer
     rclcpp::TimerBase::SharedPtr timer_;
