@@ -6,6 +6,7 @@ from interfaces.msg import ObstacleInfo
 
 
 OBSTACLE_THRESHOLD = 56
+CRITICAL_THRESHOLD = 38
 
 
 class EmergencyStopNode(Node):
@@ -24,18 +25,39 @@ class EmergencyStopNode(Node):
     def listener_callback(self, msg):
         
         obstacle_detected = False
+        critical_detected = False
         detected_sides = []
+        critical_sides = []
+        rear_sides = []
 
         # Vérifier les capteurs pour détecter des obstacles
         if msg.front_left < OBSTACLE_THRESHOLD:
             detected_sides.append("Front Left")
             obstacle_detected = True
+            if msg.front_left < CRITICAL_THRESHOLD:
+                critical_sides.append("Front Left")
+                critical_detected = True
         if msg.front_center < OBSTACLE_THRESHOLD:
             detected_sides.append("Front Center")
             obstacle_detected = True
+            if msg.front_center < CRITICAL_THRESHOLD:
+                critical_sides.append("Front Center")
+                critical_detected = True
         if msg.front_right < OBSTACLE_THRESHOLD:
             detected_sides.append("Front Right")
             obstacle_detected = True
+            if msg.front_right < CRITICAL_THRESHOLD:
+                critical_sides.append("Front Right")
+                critical_detected = True
+        if msg.rear_right < OBSTACLE_THRESHOLD:
+            rear_sides.append("Rear Right")
+            rear_obstacles_detected = True
+        if msg.rear_center < OBSTACLE_THRESHOLD:
+            rear_sides.append("Rear Center")
+            rear_obstacles_detected = True
+        if msg.rear_left < OBSTACLE_THRESHOLD:
+            rear_sides.append("Rear Left")
+            rear_obstacles_detected = True 
 
         
         
@@ -44,6 +66,9 @@ class EmergencyStopNode(Node):
         obstacle_info_msg = ObstacleInfo()
         obstacle_info_msg.obstacle_detected = obstacle_detected
         obstacle_info_msg.sides_detected = ", ".join(detected_sides) if detected_sides else "None"
+        obstacle_info_msg.critical_detected = critical_detected
+        obstacle_info_msg.critical_sides = ", ".join(critical_sides) if critical_sides else "None"
+        obstacle_info_msg.rear_sides = ", ".join(rear_sides) if rear_sides else "None"
         self.detailed_publisher_.publish(obstacle_info_msg)
 
 
