@@ -69,6 +69,7 @@ class EmergencyStopNode(Node):
         obstacle_info_msg.critical_detected = critical_detected
         obstacle_info_msg.critical_sides = ", ".join(critical_sides) if critical_sides else "None"
         obstacle_info_msg.rear_sides = ", ".join(rear_sides) if rear_sides else "None"
+        obstacle_info_msg.rear_obstacles_detected = rear_obstacles_detected
         self.detailed_publisher_.publish(obstacle_info_msg)
 
 
