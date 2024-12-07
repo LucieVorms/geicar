@@ -58,7 +58,6 @@ class GnssListener(Node):
         # Retrieve the current vehicle coordinates and apply the offset
         current_lat = msg.latitude + self.lat_offset  # Apply latitude correction
         current_lon = msg.longitude + self.lon_offset  # Apply longitude correction
-        current_alt = msg.altitude
         
         # Get the coordinates of the current target and the final destination
         target_lat, target_lon = self.itinerary[self.current_target_index]
@@ -80,6 +79,7 @@ class GnssListener(Node):
         # Calculate the angle difference between current and target directions
         angle_difference = self.calculate_angle_difference(current_direction, target_direction)
 
+
         # Create a new status message
         status_msg = GnssStatus()
         status_msg.current_latitude = current_lat
@@ -89,13 +89,13 @@ class GnssListener(Node):
         status_msg.distance_to_target = distance
         status_msg.current_direction = float(current_direction)
         status_msg.target_direction = target_direction
-        status_msg.angle_difference = angle_difference
+        status_msg.turn_angle = angle_difference
 
         # Set the direction message based on the angle difference
         if angle_difference > 5:
-            status_msg.direction_message = "Turn Right"
+            status_msg.direction_message = f"Turn Right by {angle_difference:.2f} degrees"
         elif angle_difference < -5:
-            status_msg.direction_message = "Turn Left"
+            status_msg.direction_message = f"Turn Left by {abs(angle_difference):.2f} degrees"
         else:
             status_msg.direction_message = "Go Straight"
 

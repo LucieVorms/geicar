@@ -7,6 +7,7 @@
 #include "interfaces/msg/motors_feedback.hpp"
 #include "interfaces/msg/steering_calibration.hpp"
 #include "interfaces/msg/joystick_order.hpp"
+#include "interfaces/msg/gnss_status.hpp"
 
 #include "interfaces/msg/vehicle_speed.hpp"
 
@@ -53,10 +54,14 @@ public:
         // Create subscriptions
         subscription_joystick_order_ = this->create_subscription<interfaces::msg::JoystickOrder>(
             "joystick_order", 10, std::bind(&car_control::joystickOrderCallback, this, _1));
+
+        subscription_gnss_status_ = this->create_subscription<interfaces::msg::GnssStatus>(
+            "gnss_status", 10, std::bind(&car_control::GnssStatusCallback, this, _1));
+
         subscription_motors_feedback_ = this->create_subscription<interfaces::msg::MotorsFeedback>(
             "motors_feedback", 10, std::bind(&car_control::motorsFeedbackCallback, this, _1));
-        subscription_steering_calibration_ = this->create_subscription<interfaces::msg::SteeringCalibration>(
 
+        subscription_steering_calibration_ = this->create_subscription<interfaces::msg::SteeringCalibration>(
         "steering_calibration", 10, std::bind(&car_control::steeringCalibrationCallback, this, _1));
         
         // Create service
@@ -127,6 +132,11 @@ private:
     
         publisher_obstacle_info_->publish(obstacle_info_msg);
         obstacle_detected = msg.data;  
+    }
+
+     /* Callback to handle ultrasonic sensor data */
+     void GnssStatusCallback(const interfaces::msg::GnssStatus & gnssMsg) {
+        turn_angle = gnssMsg.turn_angle;
     }
 
     /* Callback to handle ultrasonic sensor data */
@@ -240,9 +250,9 @@ private:
                 manualPropulsionCmd(requestedThrottle, reverse, leftRearPwmCmd,rightRearPwmCmd);
                 steeringCmd(requestedSteerAngle,currentAngle, steeringPwmCmd);
             } else if (mode==1){    //Autonomous Mode
-                leftRearPwmCmd = 70;        
-                rightRearPwmCmd = 70;
-                steeringCmd(0 ,currentAngle, steeringPwmCmd);  // Center the wheels
+
+
+                steeringCmd(turn_angle ,currentAngle, steeringPwmCmd);  // Center the wheels
 
 
                 // Publish vehicle speed
@@ -372,6 +382,8 @@ private:
     int16_t rear_center ;
     int16_t rear_right ;
 
+    float turn_angle;
+
     //Publishers
     rclcpp::Publisher<interfaces::msg::MotorsOrder>::SharedPtr publisher_can_;
     rclcpp::Publisher<interfaces::msg::SteeringCalibration>::SharedPtr publisher_steeringCalibration_;
@@ -383,6 +395,7 @@ private:
 
 
     //Subscribers
+    rclcpp::Subscription<interfaces::msg::GnssStatus>::SharedPtr subscription_gnss_status_;
     rclcpp::Subscription<interfaces::msg::JoystickOrder>::SharedPtr subscription_joystick_order_;
     rclcpp::Subscription<interfaces::msg::MotorsFeedback>::SharedPtr subscription_motors_feedback_;
     rclcpp::Subscription<interfaces::msg::SteeringCalibration>::SharedPtr subscription_steering_calibration_;
