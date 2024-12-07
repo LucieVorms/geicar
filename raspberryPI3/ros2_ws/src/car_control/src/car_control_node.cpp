@@ -87,7 +87,9 @@ private:
                 reversing = true; 
                 reverse_timer = this->now(); 
                 if(Obstaclemsg.rear_obstacles_detected){
-                   rear_obstacle = true;
+                    rear_obstacle = true;
+                }else {
+                    rear_obstacle = false;
                 }
             }
         } else {
