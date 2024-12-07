@@ -29,6 +29,7 @@ class EmergencyStopNode(Node):
         detected_sides = []
         critical_sides = []
         rear_sides = []
+        rear_obstacles_detected  = False
 
         # Vérifier les capteurs pour détecter des obstacles
         if msg.front_left < OBSTACLE_THRESHOLD:
