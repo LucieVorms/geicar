@@ -35,6 +35,7 @@ public:
         requestedThrottle = 0;
         requestedSteerAngle = 0;
         reversing = false;
+        rear_obstacle = false;
     
         // Create publishers
         publisher_can_= this->create_publisher<interfaces::msg::MotorsOrder>("motors_order", 10);
