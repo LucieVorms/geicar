@@ -100,7 +100,7 @@ class GnssListener(Node):
             status_msg.direction_message = "Go Straight"
 
         # Check if the vehicle is close enough to the target (within 10 cm)
-        if distance < 0.0001:  # 0.0001 km = 10 cm
+        if distance < 10:  # 0.0001 km = 10 cm
             # Move to the next target in the itinerary
             self.current_target_index += 1
             if self.current_target_index >= len(self.itinerary):
@@ -128,7 +128,7 @@ class GnssListener(Node):
         # Apply the Haversine formula
         a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
         c = 2 * atan2(sqrt(a), sqrt(1 - a))
-        R = 6371  # Earth radius in kilometers
+        R = 637100000  # Earth radius in kilometers
         return R * c  # Return distance in kilometers
 
     def calculate_bearing(self, lat1, lon1, lat2, lon2):
