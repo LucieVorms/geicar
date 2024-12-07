@@ -96,14 +96,6 @@ private:
 
         if (msg.data) { // If an obstacle is detected
             std::string detected_sides; 
-        
-            // Determine which sides have obstacles
-            if (front_left < OBSTACLE_THRESHOLD) detected_sides += "Avant Gauche, ";
-            if (front_center < OBSTACLE_THRESHOLD) detected_sides += "Avant Centre, ";
-            if (front_right < OBSTACLE_THRESHOLD) detected_sides += "Avant Droit, ";
-            if (rear_left < OBSTACLE_THRESHOLD) detected_sides += "Arrière Gauche, ";
-            if (rear_center < OBSTACLE_THRESHOLD) detected_sides += "Arrière Centre, ";
-            if (rear_right < OBSTACLE_THRESHOLD) detected_sides += "Arrière Droit, ";
 
             if (front_left < OBSTACLE_THRESHOLD || front_center < OBSTACLE_THRESHOLD || front_right < OBSTACLE_THRESHOLD) {
                 reversing = true; 
@@ -111,14 +103,7 @@ private:
                 detected_sides += "Obstacle devant, ";
             }
 
-            // Remove trailing comma and space if present
-            if (!detected_sides.empty()) {
-                detected_sides = detected_sides.substr(0, detected_sides.size() - 2);
-            } else {
-                detected_sides = "Aucun obstacle";
-            }
-
-            obstacle_info_msg.sides_detected = detected_sides;
+            
         } else {
             obstacle_info_msg.sides_detected = "Aucun obstacle";
             reversing = false;
