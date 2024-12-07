@@ -7,9 +7,11 @@
 #include "interfaces/msg/motors_feedback.hpp"
 #include "interfaces/msg/steering_calibration.hpp"
 #include "interfaces/msg/joystick_order.hpp"
+#include "interfaces/msg/gnss_status.hpp"
 #include "interfaces/msg/vehicle_speed.hpp"
 #include "interfaces/msg/obstacle_info.hpp"
 #include "std_msgs/msg/bool.hpp"  
+
 
 #include "std_srvs/srv/empty.hpp"
 
@@ -47,8 +49,13 @@ public:
         // Create subscriptions
         subscription_joystick_order_ = this->create_subscription<interfaces::msg::JoystickOrder>(
             "joystick_order", 10, std::bind(&car_control::joystickOrderCallback, this, _1));
+
+        subscription_gnss_status_ = this->create_subscription<interfaces::msg::GnssStatus>(
+            "gnss_status", 10, std::bind(&car_control::GnssStatusCallback, this, _1));
+
         subscription_motors_feedback_ = this->create_subscription<interfaces::msg::MotorsFeedback>(
             "motors_feedback", 10, std::bind(&car_control::motorsFeedbackCallback, this, _1));
+
         subscription_steering_calibration_ = this->create_subscription<interfaces::msg::SteeringCalibration>(
             "steering_calibration", 10, std::bind(&car_control::steeringCalibrationCallback, this, _1));
         
@@ -80,7 +87,7 @@ private:
     * This function is called when a message is published on the "/obstacle_detected" topic
     * 
     */
-     void ObstacleInfoCallback(const interfaces::msg::ObstacleInfo & Obstaclemsg) {
+    void ObstacleInfoCallback(const interfaces::msg::ObstacleInfo & Obstaclemsg) {
 
         if (Obstaclemsg.obstacle_detected) { // If an obstacle is detected
             if (Obstaclemsg.critical_detected) {
@@ -98,8 +105,12 @@ private:
         obstacle_detected = Obstaclemsg.obstacle_detected; 
     }
 
-    /* Callback to handle joystick commands */
+     /* Callback to handle ultrasonic sensor data */
+     void GnssStatusCallback(const interfaces::msg::GnssStatus & gnssMsg) {
+        turn_angle = gnssMsg.turn_angle;
+    }
 
+    /* Callback to handle joystick commands */
     void joystickOrderCallback(const interfaces::msg::JoystickOrder & joyOrder) {
 
         if (joyOrder.start != start){
@@ -198,10 +209,15 @@ private:
                 manualPropulsionCmd(requestedThrottle, reverse, leftRearPwmCmd,rightRearPwmCmd);
                 steeringCmd(requestedSteerAngle,currentAngle, steeringPwmCmd);
             } else if (mode==1){    //Autonomous Mode
-                leftRearPwmCmd = 70;        
-                rightRearPwmCmd = 70;
-                steeringCmd(0 ,currentAngle, steeringPwmCmd);  // Center the wheels
 
+                if (abs(turn_angle) > 10){
+                    steeringCmd(turn_angle ,currentAngle, steeringPwmCmd);
+                    leftRearPwmCmd = 60;
+                    rightRearPwmCmd = 60;
+                }else {
+                    leftRearPwmCmd = 70;
+                    rightRearPwmCmd = 70;
+                }
 
                 // Publish vehicle speed
                 interfaces::msg::VehicleSpeed vehicleSpeed;
@@ -323,12 +339,15 @@ private:
     uint8_t steeringPwmCmd;
 
 
+    float turn_angle;
+
     //Publishers
     rclcpp::Publisher<interfaces::msg::MotorsOrder>::SharedPtr publisher_can_;
     rclcpp::Publisher<interfaces::msg::SteeringCalibration>::SharedPtr publisher_steeringCalibration_;
     rclcpp::Publisher<interfaces::msg::VehicleSpeed>::SharedPtr publisher_vehicle_speed_;
 
     //Subscribers
+    rclcpp::Subscription<interfaces::msg::GnssStatus>::SharedPtr subscription_gnss_status_;
     rclcpp::Subscription<interfaces::msg::JoystickOrder>::SharedPtr subscription_joystick_order_;
     rclcpp::Subscription<interfaces::msg::MotorsFeedback>::SharedPtr subscription_motors_feedback_;
     rclcpp::Subscription<interfaces::msg::SteeringCalibration>::SharedPtr subscription_steering_calibration_;
