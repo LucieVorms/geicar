@@ -1,12 +1,14 @@
 #include "space_environment.hpp"
 
 
-SpaceEnvironment::SpaceEnvironment() : Node("space_environment") {
+SpaceEnvironment::SpaceEnvironment() : Node("space_environment_node") {
     auto callback = [this](const std::shared_ptr<const sensor_msgs::msg::LaserScan> &msg) {
         scan_space(msg);
     };
     laser_scan_subscription = this->create_subscription<sensor_msgs::msg::LaserScan>("/scan", 10, callback);
-    enough_space_publisher = this->create_publisher<interfaces::msg::SpaceData>("/space_from_lidar", 10);
+    enough_space_publisher = this->create_publisher<interfaces::msg::SpaceEnvironmentData>("/space_from_lidar", 10);
+
+    RCLCPP_INFO(this->get_logger(), "Space environment node has been started.");
 }
 
 void SpaceEnvironment::scan_space(const std::shared_ptr<const sensor_msgs::msg::LaserScan> &msg) const {
@@ -21,8 +23,8 @@ void SpaceEnvironment::scan_space(const std::shared_ptr<const sensor_msgs::msg::
         rad += msg->angle_increment;
     }
 
-    interfaces::msg::SpaceData msg_out;
-    msg_out.have_enough_space = enough_space ? 1 : 0;
+    interfaces::msg::SpaceEnvironmentData msg_out;
+    msg_out.have_enough_space = enough_space;
     enough_space_publisher->publish(msg_out);
 }
 

@@ -9,8 +9,8 @@
 
 #include <rclcpp/executors.hpp>
 #include <rclcpp/node.hpp>
-#include <sensor_msgs/msg/detail/laser_scan__struct.hpp>
-#include "interfaces/msg/space_data.hpp"
+#include <sensor_msgs/msg/laser_scan.hpp>
+#include <interfaces/msg/space_environment_data.hpp>
 
 
 class SpaceEnvironment : public rclcpp::Node {
@@ -19,7 +19,7 @@ public:
 
 private:
     rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr laser_scan_subscription;
-    rclcpp::Publisher<interfaces::msg::SpaceData>::SharedPtr enough_space_publisher;
+    rclcpp::Publisher<interfaces::msg::SpaceEnvironmentData>::SharedPtr enough_space_publisher;
 
     void scan_space(const std::shared_ptr<const sensor_msgs::msg::LaserScan> &msg) const;
 };
