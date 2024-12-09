@@ -5,6 +5,7 @@ import rclpy
 from rclpy.node import Node
 from interfaces.msg import Gnss 
 from interfaces.msg import GnssStatus
+from IMU_direction import calculate_direction_from_imu
 
 class GnssListener(Node):
     def __init__(self):
@@ -17,6 +18,14 @@ class GnssListener(Node):
             self.listener_callback,
             10  # Buffer size
         )
+
+        # Subscription to IMU data
+        self.imu_subscription = self.create_subscription(
+            Imu,
+            '/imu_data',
+            self.imu_callback,
+            10
+        )
         
         # Create a publisher to send GNSS status messages
         self.publisher = self.create_publisher(GnssStatus, '/gnss_status', 10)
@@ -28,7 +37,8 @@ class GnssListener(Node):
             self.get_logger().error("No valid GPS points loaded from the itinerary!")
             rclpy.shutdown()
         
-        self.current_target_index = 0  # Start at the first target in the itinerary
+        self.current_target_index = 0       # Start at the first target in the itinerary
+        self.current_direction_imu = None   # Store IMU-based direction
         
         # Define fixed offsets for latitude and longitude corrections (adjust as needed)
         self.lat_offset = 0.000025  # Example offset in latitude
@@ -53,6 +63,16 @@ class GnssListener(Node):
         except Exception as e:
             self.get_logger().error(f"Error reading {file_name}: {e}")
         return itinerary
+
+    def imu_callback(self, msg):
+        # Update the current direction from IMU data
+        imu_data = {
+            'x': msg.orientation.x,
+            'y': msg.orientation.y,
+            'z': msg.orientation.z
+        }
+        self.current_direction_imu = calculate_direction_from_imu(imu_data)
+
     
     def listener_callback(self, msg):
         # Retrieve the current vehicle coordinates and apply the offset
@@ -68,8 +88,13 @@ class GnssListener(Node):
 
         # If there's a previous target, calculate the direction (bearing) towards the current position
         if self.current_target_index > 0:
-            prev_lat, prev_lon = self.itinerary[self.current_target_index - 1]
-            current_direction = self.calculate_bearing(prev_lat, prev_lon, current_lat, current_lon)
+            if self.current_direction_imu is not None:
+                # Use IMU-based direction if available
+                current_direction = self.current_direction_imu
+            else:
+                # Fallback to GNSS-based direction
+                prev_lat, prev_lon = self.itinerary[self.current_target_index - 1]
+                current_direction = self.calculate_bearing(prev_lat, prev_lon, current_lat, current_lon)
         else:
             current_direction =  314.41  # Default value for initial direction
 
@@ -110,6 +135,12 @@ class GnssListener(Node):
                 status_msg.status_message = f"Arrived at target {self.current_target_index}. Moving to next target."
         else:
             status_msg.status_message = f"Navigating to target {self.current_target_index}."
+
+        # Check if IMU data is used or if the code switches to GNSS fallback:
+        if self.current_direction_imu is not None:
+            self.get_logger().info(f"Using IMU-based direction: {self.current_direction_imu:.2f}°")
+        else:
+            self.get_logger().info("Fallback to GNSS-based direction.")
 
         # Publish the status message
         self.publisher.publish(status_msg)
