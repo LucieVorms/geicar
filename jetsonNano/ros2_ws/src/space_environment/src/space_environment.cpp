@@ -16,7 +16,7 @@ SpaceEnvironment::SpaceEnvironment() : Node("space_environment") {
 void SpaceEnvironment::scan_space(const std::shared_ptr<const sensor_msgs::msg::LaserScan> &msg) const {
     double rad = msg->angle_min + ANGLE_OFFSET;
     bool enough_space = true;
-    logger->log_new_scan();
+//    logger->log_new_scan();
     for (const auto &range: msg->ranges) {
         // logger->log_init(rad, range);
         if (range >= SPACE_DEPTH) {
