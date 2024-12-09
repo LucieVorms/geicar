@@ -19,7 +19,7 @@ ament_auto_find_build_dependencies(REQUIRED ${req_deps})
 include_directories(include)
 
 # build composition node
-add_executable(space_environment_node src/space_environment.cpp src/space_environment_debug.cpp)
+add_executable(space_environment_node src/space_environment.cpp)
 ament_target_dependencies(space_environment_node ${req_deps})
 
 install(
