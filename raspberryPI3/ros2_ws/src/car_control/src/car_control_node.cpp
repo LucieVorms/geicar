@@ -115,6 +115,10 @@ private:
     * - currentAngle [from motors feedback]
     */
      
+// TBD: create a config file for this :
+#define CAR_MAX_SPEED              1    // ?? 	m/s
+#define FRONT_WHEEL_MAX_ROTATION  30    // °
+
     void updateCmd(){
 
         auto carMotionOrder = interfaces::msg::CarMotionOrder();
@@ -126,19 +130,14 @@ private:
 
             //Manual Mode
             if (mode==0){	
-		//manualPropulsionCmd(requestedThrottle, reverse, leftRearPwmCmd,rightRearPwmCmd);
-		// TBD : requestedThrottle
-		if (requestedThrottle < EPSILON)  carSpeed = 0;
-		else if (reverse)                 carSpeed = -10;
-		else                              carSpeed = +10;
-		
+		// Denormalize requested speed
+		float  reqCarSpeed = requestedThrottle * CAR_MAX_SPEED;
+		int8_t carSpeedSign = reverse ? -1 : 1;
+		carSpeed = static_cast<int8_t>(carSpeedSign * reqCarSpeed);
+               
+	       	// Denormalize requested throttle
+		frontWheelRotation = requestedSteerAngle * FRONT_WHEEL_MAX_ROTATION; 
 
-                //steeringCmd(requestedSteerAngle,currentAngle, steeringPwmCmd);
-		// TBD : requestedSteerAngle
-		float error = (requestedThrottle - currentAngle);
-		if (abs(error) < ANGLE_EPSILON)  frontWheelRotation = 0;
-		else if (error < 0)              frontWheelRotation = -45;
-		else                             frontWheelRotation = +45;
 	   //Autonomous Mode
             } else if (mode==1){
                 //...

@@ -12,7 +12,9 @@
 /* CONFIGURATION */
 #define PERIOD_UPDATE_CMD 1ms 
 #define TOPIC_QUEUE_SIZE  10
+
 #define DEBUG_SPEED_0     1
+#undef  DEBUG_SPEED_0     
 
 using namespace std;
 using placeholders::_1;
@@ -22,7 +24,7 @@ public:
     motors_control()
     : Node("motors_control_node")
     {
-        leftRearPwmCmd_ = rightRearPwmCmd_ = steeringPwmCmd_ = 0;
+        leftRearPwmCmd_ = rightRearPwmCmd_ = steeringPwmCmd_ = 50;
 	subscription_car_motion_order_ = this->create_subscription<interfaces::msg::CarMotionOrder>(
         "car_motion_order", 10, std::bind(&motors_control::carMotionOrderCallback, this, _1));
 
@@ -46,18 +48,19 @@ private:
     /*
        Update local motors' pwm order
      */
+
+// TBD: create a config file for this :
+#define CAR_MAX_SPEED              1    // ?? 	m/s
+#define FRONT_WHEEL_MAX_ROTATION  30    // °
+
     void carMotionOrderCallback(const interfaces::msg::CarMotionOrder & carMotionOrder){
      	int8_t car_speed            = carMotionOrder.car_speed;
 	int8_t front_wheel_rotation = carMotionOrder.front_wheel_rotation;
 
-	// Note: Simple passthrough controller
-	if (car_speed == 0)          leftRearPwmCmd_ = rightRearPwmCmd_ = 50;
-	else if (car_speed < 0)      leftRearPwmCmd_ = rightRearPwmCmd_ = 0;
-	else                         leftRearPwmCmd_ = rightRearPwmCmd_ = 100;
-
-	if (front_wheel_rotation == 0)          steeringPwmCmd_ = 50;
-	else if (front_wheel_rotation < 0)      steeringPwmCmd_ = 0;
-	else                                    steeringPwmCmd_ = 100;
+	// Rear wheels
+	leftRearPwmCmd_ = rightRearPwmCmd_ = 50 + (50 * car_speed)/CAR_MAX_SPEED;
+	// Front wheel
+	steeringPwmCmd_ = 50 + (50 * front_wheel_rotation)/FRONT_WHEEL_MAX_ROTATION;
     }
 	
     /*
