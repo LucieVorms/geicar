@@ -54,6 +54,9 @@ public:
         
         subscription_obstacle_info_ = this->create_subscription<interfaces::msg::ObstacleInfo>(
             "obstacle_info", 10, std::bind(&car_control::ObstacleInfoCallback, this, _1));
+
+        subscription_enough_width_space_ = this->create_subscription<std_msgs::msg::Bool>(
+            "enough_width_space", 10, std::bind(&car_control::EnoughWidthSpaceCallback, this, _1));
        
 	subscription_steering_calibration_ = this->create_subscription<interfaces::msg::SteeringCalibration>(
 		"steering_calibration", 10, std::bind(&car_control::steeringCalibrationCallback, this, _1));
@@ -89,6 +92,10 @@ private:
             reversing = false;
         }
         obstacle_detected = Obstaclemsg.obstacle_detected; 
+    }
+
+    void EnoughWidthSpaceCallback(const std_msgs::msg::Bool &msg) {
+        enough_width_space = msg.data;
     }
 
     /* Callback to handle joystick commands */
@@ -260,6 +267,7 @@ private:
 
     bool rear_obstacle;
     bool obstacle_detected;
+    bool enough_width_space;
     bool reversing;  // Indique si la voiture est en marche arrière
     rclcpp::Time reverse_timer;  // Timer pour la marche arrière
 
@@ -282,6 +290,7 @@ private:
     rclcpp::Subscription<interfaces::msg::MotorsFeedback>::SharedPtr      subscription_motors_feedback_;
     rclcpp::Subscription<interfaces::msg::SteeringCalibration>::SharedPtr subscription_steering_calibration_;
     rclcpp::Subscription<interfaces::msg::ObstacleInfo>::SharedPtr subscription_obstacle_info_;
+    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr subscription_space_from_lidar_;
 
     //Timer
     rclcpp::TimerBase::SharedPtr timer_;

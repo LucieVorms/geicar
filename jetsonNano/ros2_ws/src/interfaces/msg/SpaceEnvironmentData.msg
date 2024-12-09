@@ -1,1 +1,0 @@
-int8 have_enough_space
