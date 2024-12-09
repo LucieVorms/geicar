@@ -31,7 +31,7 @@ class GnssListener(Node):
         self.current_target_index = 0  # Start at the first target in the itinerary
         
         # Define fixed offsets for latitude and longitude corrections (adjust as needed)
-        self.lat_offset = 0.000026  # Example offset in latitude
+        self.lat_offset = 0.000025  # Example offset in latitude
         self.lon_offset = 0.000025  # Example offset in longitude
 
     def load_itinerary_from_csv(self, file_name):

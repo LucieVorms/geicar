@@ -210,13 +210,14 @@ private:
                 steeringCmd(requestedSteerAngle,currentAngle, steeringPwmCmd);
             } else if (mode==1){    //Autonomous Mode
 
-                if (abs(turn_angle) > 10){
+                if (abs(turn_angle) > 5){
                     steeringCmd(turn_angle ,currentAngle, steeringPwmCmd);
-                    leftRearPwmCmd = 60;
-                    rightRearPwmCmd = 60;
+                    leftRearPwmCmd = 65;
+                    rightRearPwmCmd = 65;
                 }else {
-                    leftRearPwmCmd = 70;
-                    rightRearPwmCmd = 70;
+                    steeringCmd(0 ,currentAngle, steeringPwmCmd);
+                    leftRearPwmCmd = 75;
+                    rightRearPwmCmd = 75;
                 }
 
                 // Publish vehicle speed
