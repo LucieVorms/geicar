@@ -1,1 +1,1 @@
-uint8 have_enough_space
+int8 have_enough_space
