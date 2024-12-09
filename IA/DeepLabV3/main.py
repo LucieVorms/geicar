@@ -40,21 +40,18 @@ if __name__ == "__main__":
 
     # Créer le dataset et le DataLoader
     # Réduire le dataset pour l'entraînement rapide
-    train_images_subset = train_images[:40]
-    train_labels_subset = train_labels[:40]
-    val_images_subset = val_images[:20]
-    val_labels_subset = val_labels[:20]
+    # Utiliser l'ensemble complet pour l'entraînement et la validation
     train_dataset = CityscapesDataset(train_images, train_labels, image_transform=image_transform, label_transform=label_transform)
+    val_dataset = CityscapesDataset(val_images, val_labels, image_transform=image_transform, label_transform=label_transform)
+
+    # Créer les DataLoaders avec l'ensemble complet
     train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=4)
-
-     # Créer des sous-ensembles de datasets
-    train_dataset_subset = CityscapesDataset(train_images_subset, train_labels_subset, image_transform=image_transform, label_transform=label_transform)
-    val_dataset_subset = CityscapesDataset(val_images_subset, val_labels_subset, image_transform=image_transform, label_transform=label_transform)
-
+    validation_loader = DataLoader(val_dataset, batch_size=4, shuffle=False, num_workers=4)
+    
 
     # Utiliser des batch sizes petits pour valider l'entraînement
-    train_loader_subset = DataLoader(train_dataset_subset, batch_size=4, shuffle=True, num_workers=0)
-    validation_loader_subset = DataLoader(val_dataset_subset, batch_size=4, shuffle=False, num_workers=0)
+    train_loader_subset = DataLoader(train_dataset, batch_size=4, shuffle=True, num_workers=0)
+    validation_loader_subset = DataLoader(val_dataset, batch_size=4, shuffle=False, num_workers=0)
 
     # #################"Entrainement du model##########################""
     # Définir le modèle DeepLabV3
@@ -77,7 +74,7 @@ if __name__ == "__main__":
 
     # Boucle d'entraînement
     # Définir le nombre d'époques
-    num_epochs = 2
+    num_epochs = 4
     for epoch in range(num_epochs):
         model.train()  # Mode entraînement
         running_loss = 0.0
@@ -195,7 +192,7 @@ if __name__ == "__main__":
 
             plt.show()
 
-        visualize_predictions(model, val_dataset_subset, idx=0)  # Visualiser la prédiction sur une image de validation
+        visualize_predictions(model, val_dataset, idx=0)  # Visualiser la prédiction sur une image de validation
 
 
 
