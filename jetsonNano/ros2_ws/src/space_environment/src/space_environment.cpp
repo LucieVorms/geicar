@@ -20,7 +20,7 @@ void SpaceEnvironment::scan_space(const std::shared_ptr<const sensor_msgs::msg::
         } else if (const auto space_radius = SPACE_RADIUS / std::cos(rad); range < space_radius) {
             RCLCPP_INFO(this->get_logger(), "YA PLUS DE PLACE :/");
             msg_out.have_enough_space = 0;
-            break;
+            return;
         }
         rad += msg->angle_increment;
     }
