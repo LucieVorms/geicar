@@ -18,7 +18,6 @@ set(msg_files
         "msg/JoystickOrder.msg"
         "msg/MotorsFeedback.msg"
         "msg/MotorsOrder.msg"
-        "msg/SpaceEnvironmentData.msg"
         "msg/SteeringCalibration.msg"
         "msg/SystemCheck.msg"
         "msg/Ultrasonic.msg"
