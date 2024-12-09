@@ -13,18 +13,20 @@ SpaceEnvironment::SpaceEnvironment() : Node("space_environment_node") {
 
 void SpaceEnvironment::scan_space(const std::shared_ptr<const sensor_msgs::msg::LaserScan> &msg) const {
     double rad = msg->angle_min + ANGLE_OFFSET;
-    bool enough_space = true;
+    interfaces::msg::SpaceEnvironmentData msg_out;
+
     for (const auto &range: msg->ranges) {
         if (range >= SPACE_DEPTH) {
         } else if (const auto space_radius = SPACE_RADIUS / std::cos(rad); range < space_radius) {
-            enough_space = false;
+            RCLCPP_INFO(this->get_logger(), "YA PLUS DE PLACE :/");
+            msg_out.have_enough_space = 0;
             break;
         }
         rad += msg->angle_increment;
     }
 
-    interfaces::msg::SpaceEnvironmentData msg_out;
-    msg_out.have_enough_space = enough_space;
+    RCLCPP_INFO(this->get_logger(), "YA MAX DE SPACE FRER");
+    msg_out.have_enough_space = 1;
     enough_space_publisher->publish(msg_out);
 }
 
