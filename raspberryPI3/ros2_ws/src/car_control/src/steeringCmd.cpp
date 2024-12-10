@@ -32,7 +32,7 @@ int steeringCmd(float requestedSteerAngle, float currentSteerAngle, uint8_t &ste
         steeringPwmCmd = PWM_NUL_STEERING_ANGLE;
     } else {
         float pwmAdjustment = (errorAngle * MAX_DELTA_PWM) / STEERING_DELTA_ANGLE_MAX;
-        steeringPwmCmd = PWM_NUL_STEERING_ANGLE - static_cast<int>(pwmAdjustment);
+        steeringPwmCmd = PWM_NUL_STEERING_ANGLE + static_cast<int>(pwmAdjustment);
 
     }
 
