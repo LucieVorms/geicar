@@ -210,7 +210,8 @@ private:
                 steeringCmd(requestedSteerAngle,currentAngle, steeringPwmCmd);
             } else if (mode==1){    //Autonomous Mode
 
-                if (abs(turn_angle) > 5){
+                if (abs(turn_angle) > 3){
+                    turn_angle = turn_angle / 30;
                     steeringCmd(turn_angle ,currentAngle, steeringPwmCmd);
                     leftRearPwmCmd = 65;
                     rightRearPwmCmd = 65;
