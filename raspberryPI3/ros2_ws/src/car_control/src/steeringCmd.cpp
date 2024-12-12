@@ -19,7 +19,7 @@ int steeringCmd(float requestedSteerAngle, float currentSteerAngle, uint8_t & st
         if (errorAngle < -1.0) errorAngle = -1.0;
 
         // Calculate the PWM command based on the normalized error
-        steeringPwmCmd = 50 + (normalizedError * 50); // 50 is the neutral position
+        steeringPwmCmd = 50 + (errorAngle * 70); // 50 is the neutral position
 
         if (steeringPwmCmd > 100.0) steeringPwmCmd = 100.0;
         if (steeringPwmCmd < 0) steeringPwmCmd = 0;

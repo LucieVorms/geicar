@@ -57,12 +57,12 @@ def generate_launch_description():
         executable="emergency_stop_node",  
         emulate_tty=True
     )
-    
+
     gps_control_node = Node(
 	package="car_control",
 	executable="gps_control.py",
 	emulate_tty=True
-   )
+    )
 
     ld.add_action(joystick_node)
     ld.add_action(joystick_to_cmd_node)

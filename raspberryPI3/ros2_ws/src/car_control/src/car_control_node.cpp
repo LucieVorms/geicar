@@ -211,12 +211,12 @@ private:
             } else if (mode==1){    //Autonomous Mode
 
                 if (abs(turn_angle) > 5){
-			RCLCPP_WARN(this->get_logger(), "Je tourne, %2f",turn_angle);
+	            //RCLCPP_WARN(this->get_logger(), "Je tourne, %2f",turn_angle);
                     steeringCmd(turn_angle/30 ,currentAngle, steeringPwmCmd);
                     leftRearPwmCmd = 65;
                     rightRearPwmCmd = 65;
                 }else {
-RCLCPP_WARN(this->get_logger(), "Je tourne pas %2f",turn_angle);
+                    //RCLCPP_WARN(this->get_logger(), "Je tourne pas %2f",turn_angle);
                     steeringCmd(0 ,currentAngle, steeringPwmCmd);
                     leftRearPwmCmd = 75;
                     rightRearPwmCmd = 75;
