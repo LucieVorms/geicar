@@ -35,7 +35,7 @@ public:
         requestedSteerAngle = 0;
 
 	reverse = false;
-	carSpeed = frontWheelRotation = 0;
+	carSpeed = frontWheelRotation = 0.0f;
 	
         publisher_car_motion_order_   = this->create_publisher<interfaces::msg::CarMotionOrder>("car_motion_order", 10);       
         subscription_joystick_order_ = this->create_subscription<interfaces::msg::JoystickOrder>(
@@ -116,8 +116,8 @@ private:
     */
      
 // TBD: create a config file for this :
-#define CAR_MAX_SPEED              1    // ?? 	m/s
-#define FRONT_WHEEL_MAX_ROTATION  30    // °
+#define CAR_MAX_SPEED             10.0f    // ?? 	m/s
+#define FRONT_WHEEL_MAX_ROTATION  30.0f    // °
 
     void updateCmd(){
 
@@ -132,8 +132,8 @@ private:
             if (mode==0){	
 		// Denormalize requested speed
 		float  reqCarSpeed = requestedThrottle * CAR_MAX_SPEED;
-		int8_t carSpeedSign = reverse ? -1 : 1;
-		carSpeed = static_cast<int8_t>(carSpeedSign * reqCarSpeed);
+		int    carSpeedSign = reverse ? -1 : 1;
+		carSpeed = carSpeedSign * reqCarSpeed;
                
 	       	// Denormalize requested throttle
 		frontWheelRotation = requestedSteerAngle * FRONT_WHEEL_MAX_ROTATION; 
@@ -221,8 +221,8 @@ private:
     float requestedSteerAngle;
 
     //Control variables
-    int8_t carSpeed;
-    int8_t frontWheelRotation;
+    float carSpeed;
+    float frontWheelRotation;
 
     //Publishers
     rclcpp::Publisher<interfaces::msg::CarMotionOrder>::SharedPtr      publisher_car_motion_order_;
