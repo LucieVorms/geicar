@@ -207,19 +207,19 @@ private:
             // Handle manual mode
             if (mode==0){
                 manualPropulsionCmd(requestedThrottle, reverse, leftRearPwmCmd,rightRearPwmCmd);
-                steeringCmd(requestedSteerAngle,currentAngle, steeringPwmCmd);
+                steeringCmdZero(requestedSteerAngle,currentAngle, steeringPwmCmd);
             } else if (mode==1){    //Autonomous Mode
 
-                if (abs(turn_angle) > 5){
+                if (abs(turn_angle) > 7){
 	            //RCLCPP_WARN(this->get_logger(), "Je tourne, %2f",turn_angle);
                     steeringCmd(turn_angle/30 ,currentAngle, steeringPwmCmd);
-                    leftRearPwmCmd = 65;
-                    rightRearPwmCmd = 65;
+                    leftRearPwmCmd = 70;
+                    rightRearPwmCmd = 70;
                 }else {
                     //RCLCPP_WARN(this->get_logger(), "Je tourne pas %2f",turn_angle);
-                    steeringCmd(0 ,currentAngle, steeringPwmCmd);
-                    leftRearPwmCmd = 75;
-                    rightRearPwmCmd = 75;
+                    steeringCmdZero(0 ,currentAngle, steeringPwmCmd);
+                    leftRearPwmCmd = 80;
+                    rightRearPwmCmd = 80;
                 }
 
                 // Publish vehicle speed
