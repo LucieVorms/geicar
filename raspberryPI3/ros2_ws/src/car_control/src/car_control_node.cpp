@@ -19,9 +19,6 @@
 using namespace std;
 using placeholders::_1;
 
-// TBD: move to config file
-#define EPSILON (5e-5)
-#define ANGLE_EPSILON (1e-1)
 
 class car_control : public rclcpp::Node {
 
