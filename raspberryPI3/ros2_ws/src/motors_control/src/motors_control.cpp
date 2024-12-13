@@ -50,17 +50,20 @@ private:
      */
 
 // TBD: create a config file for this :
-#define CAR_MAX_SPEED              1    // ?? 	m/s
-#define FRONT_WHEEL_MAX_ROTATION  30    // °
+#define CAR_MAX_SPEED            10.0f    // ?? 	m/s
+#define FRONT_WHEEL_MAX_ROTATION 30.0f    // °
 
     void carMotionOrderCallback(const interfaces::msg::CarMotionOrder & carMotionOrder){
-     	int8_t car_speed            = carMotionOrder.car_speed;
-	int8_t front_wheel_rotation = carMotionOrder.front_wheel_rotation;
+     	float car_speed            = carMotionOrder.car_speed;
+	float front_wheel_rotation = carMotionOrder.front_wheel_rotation;
 
+	// assert (abs(car_speed) <= CAR_MAX_SPEED);
+	// assert (abs(front_wheel_rotation) <= front_wheel_rotation);
+	
 	// Rear wheels
-	leftRearPwmCmd_ = rightRearPwmCmd_ = 50 + (50 * car_speed)/CAR_MAX_SPEED;
+	leftRearPwmCmd_ = rightRearPwmCmd_ = 50 + static_cast<int8_t>(50 * car_speed/CAR_MAX_SPEED);
 	// Front wheel
-	steeringPwmCmd_ = 50 + (50 * front_wheel_rotation)/FRONT_WHEEL_MAX_ROTATION;
+	steeringPwmCmd_ = 50 + static_cast<int8_t>(50 * front_wheel_rotation /FRONT_WHEEL_MAX_ROTATION);
     }
 	
     /*
@@ -83,10 +86,10 @@ private:
 	publisher_motors_order_->publish(motorsOrder);
     }
 
-    // Motors order
-    uint8_t leftRearPwmCmd_;
-    uint8_t rightRearPwmCmd_;
-    uint8_t steeringPwmCmd_;
+    // Motors pwm (duty cycle) order
+    uint8_t leftRearPwmCmd_;          // 0...100
+    uint8_t rightRearPwmCmd_;         // 0...100
+    uint8_t steeringPwmCmd_;          // 0...100
 
     //Publishers
     rclcpp::Publisher<interfaces::msg::MotorsOrder>::SharedPtr publisher_motors_order_;
