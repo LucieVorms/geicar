@@ -180,7 +180,8 @@ private:
 
 	   //Autonomous Mode
             } else if (mode==1){
-                //...
+                carSpeed = (CAR_MAX_SPEED/2);
+                frontWheelRotation = 0;
             }
         }
 
