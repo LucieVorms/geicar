@@ -259,6 +259,7 @@ private:
     float actualSpeed;  
 
     bool rear_obstacle;
+    bool obstacle_detected;
     bool reversing;  // Indique si la voiture est en marche arrière
     rclcpp::Time reverse_timer;  // Timer pour la marche arrière
 
