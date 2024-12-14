@@ -210,7 +210,7 @@ private:
                 steeringCmdZero(requestedSteerAngle,currentAngle, steeringPwmCmd);
             } else if (mode==1){    //Autonomous Mode
 
-                if (abs(turn_angle) > 7){
+                if (abs(turn_angle) > 10){
 	            //RCLCPP_WARN(this->get_logger(), "Je tourne, %2f",turn_angle);
                     steeringCmd(turn_angle/30 ,currentAngle, steeringPwmCmd);
                     leftRearPwmCmd = 70;

@@ -29,7 +29,9 @@ class GnssListener(Node):
             rclpy.shutdown()
         
         self.current_target_index = 0  # Start at the first target in the itinerary
-        
+        self.previous_lat = None
+        self.previous_lon = None
+
         # Define fixed offsets for latitude and longitude corrections (adjust as needed)
         self.lat_offset = 0.000025  # Example offset in latitude
         self.lon_offset = 0.000025  # Example offset in longitude
@@ -58,61 +60,65 @@ class GnssListener(Node):
         # Retrieve the current vehicle coordinates and apply the offset
         current_lat = msg.latitude + self.lat_offset  # Apply latitude correction
         current_lon = msg.longitude + self.lon_offset  # Apply longitude correction
-        
-        # Get the coordinates of the current target and the final destination
+
+         # Get the coordinates of the current target and the final destination
         target_lat, target_lon = self.itinerary[self.current_target_index]
         final_lat, final_lon = self.itinerary[-1]  # Last point in the itinerary
-        
-        # Calculate the distance to the target using the Haversine formula
-        distance = self.haversine(current_lat, current_lon, target_lat, target_lon)
 
-        # If there's a previous target, calculate the direction (bearing) towards the current position
-        if self.current_target_index > 0:
-            prev_lat, prev_lon = self.itinerary[self.current_target_index - 1]
-            current_direction = self.calculate_bearing(prev_lat, prev_lon, current_lat, current_lon)
-        else:
-            current_direction =  314.41  # Default value for initial direction
-
-        # Calculate the direction (bearing) towards the current target
-        target_direction = self.calculate_bearing(current_lat, current_lon, target_lat, target_lon)
-        
-        # Calculate the angle difference between current and target directions
-        angle_difference = self.calculate_angle_difference(current_direction, target_direction)
+        if self.previous_lat is not None and self.previous_lon is not None:
+           # Calculate the distance to the target using the Haversine formula
+            distance = self.haversine(current_lat, current_lon, target_lat, target_lon)
+            
+            # Calculate the direction (bearing) towards the current position
+            current_direction = self.calculate_bearing(self.previous_lat, self.previous_lon, current_lat, current_lon)
+            
+            # Calculate the direction (bearing) towards the new point
+            target_direction = self.calculate_bearing(current_lat, current_lon, target_lat,target_lon)  # Example target point
+            
+            # Calculate the angle difference between current and target directions
+            angle_difference = self.calculate_angle_difference(current_direction, target_direction)
+            
 
 
-        # Create a new status message
-        status_msg = GnssStatus()
-        status_msg.current_latitude = current_lat
-        status_msg.current_longitude = current_lon
-        status_msg.target_latitude = target_lat
-        status_msg.target_longitude = target_lon
-        status_msg.distance_to_target = distance
-        status_msg.current_direction = float(current_direction)
-        status_msg.target_direction = target_direction
-        status_msg.turn_angle = angle_difference
 
-        # Set the direction message based on the angle difference
-        if angle_difference > 5:
-            status_msg.direction_message = f"Turn Right by {angle_difference:.2f} degrees"
-        elif angle_difference < -5:
-            status_msg.direction_message = f"Turn Left by {abs(angle_difference):.2f} degrees"
-        else:
-            status_msg.direction_message = "Go Straight"
+            # Create a new status message
+            status_msg = GnssStatus()
+            status_msg.current_latitude = current_lat
+            status_msg.current_longitude = current_lon
+            status_msg.target_latitude = target_lat
+            status_msg.target_longitude = target_lon
+            status_msg.distance_to_target = distance
+            status_msg.current_direction = float(current_direction)
+            status_msg.target_direction = target_direction
+            status_msg.turn_angle = angle_difference
 
-        # Check if the vehicle is close enough to the target (within 10 cm)
-        if distance < 10:  # 0.0001 km = 10 cm
-            # Move to the next target in the itinerary
-            self.current_target_index += 1
-            if self.current_target_index >= len(self.itinerary):
-                status_msg.status_message = "End of itinerary reached!"
-                self.current_target_index = 0  # Restart from the beginning of the itinerary
+            # Set the direction message based on the angle difference
+            if angle_difference > 10:
+                status_msg.direction_message = f"Turn Right by {angle_difference:.2f} degrees"
+            elif angle_difference < -10:
+                status_msg.direction_message = f"Turn Left by {abs(angle_difference):.2f} degrees"
             else:
-                status_msg.status_message = f"Arrived at target {self.current_target_index}. Moving to next target."
-        else:
-            status_msg.status_message = f"Navigating to target {self.current_target_index}."
+                status_msg.direction_message = "Go Straight"
 
-        # Publish the status message
-        self.publisher.publish(status_msg)
+        
+
+            # Check if the vehicle is close enough to the target (within 10 cm)
+            if distance < 30:  # 0.0001 km = 10 cm
+                # Move to the next target in the itinerary
+                self.current_target_index += 1
+                if self.current_target_index >= len(self.itinerary):
+                    status_msg.status_message = "End of itinerary reached!"
+                    self.current_target_index = 0  # Restart from the beginning of the itinerary
+                else:
+                    status_msg.status_message = f"Arrived at target {self.current_target_index}. Moving to next target."
+            else:
+                status_msg.status_message = f"Navigating to target {self.current_target_index}."
+
+            # Publish the status message
+            self.publisher.publish(status_msg)
+            
+        self.previous_lat = current_lat
+        self.previous_lon = current_lon
 
     def haversine(self, lat1, lon1, lat2, lon2):
         # Convert coordinates to radians
