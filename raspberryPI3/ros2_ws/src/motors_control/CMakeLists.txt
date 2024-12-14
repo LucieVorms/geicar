@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(interfaces)
+project(motors_control)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -8,30 +8,23 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(std_msgs REQUIRED)
-find_package(builtin_interfaces REQUIRED)
-find_package(rosidl_default_generators REQUIRED)
+find_package(interfaces REQUIRED)
+find_package(std_srvs REQUIRED)
 
-set(msg_files
-  "msg/JoystickOrder.msg"
-  "msg/MotorsOrder.msg"
-  "msg/MotorsFeedback.msg"
-  "msg/GeneralData.msg"
-  "msg/SteeringCalibration.msg"
-  "msg/Ultrasonic.msg"
-  "msg/Gnss.msg"
-  "msg/SystemCheck.msg"
-  "msg/GnssStatus.msg"
-  "msg/VehicleSpeed.msg"
-  "msg/ObstacleInfo.msg"
-  "msg/CarMotionOrder.msg"
+add_executable(motors_control_node 
+  src/motors_control.cpp
 )
 
-rosidl_generate_interfaces(${PROJECT_NAME}
-  ${msg_files}
-)
+ament_target_dependencies(motors_control_node rclcpp interfaces std_srvs)
+ament_export_include_directories(include)
 
-ament_export_dependencies(rosidl_default_runtime)
+target_include_directories(motors_control_node PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_compile_features(motors_control_node PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+
+install(TARGETS motors_control_node
+  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
