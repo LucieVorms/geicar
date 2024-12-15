@@ -88,6 +88,8 @@ class GnssListener(Node):
             status_msg.target_latitude = target_lat
             status_msg.target_longitude = target_lon
             status_msg.distance_to_target = distance
+            status_msg.previous_latitude = self.previous_lat
+            status_msg.previous_longitude = self.previous_lon
             status_msg.current_direction = float(current_direction)
             status_msg.target_direction = target_direction
             status_msg.turn_angle = angle_difference
