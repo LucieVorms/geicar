@@ -3,12 +3,13 @@
 #include <functional>
 #include <memory>
 
-#include "interfaces/msg/motors_order.hpp"
+//#include "interfaces/msg/motors_order.hpp"
 #include "interfaces/msg/motors_feedback.hpp"
+
+#include "interfaces/msg/car_motion_order.hpp"
 #include "interfaces/msg/steering_calibration.hpp"
 #include "interfaces/msg/joystick_order.hpp"
 #include "interfaces/msg/gnss_status.hpp"
-#include "interfaces/msg/vehicle_speed.hpp"
 #include "interfaces/msg/obstacle_info.hpp"
 #include "std_msgs/msg/bool.hpp"  
 
@@ -29,24 +30,24 @@ class car_control : public rclcpp::Node {
 public:
     car_control()
     : Node("car_control_node")
-
     {
-        // Initialize variables
         start = false;
         mode = 0;
         requestedThrottle = 0;
         requestedSteerAngle = 0;
+
+	reverse = false;
+	carSpeed = frontWheelRotation = 0.0f;
+	
         reversing = false;
         rear_obstacle = false;
     
         // Create publishers
-        publisher_can_= this->create_publisher<interfaces::msg::MotorsOrder>("motors_order", 10);
-        publisher_steeringCalibration_ = this->create_publisher<interfaces::msg::SteeringCalibration>("steering_calibration", 10);
-        publisher_vehicle_speed_ = this->create_publisher<interfaces::msg::VehicleSpeed>("vehicle_speed", 10);
+        publisher_car_motion_order_   = this->create_publisher<interfaces::msg::CarMotionOrder>("car_motion_order", 10);       
 
-
-
-        // Create subscriptions
+	publisher_steeringCalibration_ = this->create_publisher<interfaces::msg::SteeringCalibration>("steering_calibration", 10);
+      	
+	// Create subscribers 
         subscription_joystick_order_ = this->create_subscription<interfaces::msg::JoystickOrder>(
             "joystick_order", 10, std::bind(&car_control::joystickOrderCallback, this, _1));
 
@@ -58,33 +59,29 @@ public:
 
         subscription_steering_calibration_ = this->create_subscription<interfaces::msg::SteeringCalibration>(
             "steering_calibration", 10, std::bind(&car_control::steeringCalibrationCallback, this, _1));
+	
         
-        // Create service
-        server_calibration_ = this->create_service<std_srvs::srv::Empty>(
-            "steering_calibration", std::bind(&car_control::steeringCalibration, this, std::placeholders::_1, std::placeholders::_2));
-       
- 
+
+        
         subscription_obstacle_info_ = this->create_subscription<interfaces::msg::ObstacleInfo>(
             "obstacle_info", 10, std::bind(&car_control::ObstacleInfoCallback, this, _1));
-  
        
+	subscription_steering_calibration_ = this->create_subscription<interfaces::msg::SteeringCalibration>(
+		"steering_calibration", 10, std::bind(&car_control::steeringCalibrationCallback, this, _1));
+	
+	// Create calibration server 
+	server_calibration_ = this->create_service<std_srvs::srv::Empty>( "steering_calibration", std::bind(&car_control::steeringCalibration, this, std::placeholders::_1, std::placeholders::_2));
 
-        // Create timer to update commands periodically
-      
-        timer_ = this->create_wall_timer(PERIOD_UPDATE_CMD, std::bind(&car_control::updateCmd, this));
-
+	timer_ = this->create_wall_timer(PERIOD_UPDATE_CMD, std::bind(&car_control::updateCmd, this));
+	        
         RCLCPP_INFO(this->get_logger(), "car_control_node READY");
-    }
-
+}
     
 private:
 
-
-    /* Callback to handle joystick orders */
-
-     /* Update obstacledetection from obstacledetected topic [callback function]  :
+    /* Update start, mode, requestedThrottle, requestedSteerAngle and reverse from joystick order [callback function]  :
     *
-    * This function is called when a message is published on the "/obstacle_detected" topic
+    * This function is called when a message is published on the "/joystick_order" topic
     * 
     */
     void ObstacleInfoCallback(const interfaces::msg::ObstacleInfo & Obstaclemsg) {
@@ -123,9 +120,7 @@ private:
         }
         
 
-
-        if (joyOrder.mode != mode && joyOrder.mode != -1){  // Handle mode changes
-
+        if (joyOrder.mode != mode && joyOrder.mode != -1){ //if mode change
             mode = joyOrder.mode;
 
             if (mode==0){
@@ -138,134 +133,87 @@ private:
             }
         }
         
-        // Update throttle and steer angle in manual mode
-        if (mode == 0 && start){  
+        if (mode == 0 && start){  //if manual mode -> update requestedThrottle, requestedSteerAngle and reverse from joystick order
             requestedThrottle = joyOrder.throttle;
             requestedSteerAngle = joyOrder.steer;
             reverse = joyOrder.reverse;
         }
     }
 
-
-    /* Calculate vehicle speed from RPM */
-    float calculateSpeedFromRpm(float rpm, float wheelRadius, float gearRatio) {
-        float speed_m_s = (2 * M_PI * wheelRadius * rpm) / (60.0 * gearRatio);  // Speed in m/s 
-        return speed_m_s * 3.6; // Speed in km/h
-    }
-
-
-    /* Update currentAngle,leftand right wheel speed from motors feedback [callback function]  :
+    /* Update currentAngle from motors feedback [callback function]  :
     *
-    * This function is called when a message is published on the "/motors_feedback" topic
+    *  This function is called when a message is published on the "/motors_feedback" topic
     * 
     */
 
-    /* Callback to handle motor feedback */
+     void motorsFeedbackCallback(const interfaces::msg::MotorsFeedback & motorsFeedback){
+         currentAngle = motorsFeedback.steering_angle;
+     }
+    
 
-    void motorsFeedbackCallback(const interfaces::msg::MotorsFeedback & motorsFeedback){
-        currentAngle = motorsFeedback.steering_angle;
+    /* Update PWM commands : leftRearPwmCmd, rightRearPwmCmd, steeringPwmCmd
+    *
+    * This function is called periodically by the timer [see PERIOD_UPDATE_CMD in "car_control_node.h"]
+    * 
+    * In MANUAL mode, the commands depends on :
+    * - requestedThrottle, reverse, requestedSteerAngle [from joystick orders]
+    * - currentAngle [from motors feedback]
+    */
+     
+// TBD: create a config file for this :
+#define CAR_MAX_SPEED             10.0f    // ?? 	m/s
+#define FRONT_WHEEL_MAX_ROTATION  30.0f    // °
 
-        const float wheelRadius = 0.10; // Wheel radius in meters
-        const float gearRatio = 1.0;    // Gear ratio
-
-        // Calculate wheel speeds
-        float leftWheelSpeed = calculateSpeedFromRpm(motorsFeedback.left_rear_speed, wheelRadius, gearRatio);
-        float rightWheelSpeed = calculateSpeedFromRpm(motorsFeedback.right_rear_speed, wheelRadius, gearRatio);
-
-        // Average wheel speed
-        actualSpeed = (leftWheelSpeed + rightWheelSpeed) / 2.0;
-    }
-
-   
-
-
-    /* Periodic function to update motor commands */
     void updateCmd(){
-        auto motorsOrder = interfaces::msg::MotorsOrder();
-
-        if (start && reversing && (this->now() - reverse_timer).nanoseconds() / 1e6 < REVERSE_DURATION) {
         
-            if (!rear_obstacle) {
-                leftRearPwmCmd = REVERSE_PWM;
-                rightRearPwmCmd = REVERSE_PWM;
-                steeringPwmCmd = STOP;
+	if (start && reversing && (this->now() - reverse_timer).nanoseconds() / 1e6 < REVERSE_DURATION) {
+        
+            if (!rear_obstacle) {	
+		carSpeed = -(CAR_MAX_SPEED/2);
+		frontWheelRotation = 0;
             } else {
                 RCLCPP_WARN(this->get_logger(), "Obstacle detected at the Rear, Stopping the car");
-                leftRearPwmCmd = STOP;
-                rightRearPwmCmd = STOP;
-                reversing = false; 
+		carSpeed = 0; 
+		frontWheelRotation = 0;
+		reversing = false;
             } 
-        }
-        else if (!start || obstacle_detected){ 
+        } else if (!start || obstacle_detected){ 
             // Stop the car 
-            leftRearPwmCmd = STOP;
-            rightRearPwmCmd = STOP;
-            steeringPwmCmd = STOP;
-            
+		carSpeed = 0; 
+		frontWheelRotation = 0;
+        } else { //Car started
+            //Manual Mode
+            if (mode==0){	
+		// Denormalize requested speed
+		float  reqCarSpeed = requestedThrottle * CAR_MAX_SPEED;
+		int    carSpeedSign = reverse ? -1 : 1;
+		carSpeed = carSpeedSign * reqCarSpeed;
+               
+	       	// Denormalize requested throttle
+		frontWheelRotation = requestedSteerAngle * FRONT_WHEEL_MAX_ROTATION; 
 
-        }else{ 
-            // Handle manual mode
-            if (mode==0){
-                manualPropulsionCmd(requestedThrottle, reverse, leftRearPwmCmd,rightRearPwmCmd);
-                steeringCmd(requestedSteerAngle,currentAngle, steeringPwmCmd);
-            } else if (mode==1){    //Autonomous Mode
 
-                if (abs(turn_angle) > 10){
-                    steeringCmd(turn_angle ,currentAngle, steeringPwmCmd);
-                    leftRearPwmCmd = 60;
-                    rightRearPwmCmd = 60;
-                }else {
-                    leftRearPwmCmd = 70;
-                    rightRearPwmCmd = 70;
-                }
-
-                // Publish vehicle speed
-                interfaces::msg::VehicleSpeed vehicleSpeed;
-                
-
-                // Negative speed if in reverse 
-                if(leftRearPwmCmd < 50){
-                    vehicleSpeed.actual_speed = -actualSpeed;
-                }else {
-                    vehicleSpeed.actual_speed = actualSpeed;
-                }
-                vehicleSpeed.speed_unit = "km/h";
-
-                // Publish vehicle speed
-                publisher_vehicle_speed_->publish(vehicleSpeed);
-
+	   //Autonomous Mode
+            } else if (mode==1){
+                carSpeed = (CAR_MAX_SPEED/2);
+                frontWheelRotation = 0;
             }
         }
 
-        // Send motor commands
-        motorsOrder.left_rear_pwm = leftRearPwmCmd;
-        motorsOrder.right_rear_pwm = rightRearPwmCmd;
-        motorsOrder.steering_pwm = steeringPwmCmd;
-        publisher_can_->publish(motorsOrder);
+        auto carMotionOrder = interfaces::msg::CarMotionOrder();
+	carMotionOrder.car_speed  = carSpeed;
+	carMotionOrder.front_wheel_rotation = frontWheelRotation;
+
+        publisher_car_motion_order_->publish(carMotionOrder);
     }
-
-
-    float calculateActualSpeed(uint8_t leftPwm, uint8_t rightPwm) {
-        //Estimation of the speed
-        float maxSpeed = 2.1;
-        float averagePwm = (leftPwm + rightPwm) / 2.0;
-        if (averagePwm < 50){
-            return -((50 - averagePwm) / 50) * maxSpeed;
-        } else {
-            return ((averagePwm - 50)/(100-50))*maxSpeed;
-        }        
-    }
-
 
 
     /* Start the steering calibration process :
     *
     * Publish a calibration request on the "/steering_calibration" topic
     */
-
-    /* Start the steering calibration process */
-
     void startSteeringCalibration(){
+
         auto calibrationMsg = interfaces::msg::SteeringCalibration();
         calibrationMsg.request = true;
 
@@ -274,7 +222,10 @@ private:
     }
 
 
-    /* Callback to handle the steering calibration process */
+    /* Function called by "steering_calibration" service
+    * 1. Switch to calibration mode
+    * 2. Call startSteeringCalibration function
+    */
     void steeringCalibration([[maybe_unused]] std_srvs::srv::Empty::Request::SharedPtr req,
                             [[maybe_unused]] std_srvs::srv::Empty::Response::SharedPtr res)
     {
@@ -300,13 +251,13 @@ private:
         } else if (calibrationMsg.status == 1){
             RCLCPP_INFO(this->get_logger(), "Steering calibration [SUCCESS]");
             RCLCPP_INFO(this->get_logger(), "Switching to MANUAL Mode");
-            mode = 0;
+            mode = 0;    //Switch to manual mode
             start = false;  //Stop car
         
         } else if (calibrationMsg.status == -1){
             RCLCPP_ERROR(this->get_logger(), "Steering calibration [FAILED]");
             RCLCPP_INFO(this->get_logger(), "Switching to MANUAL Mode");
-            mode = 0;
+            mode = 0;    //Switch to manual mode
             start = false;  //Stop car
         }
     
@@ -316,37 +267,35 @@ private:
 
     //General variables
     bool start;
-    int mode;    //0 : Manual    1 : Auto    2 : Calibration
-    bool obstacle_detected;
+    int  mode;    //0 : Manual    1 : Auto    2 : Calibration
     
     //Motors feedback variables
     float currentAngle;
     float actualSpeed;  
 
     bool rear_obstacle;
+    bool obstacle_detected;
     bool reversing;  // Indique si la voiture est en marche arrière
     rclcpp::Time reverse_timer;  // Timer pour la marche arrière
 
 
     //Manual Mode variables (with joystick control)
-    bool reverse;
+    bool  reverse;
     float requestedThrottle;
     float requestedSteerAngle;
 
     //Control variables
-    uint8_t leftRearPwmCmd;
-    uint8_t rightRearPwmCmd;
-    uint8_t steeringPwmCmd;
-
+    float carSpeed;
+    float frontWheelRotation;
 
     float turn_angle;
 
     //Publishers
-    rclcpp::Publisher<interfaces::msg::MotorsOrder>::SharedPtr publisher_can_;
+    rclcpp::Publisher<interfaces::msg::CarMotionOrder>::SharedPtr      publisher_car_motion_order_;
     rclcpp::Publisher<interfaces::msg::SteeringCalibration>::SharedPtr publisher_steeringCalibration_;
-    rclcpp::Publisher<interfaces::msg::VehicleSpeed>::SharedPtr publisher_vehicle_speed_;
 
     //Subscribers
+
     rclcpp::Subscription<interfaces::msg::GnssStatus>::SharedPtr subscription_gnss_status_;
     rclcpp::Subscription<interfaces::msg::JoystickOrder>::SharedPtr subscription_joystick_order_;
     rclcpp::Subscription<interfaces::msg::MotorsFeedback>::SharedPtr subscription_motors_feedback_;
@@ -365,9 +314,7 @@ int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
   auto node = std::make_shared<car_control>();
-
   rclcpp::spin(node);
-
   rclcpp::shutdown();
   return 0;
 }
