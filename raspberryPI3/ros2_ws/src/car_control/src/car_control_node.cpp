@@ -8,7 +8,6 @@
 #include "interfaces/msg/steering_calibration.hpp"
 #include "interfaces/msg/joystick_order.hpp"
 #include "interfaces/msg/gnss_status.hpp"
-#include "interfaces/msg/vehicle_speed.hpp"
 #include "interfaces/msg/obstacle_info.hpp"
 #include "std_msgs/msg/bool.hpp"  
 
@@ -42,7 +41,6 @@ public:
         // Create publishers
         publisher_can_= this->create_publisher<interfaces::msg::MotorsOrder>("motors_order", 10);
         publisher_steeringCalibration_ = this->create_publisher<interfaces::msg::SteeringCalibration>("steering_calibration", 10);
-        publisher_vehicle_speed_ = this->create_publisher<interfaces::msg::VehicleSpeed>("vehicle_speed", 10);
 
 
 
@@ -147,13 +145,6 @@ private:
     }
 
 
-    /* Calculate vehicle speed from RPM */
-    float calculateSpeedFromRpm(float rpm, float wheelRadius, float gearRatio) {
-        float speed_m_s = (2 * M_PI * wheelRadius * rpm) / (60.0 * gearRatio);  // Speed in m/s 
-        return speed_m_s * 3.6; // Speed in km/h
-    }
-
-
     /* Update currentAngle,leftand right wheel speed from motors feedback [callback function]  :
     *
     * This function is called when a message is published on the "/motors_feedback" topic
@@ -164,16 +155,6 @@ private:
 
     void motorsFeedbackCallback(const interfaces::msg::MotorsFeedback & motorsFeedback){
         currentAngle = motorsFeedback.steering_angle;
-
-        const float wheelRadius = 0.10; // Wheel radius in meters
-        const float gearRatio = 1.0;    // Gear ratio
-
-        // Calculate wheel speeds
-        float leftWheelSpeed = calculateSpeedFromRpm(motorsFeedback.left_rear_speed, wheelRadius, gearRatio);
-        float rightWheelSpeed = calculateSpeedFromRpm(motorsFeedback.right_rear_speed, wheelRadius, gearRatio);
-
-        // Average wheel speed
-        actualSpeed = (leftWheelSpeed + rightWheelSpeed) / 2.0;
     }
 
    
@@ -211,32 +192,14 @@ private:
             } else if (mode==1){    //Autonomous Mode
 
                 if (abs(turn_angle) > 10){
-	            //RCLCPP_WARN(this->get_logger(), "Je tourne, %2f",turn_angle);
                     steeringCmd(turn_angle/30 ,currentAngle, steeringPwmCmd);
                     leftRearPwmCmd = 70;
                     rightRearPwmCmd = 70;
                 }else {
-                    //RCLCPP_WARN(this->get_logger(), "Je tourne pas %2f",turn_angle);
                     steeringCmdZero(0 ,currentAngle, steeringPwmCmd);
                     leftRearPwmCmd = 80;
                     rightRearPwmCmd = 80;
                 }
-
-                // Publish vehicle speed
-                interfaces::msg::VehicleSpeed vehicleSpeed;
-                
-
-                // Negative speed if in reverse 
-                if(leftRearPwmCmd < 50){
-                    vehicleSpeed.actual_speed = -actualSpeed;
-                }else {
-                    vehicleSpeed.actual_speed = actualSpeed;
-                }
-                vehicleSpeed.speed_unit = "km/h";
-
-                // Publish vehicle speed
-                publisher_vehicle_speed_->publish(vehicleSpeed);
-
             }
         }
 
@@ -246,20 +209,6 @@ private:
         motorsOrder.steering_pwm = steeringPwmCmd;
         publisher_can_->publish(motorsOrder);
     }
-
-
-    float calculateActualSpeed(uint8_t leftPwm, uint8_t rightPwm) {
-        //Estimation of the speed
-        float maxSpeed = 2.1;
-        float averagePwm = (leftPwm + rightPwm) / 2.0;
-        if (averagePwm < 50){
-            return -((50 - averagePwm) / 50) * maxSpeed;
-        } else {
-            return ((averagePwm - 50)/(100-50))*maxSpeed;
-        }        
-    }
-
-
 
     /* Start the steering calibration process :
     *
@@ -324,7 +273,6 @@ private:
     
     //Motors feedback variables
     float currentAngle;
-    float actualSpeed;  
 
     bool rear_obstacle;
     bool reversing;  // Indique si la voiture est en marche arrière
@@ -347,7 +295,6 @@ private:
     //Publishers
     rclcpp::Publisher<interfaces::msg::MotorsOrder>::SharedPtr publisher_can_;
     rclcpp::Publisher<interfaces::msg::SteeringCalibration>::SharedPtr publisher_steeringCalibration_;
-    rclcpp::Publisher<interfaces::msg::VehicleSpeed>::SharedPtr publisher_vehicle_speed_;
 
     //Subscribers
     rclcpp::Subscription<interfaces::msg::GnssStatus>::SharedPtr subscription_gnss_status_;
