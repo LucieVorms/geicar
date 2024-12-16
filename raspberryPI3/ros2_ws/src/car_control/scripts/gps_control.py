@@ -24,6 +24,7 @@ class GnssListener(Node):
         # Load the GPS points from the itinerary CSV file
         self.itinerary = self.load_itinerary_from_csv('gnss_data.csv')
 
+        self.previous_points= []
         if not self.itinerary:
             self.get_logger().error("No valid GPS points loaded from the itinerary!")
             rclpy.shutdown()
