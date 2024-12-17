@@ -74,7 +74,7 @@ private:
 	cmd = Kp*error + Ki * accumulated_error + Kd*(e_(t+1) - e_(t))
      */
 
-#define K_p (50.0f)
+#define K_p (75.0f)
 #define K_i ( 2.0f)
 #define K_d ( 1.0f)
 
