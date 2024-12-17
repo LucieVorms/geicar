@@ -28,6 +28,10 @@ public:
 	car_speed_ = 0;
 	front_wheel_rotation_ = 0;
         leftRearPwmCmd_ = rightRearPwmCmd_ = steeringPwmCmd_ = 50;
+
+	// PID variables
+	accumulatedRotationError_ = 0.0f;
+
 	subscription_car_motion_order_ = this->create_subscription<interfaces::msg::CarMotionOrder>(
         "car_motion_order", 10, std::bind(&motors_control::carMotionOrderCallback, this, _1));
 
@@ -61,22 +65,36 @@ private:
 	// assert (abs(front_wheel_rotation) <= FRONT_WHEEL_MAX_ROTATION);
     }
 	
-    /*
-       Apply the local motor's pwm orders to the motors 
-       each 1 ms (1KHz control loop)
+    /* 
+       Compute motors command (pwm)
+       Apply its to the motors each 1 ms (1KHz control loop)
+	Kp = 
+	Ki = 
+	Kd = 
+	cmd = Kp*error + Ki * accumulated_error + Kd*(e_(t+1) - e_(t))
      */
-    void controlLoop() {   
-	float diff_front_wheel_rotation = (front_wheel_rotation_ - currentFrontWheelRotation_); 
-	// assert (abs(diff_front_wheel_rotation) <= 2*FRONT_WHEEL_MAX_ROTATION);
 
+#define K_p (50.0f)
+#define K_i ( 2.0f)
+#define K_d ( 1.0f)
+
+    void controlLoop() {   
 	// Rear wheels
 	leftRearPwmCmd_ = rightRearPwmCmd_ = 50 + static_cast<int8_t>(50 * car_speed_/CAR_MAX_SPEED);
+	
 	// Front wheel
-	steeringPwmCmd_ = 50 + std::clamp(static_cast<int>(50 * diff_front_wheel_rotation /FRONT_WHEEL_MAX_ROTATION), -50, 50);
+	float rotation_error = (front_wheel_rotation_ - currentFrontWheelRotation_)/FRONT_WHEEL_MAX_ROTATION; 
+	// assert (abs(rotation_error) <= 2);
+	accumulatedRotationError_ += rotation_error;
+
+	float cmd = K_p * rotation_error +  K_i * accumulatedRotationError_;  // PI
+	cmd += 50.0f;                                                         // Offset
+	steeringPwmCmd_ = std::clamp(static_cast<int>(cmd), 0, 100);          // Saturation
+
 	// Note: Some angles will be updated in more than one step.
-        // Eg : diff_front_wheel_rotation = 50 °
-	// step 1 : currentFrontWheelRotation_ += 30° (Max), diff_front_wheel_rotation = 20°
-	// step 2 : currentFrontWheelRotation_ += 20°      , diff_front_wheel_rotation =  0°   
+        // Eg : rotation_error = 50 °
+	// step 1 : currentFrontWheelRotation_ += 30° (Max), rotation_error = 20°
+	// step 2 : currentFrontWheelRotation_ += 20°      , rotation_error =  0°   
 
         auto motorsOrder = interfaces::msg::MotorsOrder();
 
@@ -104,7 +122,8 @@ private:
 
     // Motors feedback
     float currentFrontWheelRotation_;     
-
+    float accumulatedRotationError_;
+	
     //Publishers
     rclcpp::Publisher<interfaces::msg::MotorsOrder>::SharedPtr publisher_motors_order_;
 
