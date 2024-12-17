@@ -1,4 +1,5 @@
 #include "../include/car_control/steeringCmd.h"
+#include "../include/car_control/steeringCmd.h"
 
 // Define the maximum angle for normalization
 #define MAX_ANGLE 30.0
@@ -49,4 +50,3 @@ int steeringCmdZero(float requestedSteerAngle, float currentSteerAngle, uint8_t 
 
     return errorAngle;
 }
-
