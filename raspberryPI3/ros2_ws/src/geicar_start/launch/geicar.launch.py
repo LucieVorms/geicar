@@ -64,9 +64,9 @@ def generate_launch_description():
         emulate_tty=True
     )
 
-    gps_control_node = Node(
-	package="car_control",
-	executable="gps_control.py",
+    gps_following_node = Node(
+	package="gps_following",
+	executable="gps_following_node",
 	emulate_tty=True
     )
 
@@ -79,7 +79,7 @@ def generate_launch_description():
     ld.add_action(imu_filter_madgwick_node)
     ld.add_action(emergency_stop_node)
     ld.add_action(system_check_node)
-    ld.add_action(gps_control_node)
+    ld.add_action(gps_following_node)
 
 
     return ld
