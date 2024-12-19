@@ -290,8 +290,7 @@ private:
     rclcpp::Subscription<interfaces::msg::MotorsFeedback>::SharedPtr      subscription_motors_feedback_;
     rclcpp::Subscription<interfaces::msg::SteeringCalibration>::SharedPtr subscription_steering_calibration_;
     rclcpp::Subscription<interfaces::msg::ObstacleInfo>::SharedPtr subscription_obstacle_info_;
-    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr subscription_space_from_lidar_;
-
+    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr subscription_enough_width_space_;
     //Timer
     rclcpp::TimerBase::SharedPtr timer_;
 
