@@ -15,6 +15,7 @@
 
 int steeringCmd(float requestedSteerAngle, float currentSteerAngle, uint8_t & steeringPwmCmd);
 
+int steeringCmdZero(float requestedSteerAngle, float currentSteerAngle, uint8_t & steeringPwmCmd);
 
 
 #endif /*__ steeringCmd_H */
