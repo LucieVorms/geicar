@@ -17,7 +17,6 @@ add_executable(car_control_node
   src/car_control_node.cpp
   src/steeringCmd.cpp
   src/propulsionCmd.cpp
-  scripts/gps_control.py
 )
 
 
@@ -29,14 +28,8 @@ target_include_directories(car_control_node PUBLIC
   $<INSTALL_INTERFACE:include>)
 target_compile_features(car_control_node PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
-
 install(TARGETS car_control_node
   DESTINATION lib/${PROJECT_NAME})
-
-install(PROGRAMS
-  scripts/gps_control.py
-  DESTINATION lib/${PROJECT_NAME}
-)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
