@@ -22,7 +22,6 @@ set(msg_files
   "msg/Gnss.msg"
   "msg/SystemCheck.msg"
   "msg/GnssStatus.msg"
-  "msg/VehicleSpeed.msg"
   "msg/ObstacleInfo.msg"
   "msg/CarMotionOrder.msg"
 )
