@@ -11,7 +11,7 @@ SpaceEnvironment::SpaceEnvironment() : Node("space_environment_node") {
 
     publisher_enough_width_space_ = this->create_publisher<std_msgs::msg::Bool>("enough_width_space", 10);
 
-    max_depth = 6.0;
+    max_depth = 2.0;
     width = 1.0;
     static_angle_offset = 0.0;
 
@@ -23,18 +23,17 @@ bool SpaceEnvironment::is_enough_space(const Scan &scan, const float offset) con
     const double field_of_view_offset = scan.angle_reference + static_angle_offset + offset;
 
     for (const auto &value: scan.values) {
+        if (rad > M_PI) rad -= 2 * M_PI;
+        else if (rad < -M_PI) rad += 2 * M_PI;
+
         if (
             value < max_depth &&
-            M_PI / 2 > std::abs(rad + M_PI) &&
+            0 < rad &&
             std::abs(value * std::cos(rad)) * 2 < width
         )
             return false;
 
         rad += scan.angle_increment;
-        if (rad > M_PI)
-            rad -= 2 * M_PI;
-        else if (rad < -M_PI)
-            rad += 2 * M_PI;
     }
     return true;
 }
