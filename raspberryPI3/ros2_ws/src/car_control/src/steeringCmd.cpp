@@ -1,33 +1,37 @@
 #include "../include/car_control/steeringCmd.h"
 #include "../include/car_control/steeringCmd.h"
 
-/* Angles are specified in radians */
-#define STEERING_ANGLE_MAX     (+1.0f) // TBV
-#define STEERING_ANGLE_MIN     (-1.0f)
-#define STEERING_ANGLE_NUL     ( 0.0f) 
+// Define the maximum angle for normalization
+#define MAX_ANGLE 30.0
 
-#define STEERING_DELTA_ANGLE_MAX ((STEERING_ANGLE_MAX) - (STEERING_ANGLE_NUL))
-#define STEERING_DELTA_ANGLE_MIN ((STEERING_ANGLE_MIN) - (STEERING_ANGLE_NUL))
-
-#define PWM_NUL_STEERING_ANGLE (50)
-#define MAX_DELTA_PWM          (50)
-
-//return the Pwm command to reach the angle passed in argument
+// Return the Pwm command to reach the angle passed in argument
 int steeringCmd(float requestedSteerAngle, float currentSteerAngle, uint8_t & steeringPwmCmd){
-        float errorAngle = requestedSteerAngle - currentSteerAngle;
 
-        if (abs(errorAngle)<TOLERANCE_ANGLE)  // Or set flush to zero ?  
-                steeringPwmCmd = PWM_NUL_STEERING_ANGLE;
-        else   
-                steeringPwmCmd = PWM_NUL_STEERING_ANGLE - (int)((errorAngle * MAX_DELTA_PWM)/STEERING_DELTA_ANGLE_MAX);
+    float errorAngle = requestedSteerAngle - currentSteerAngle;
 
-        return errorAngle;
+    // Command's calculation
+    if (abs(errorAngle) < TOLERANCE_ANGLE){
+        steeringPwmCmd = 50; // Neutral position
+    }
+    else { 
+
+        // Ensure the normalized error is within the range [-1, 1]
+        if (errorAngle > 1.0) errorAngle = 1.0;
+        if (errorAngle < -1.0) errorAngle = -1.0;
+
+        // Calculate the PWM command based on the normalized error
+        steeringPwmCmd = 50 + (errorAngle * 50); // 50 is the neutral position
+
+        if (steeringPwmCmd > 100.0) steeringPwmCmd = 100.0;
+        if (steeringPwmCmd < 0) steeringPwmCmd = 0;
+
+    }
+
+    return errorAngle;
 }
 
-
-#if 0
 //return the Pwm command to reach the angle passed in argument
-int steeringCmd(float requestedSteerAngle, float currentSteerAngle, uint8_t & steeringPwmCmd){
+int steeringCmdZero(float requestedSteerAngle, float currentSteerAngle, uint8_t & steeringPwmCmd){
 
 	float errorAngle = currentSteerAngle - requestedSteerAngle;
 
@@ -46,5 +50,3 @@ int steeringCmd(float requestedSteerAngle, float currentSteerAngle, uint8_t & st
 
     return errorAngle;
 }
-#endif
-
