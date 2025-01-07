@@ -27,8 +27,7 @@ bool SpaceEnvironment::is_enough_space(const Scan &scan, const float offset) con
         else if (rad < -M_PI) rad += 2 * M_PI;
 
         if (
-            value < max_depth &&
-            0 < rad &&
+            value < max_depth && rad < 0 &&
             std::abs(value * std::cos(rad)) * 2 < width
         )
             return false;
