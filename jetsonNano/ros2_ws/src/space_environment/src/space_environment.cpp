@@ -1,5 +1,9 @@
 #include "space_environment.hpp"
 
+#include <functional>
+
+using namespace std;
+using placeholders::_1;
 
 SpaceEnvironment::SpaceEnvironment() : Node("space_environment_node") {
     subscription_laser_scan_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
