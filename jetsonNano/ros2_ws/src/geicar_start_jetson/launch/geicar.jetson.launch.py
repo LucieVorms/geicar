@@ -33,6 +33,19 @@ def generate_launch_description():
         emulate_tty=True
     )
 
+        # Path detection node
+    plate_detection_node = Node(
+        package='usb_cam',  # name of the package where you can find the .py script of the plate detection
+        executable='path_detection.py',  # Name of the Python file
+        name='path_detection',  # Name of the ROS node
+        output='screen',
+        parameters=[{
+            'camera_topic': '/image_raw',  # If needed you can change the name of the camera topic
+            'detection_threshold': 0.5,  
+        }],
+        emulate_tty=True
+    )
+
     space_environment = Node(
         package="space_environment",
         executable="space_environment_node",
