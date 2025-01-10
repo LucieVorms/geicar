@@ -85,9 +85,6 @@ class GnssListener(Node):
                 current_direction = self.last_coherent_direction
             else:
                 self.last_coherent_direction = current_direction
-                
-            # Calculate the direction (bearing) towards the current position
-            current_direction = self.calculate_bearing(self.previous_lat, self.previous_lon, current_lat, current_lon)
             
             # Calculate the direction (bearing) towards the new point
             target_direction = self.calculate_bearing(current_lat, current_lon, target_lat,target_lon)  # Example target point
