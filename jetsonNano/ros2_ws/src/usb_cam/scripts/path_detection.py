@@ -5,6 +5,7 @@ import numpy as np
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image, CompressedImage
+from std_msgs.msg import String  # For textual detection messages
 from cv_bridge import CvBridge
 from ultralytics import YOLO  # To use YOLOv8
 
@@ -13,70 +14,100 @@ class PathDetection(Node):
     def __init__(self):
         super().__init__('path_detection')
 
-        # CvBridge for the conversion between ROS and OpenCV
+        # CvBridge for ROS <-> OpenCV conversion
         self.bridge = CvBridge()
 
-        # Load the YOLOv8 model (Segmentation model)
-        self.model = YOLO("/root/geicar/path_detection/runs/train/weights/best.pt")  # Replace with your model path
+        # Load YOLO segmentation model
+        self.model = YOLO("/home/geicar/path_detection/runs/train/weights/best.pt")  # Replace with your model path
         self.get_logger().info("YOLOv8 segmentation model loaded successfully!")
 
         # Subscribe to the camera topic
         self.sub = self.create_subscription(
             Image,
-            'image_raw',  # Topic of the camera
+            'image_raw',  # Camera topic
             self.image_callback,
             10
         )
 
-        # Create publishers for the segmentation mask
-        self.pub_mask = self.create_publisher(
-            Image,
-            '/path_detection/mask',  # Topic for the segmentation mask
+        # Publishers for results
+        self.pub_detection = self.create_publisher(
+            String,
+            '/path_detection/results',  # Topic for textual detection results
             10
         )
-        self.pub_compressed_mask = self.create_publisher(
+        self.pub_annotated_image = self.create_publisher(
+            Image,
+            '/path_detection/annotated_image',  # Topic for annotated images
+            10
+        )
+        self.pub_compressed_annotated_image = self.create_publisher(
             CompressedImage,
-            '/path_detection/mask/compressed',
+            '/path_detection/annotated_image/compressed',
             10
         )
 
     def image_callback(self, msg):
         try:
-            # Convert the ROS message to an OpenCV image
+            # Convert ROS image to OpenCV
             frame = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
         except Exception as e:
             self.get_logger().error(f"Failed to convert image: {e}")
             return
 
-        # Apply YOLOv8 for segmentation on the image
+        # Run YOLO segmentation
         results = self.model(frame)
-        
-        # Extract the segmentation mask
-        segmentation_mask = self.process_segmentation_results(results)
 
-        # Publish the segmentation mask
+        # Annotate the image and extract detection details
+        annotated_image, detection_info = self.process_segmentation_results(frame, results)
+
+        # Publish detection details
+        self.publish_detection_info(detection_info)
+
+        # Publish the annotated image
         try:
-            mask_msg = self.bridge.cv2_to_imgmsg(segmentation_mask, encoding="mono8")
-            mask_msg_compressed = self.bridge.cv2_to_compressed_imgmsg(segmentation_mask, dst_format='jpg')
-            self.pub_mask.publish(mask_msg)
-            self.pub_compressed_mask.publish(mask_msg_compressed)
-            self.get_logger().info("Published segmentation mask on /path_detection/mask")
+            annotated_msg = self.bridge.cv2_to_imgmsg(annotated_image, encoding="bgr8")
+            annotated_msg_compressed = self.bridge.cv2_to_compressed_imgmsg(annotated_image, dst_format='jpg')
+            self.pub_annotated_image.publish(annotated_msg)
+            self.pub_compressed_annotated_image.publish(annotated_msg_compressed)
+            self.get_logger().info("Published annotated image on /path_detection/annotated_image")
         except Exception as e:
-            self.get_logger().error(f"Failed to publish segmentation mask: {e}")
+            self.get_logger().error(f"Failed to publish annotated image: {e}")
 
-    def process_segmentation_results(self, results):
+    def process_segmentation_results(self, frame, results):
         """
-        Processes the YOLOv8 segmentation results and creates a binary mask.
+        Processes YOLO segmentation results, annotates the image, and extracts detection details.
         """
+        detection_info = []
         if len(results) > 0 and results[0].masks is not None:
-            # Combine all masks into one binary mask
-            mask = np.zeros((results[0].masks.shape[1], results[0].masks.shape[2]), dtype=np.uint8)
-            for mask_data in results[0].masks.data:
-                mask = cv2.bitwise_or(mask, mask_data.cpu().numpy().astype(np.uint8) * 255)
-            return mask
+            annotated_image = frame.copy()
+            for i, mask_data in enumerate(results[0].masks.data):
+                class_id = results[0].boxes[i].cls[0].item()  # Class ID
+                confidence = results[0].boxes[i].conf[0].item()  # Confidence score
+                class_name = self.model.names[int(class_id)]  # Class name
+
+                if class_name in ['grass', 'path', 'concrete-block']:
+                    # Extract the mask and overlay it on the annotated image
+                    mask = mask_data.cpu().numpy().astype(np.uint8) * 255
+                    color = (0, 255, 0) if class_name == 'grass' else (255, 255, 0) if class_name == 'path' else (0, 0, 255)
+                    contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+                    cv2.drawContours(annotated_image, contours, -1, color, 2)
+
+                    # Add detection info
+                    detection_info.append(f"{class_name} (Confidence: {confidence:.2f})")
+
+            return annotated_image, detection_info
         else:
-            # Return an empty mask if no results
-            return np.zeros((640, 640), dtype=np.uint8)
+            # Return the original image and no detections if there are no results
+            return frame, ["No detections"]
+
+    def publish_detection_info(self, detection_info):
+        """
+        Publishes the detection information as a single message.
+        """
+        detection_msg = String()
+        detection_msg.data = ", ".join(detection_info)
+        self.pub_detection.publish(detection_msg)
+        self.get_logger().info(f"Published detection results: {detection_msg.data}")
 
 
 def main(args=None):

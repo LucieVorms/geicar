@@ -34,7 +34,7 @@ def generate_launch_description():
     )
 
         # Path detection node
-    plate_detection_node = Node(
+    path_detection_node = Node(
         package='usb_cam',  # name of the package where you can find the .py script of the plate detection
         executable='path_detection.py',  # Name of the Python file
         name='path_detection',  # Name of the ROS node
@@ -57,5 +57,6 @@ def generate_launch_description():
     ld.add_action(camera_node)
     ld.add_action(system_check_ack_node)
     ld.add_action(space_environment)
+    ld.add_action(path_detection_node)
 
     return ld
