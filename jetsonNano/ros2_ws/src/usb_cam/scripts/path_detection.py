@@ -17,7 +17,7 @@ class PathDetection(Node):
         self.bridge = CvBridge()
 
         # Load the YOLOv8 model (Segmentation model)
-        self.model = YOLO("/root/geicar/path_detection/train/best.pt")  # Replace with your model path
+        self.model = YOLO("/root/geicar/path_detection/runs/train/weights/best.pt")  # Replace with your model path
         self.get_logger().info("YOLOv8 segmentation model loaded successfully!")
 
         # Subscribe to the camera topic
