@@ -34,8 +34,8 @@ public:
         start = false;
         mode = 0;
         requestedThrottle = 0;
-        requestedSteerAngle = 0; = true;
-        enough_width_space
+        requestedSteerAngle = 0;
+        enough_width_space = true;
 
 	    reverse = false;
 	    carSpeed = frontWheelRotation = 0.0f;
