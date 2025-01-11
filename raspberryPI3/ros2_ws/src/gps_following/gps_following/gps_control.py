@@ -59,12 +59,12 @@ class GnssListener(Node):
     def listener_callback(self, msg):
         # Retrieve the current vehicle coordinates and apply the offset
 
-	if(msg.quality == 1 || msg.quality == 2):
-		current_lat = msg.latitude 
-           	current_lon = msg.longitude
-	else: 
-           	current_lat = msg.latitude + self.lat_offset  # Apply latitude correction
-           	current_lon = msg.longitude + self.lon_offset  # Apply longitude correction
+        if msg.quality == 1 or msg.quality == 2:
+            current_lat = msg.latitude
+            current_lon = msg.longitude
+        else:
+            current_lat = msg.latitude + self.lat_offset  # Apply latitude correction
+            current_lon = msg.longitude + self.lon_offset  # Apply longitude correction
 
          # Get the coordinates of the current target and the final destination
         target_lat, target_lon = self.itinerary[self.current_target_index]
