@@ -109,6 +109,7 @@ private:
      /* Callback to handle ultrasonic sensor data */
      void GnssStatusCallback(const interfaces::msg::GnssStatus & gnssMsg) {
         turn_angle = gnssMsg.turn_angle;
+        stop_following = gnssMsg.stop_following;
     }
 
     /* Callback to handle joystick commands */
@@ -197,14 +198,18 @@ private:
         // Denormalize requested throttle
             frontWheelRotation = requestedSteerAngle * FRONT_WHEEL_MAX_ROTATION; 
             } else if (mode==1){    //Autonomous Mode
-
-                if (abs(turn_angle) > 10){
-                    frontWheelRotation = turn_angle;
-                    carSpeed = 4;
-                }else {
+                if(!stop_following){
+                    if (abs(turn_angle) > 10){
+                        frontWheelRotation = turn_angle;
+                        carSpeed = 4;
+                    }else {
+                        frontWheelRotation = 0;
+                        carSpeed = 6;
+                    }
+                } else {
+                    carSpeed = 0; 
                     frontWheelRotation = 0;
-                    carSpeed = 6;
-                }
+                }    
             }
         }
 
@@ -295,7 +300,7 @@ private:
     float frontWheelRotation;
 
     float turn_angle;
-
+    bool stop_following;
     //Publishers
     rclcpp::Publisher<interfaces::msg::CarMotionOrder>::SharedPtr      publisher_car_motion_order_;
     rclcpp::Publisher<interfaces::msg::SteeringCalibration>::SharedPtr publisher_steeringCalibration_;

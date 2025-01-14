@@ -116,10 +116,13 @@ class GnssListener(Node):
                 if self.current_target_index >= len(self.itinerary):
                     status_msg.status_message = "End of itinerary reached!"
                     self.current_target_index = 0  # Restart from the beginning of the itinerary
+                    status_msg.stop_following = True
                 else:
                     status_msg.status_message = f"Arrived at target {self.current_target_index}. Moving to next target."
+                    status_msg.stop_following = False
             else:
                 status_msg.status_message = f"Navigating to target {self.current_target_index}."
+                status_msg.stop_following = False
 
             # Publish the status message
             self.publisher.publish(status_msg)

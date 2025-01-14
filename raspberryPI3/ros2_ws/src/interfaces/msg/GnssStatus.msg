@@ -10,3 +10,4 @@ float64 target_direction
 float64 turn_angle
 string direction_message
 string status_message
+bool stop_following
