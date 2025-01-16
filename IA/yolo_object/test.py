@@ -6,7 +6,7 @@ import os
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Chemin vers le modèle entraîné
-model_path = os.path.join(script_dir, "runs", "detect", "train2", "weights", "best.pt")
+model_path = os.path.join(script_dir, "runs", "detect", "train4", "weights", "best.pt")
 model = YOLO(model_path)
 
 # Chemin vers le répertoire contenant les images de test
