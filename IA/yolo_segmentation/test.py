@@ -5,7 +5,7 @@ import shutil
 
 # Chemin du modèle entraîné
 script_dir = os.path.dirname(os.path.abspath(__file__))
-model_path = os.path.join(script_dir, "runs", "segment", "train", "weights", "best.pt")
+model_path = os.path.join(script_dir, "runs", "segment", "train2", "weights", "best.pt")
 model = YOLO(model_path)
 
 # Chemin des images de test
