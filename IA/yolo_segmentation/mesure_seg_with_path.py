@@ -13,7 +13,7 @@ model = YOLO(model_path)
 
 # Chemin vers la vidéo à traiter
 video_path = os.path.join(script_dir, "WIN_20250109_10_10_05_Pro.mp4")
-output_path = os.path.join(script_dir, "output_video_path_distance12.mp4")
+output_path = os.path.join(script_dir, "output_video_path_distance16.mp4")
 
 # Paramètres de la caméra
 FOCAL_LENGTH = 490
@@ -44,6 +44,8 @@ else:
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
         output_video = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
         print(f"Traitement de la vidéo : {video_path}")
+
+        distance_buffer = []  # Stocker les distances pour calculer la moyenne
 
         while True:
             ret, frame = video.read()
@@ -78,6 +80,16 @@ else:
                                 (left_border, adjusted_y), (right_border, adjusted_y), FOCAL_LENGTH, DEPTH_CONSTANT
                             )
 
+                            # Ajouter la distance dans le buffer
+                            distance_buffer.append(distance_2d)
+
+                            # Maintenir uniquement les distances sur 2 secondes (fps frames)
+                            if len(distance_buffer) > 2*fps:
+                                distance_buffer.pop(0)
+
+                            # Calculer la moyenne des distances
+                            avg_distance = sum(distance_buffer) / len(distance_buffer)
+
                             # Annoter uniquement les deux points
                             cv2.circle(frame, (left_border, adjusted_y), 5, (0, 255, 0), -1)  # Point gauche
                             cv2.circle(frame, (right_border, adjusted_y), 5, (0, 0, 255), -1)  # Point droit
@@ -85,8 +97,8 @@ else:
                             # Tracer une ligne entre les deux points
                             cv2.line(frame, (left_border, adjusted_y), (right_border, adjusted_y), (0, 0, 0), 2)
 
-                            # Annoter la distance en noir
-                            cv2.putText(frame, f"Distance: {distance_2d:.2f} m", (50, 50),
+                            # Annoter la distance moyenne en noir
+                            cv2.putText(frame, f"Distance: {avg_distance:.2f} m", (50, 50),
                                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
                 except (IndexError, KeyError, AttributeError) as e:
                     print(f"Erreur lors du traitement du masque {i}: {e}")
