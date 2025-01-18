@@ -13,11 +13,11 @@ model = YOLO(model_path)
 
 # Chemin vers la vidéo à traiter
 video_path = os.path.join(script_dir, "WIN_20250109_10_10_05_Pro.mp4")
-output_path = os.path.join(script_dir, "output_video_path_distance5.mp4")
+output_path = os.path.join(script_dir, "output_video_path_distance12.mp4")
 
 # Paramètres de la caméra
 FOCAL_LENGTH = 490
-DEPTH_CONSTANT = 4
+DEPTH_CONSTANT = 4.5
 
 # Fonction pour calculer la distance 2D
 def calculate_2d_distance(point1, point2, focal_length, depth):
@@ -53,37 +53,41 @@ else:
             results = model.predict(source=frame, save=False, verbose=False)
             masks = results[0].masks.data.cpu().numpy()
             class_names = results[0].names
-    
+
             for i, mask in enumerate(masks):
                 try:
                     # Extraire la classe associée au masque via les boîtes
                     class_id = int(results[0].boxes.cls[i].item())  # Associer l'indice du masque à l'identifiant de classe
                     if class_names[class_id] == "path":
-                        # Trouver les pixels actifs dans le masque
+                        # Obtenir les coordonnées de la bounding box de "path"
+                        box = results[0].boxes.xyxy[i].cpu().numpy()  # [x1, y1, x2, y2]
+                        x1, y1, x2, y2 = map(int, box)
+
+                        # Trouver la position aux 2/3 de la bounding box en hauteur
+                        adjusted_y = y2 - (2 * (y2 - y1)) // 3
+
+                        # Trouver les bordures gauche et droite alignées avec ce niveau
                         active_pixels = np.where(mask > 0)
-                        if active_pixels[0].size > 0 and active_pixels[1].size > 0:
-                            # Calculer le milieu du path
-                            middle_y = np.mean(active_pixels[0]).astype(int)
+                        row_pixels = active_pixels[1][active_pixels[0] == adjusted_y]
+                        if row_pixels.size > 0:
+                            left_border = np.min(row_pixels)
+                            right_border = np.max(row_pixels)
 
-                            # Trouver les bordures gauche et droite alignées avec le milieu
-                            row_pixels = active_pixels[1][active_pixels[0] == middle_y]
-                            if row_pixels.size > 0:
-                                left_border = np.min(row_pixels)
-                                right_border = np.max(row_pixels)
+                            # Calculer la distance réelle
+                            distance_2d = calculate_2d_distance(
+                                (left_border, adjusted_y), (right_border, adjusted_y), FOCAL_LENGTH, DEPTH_CONSTANT
+                            )
 
-                                # Calculer la distance réelle
-                                distance_2d = calculate_2d_distance(
-                                    (left_border, middle_y), (right_border, middle_y), FOCAL_LENGTH, DEPTH_CONSTANT
-                                )
+                            # Annoter uniquement les deux points
+                            cv2.circle(frame, (left_border, adjusted_y), 5, (0, 255, 0), -1)  # Point gauche
+                            cv2.circle(frame, (right_border, adjusted_y), 5, (0, 0, 255), -1)  # Point droit
 
-                                # Annoter les bordures et la distance
-                                cv2.line(frame, (left_border, 0), (left_border, height), (0, 255, 0), 2)  # Bordure gauche
-                                cv2.line(frame, (right_border, 0), (right_border, height), (0, 0, 255), 2)  # Bordure droite
-                                cv2.putText(frame, f"Distance: {distance_2d:.2f} m", (50, 50),
-                                            cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+                            # Tracer une ligne entre les deux points
+                            cv2.line(frame, (left_border, adjusted_y), (right_border, adjusted_y), (0, 0, 0), 2)
 
-                                # Tracer une ligne entre les deux points
-                                cv2.line(frame, (left_border, middle_y), (right_border, middle_y), (255, 0, 0), 2)
+                            # Annoter la distance en noir
+                            cv2.putText(frame, f"Distance: {distance_2d:.2f} m", (50, 50),
+                                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
                 except (IndexError, KeyError, AttributeError) as e:
                     print(f"Erreur lors du traitement du masque {i}: {e}")
 
