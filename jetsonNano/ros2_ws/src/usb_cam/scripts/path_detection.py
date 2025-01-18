@@ -8,6 +8,7 @@ from sensor_msgs.msg import Image
 from std_msgs.msg import Float32  # Pour publier la distance
 from cv_bridge import CvBridge
 from ultralytics import YOLO  # Pour utiliser YOLOv8
+import math
 
 class PathDetection(Node):
     def __init__(self):
@@ -42,6 +43,10 @@ class PathDetection(Node):
             10
         )
 
+        # Paramètres de la caméra
+        self.FOCAL_LENGTH = 490
+        self.DEPTH_CONSTANT = 4.5
+
     def image_callback(self, msg):
         try:
             # Convertir l'image ROS en image OpenCV
@@ -60,7 +65,7 @@ class PathDetection(Node):
             distance_msg = Float32()
             distance_msg.data = distance
             self.pub_distance.publish(distance_msg)
-            self.get_logger().info(f"Distance publiée : {distance:.2f} pixels")
+            self.get_logger().info(f"Distance publiée : {distance:.2f} m")
 
         # Publier l'image annotée
         try:
@@ -73,42 +78,77 @@ class PathDetection(Node):
     def calculate_distance_and_annotate(self, frame, results):
         """
         Calcule la distance entre les bordures gauche et droite pour la classe "path" et
-        annote l'image avec les bordures et la distance.
+        annote l'image avec les bordures et la distance moyenne calculée.
         """
         if len(results) > 0 and results[0].masks is not None:
             masks = results[0].masks.data.cpu().numpy()  # Masques segmentés
             class_names = results[0].names  # Noms des classes
 
-            left_border = None
-            right_border = None
+            distance_buffer = []  # Stocker les distances pour calculer la moyenne
+            fps = 30  # Exemple d'estimation d'une valeur par seconde
 
-            # Parcourir les masques pour trouver la classe "path"
             for i, mask in enumerate(masks):
-                class_name = class_names[i]
-                if class_name == "path":
-                    # Trouver les pixels actifs dans le masque
-                    active_pixels = np.where(mask > 0)
+                try:
+                    class_id = int(results[0].boxes.cls[i].item())  # ID de la classe
+                    if class_names[class_id] == "path":
+                        # Obtenir les coordonnées de la bounding box
+                        box = results[0].boxes.xyxy[i].cpu().numpy()
+                        x1, y1, x2, y2 = map(int, box)
 
-                    if active_pixels[1].size > 0:  # Vérifier si des pixels existent
-                        left_border = np.min(active_pixels[1])  # Bordure gauche (min x)
-                        right_border = np.max(active_pixels[1])  # Bordure droite (max x)
+                        # Trouver la position aux 2/3 de la bounding box en hauteur
+                        adjusted_y = y2 - (2 * (y2 - y1)) // 3
 
-                    # Si les deux bordures sont détectées, calculer la distance
-                    if left_border is not None and right_border is not None:
-                        distance = right_border - left_border
+                        # Trouver les bordures gauche et droite alignées avec ce niveau
+                        active_pixels = np.where(mask > 0)
+                        row_pixels = active_pixels[1][active_pixels[0] == adjusted_y]
+                        if row_pixels.size > 0:
+                            left_border = np.min(row_pixels)
+                            right_border = np.max(row_pixels)
 
-                        # Annoter les bordures sur l'image
-                        cv2.line(frame, (left_border, 0), (left_border, frame.shape[0]), (0, 255, 0), 2)  # Bordure gauche
-                        cv2.line(frame, (right_border, 0), (right_border, frame.shape[0]), (0, 0, 255), 2)  # Bordure droite
+                            # Calculer la distance réelle
+                            distance_2d = self.calculate_2d_distance(
+                                (left_border, adjusted_y), (right_border, adjusted_y), self.FOCAL_LENGTH, self.DEPTH_CONSTANT
+                            )
 
-                        # Annoter la distance
-                        cv2.putText(frame, f"Distance: {distance:.2f} pixels", (50, 50),
-                                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+                            # Ajouter la distance dans le buffer
+                            distance_buffer.append(distance_2d)
 
-                        return distance, frame
+                            # Maintenir uniquement les distances sur 2 secondes (fps frames)
+                            if len(distance_buffer) > 2 * fps:
+                                distance_buffer.pop(0)
+
+                            # Calculer la moyenne des distances
+                            avg_distance = sum(distance_buffer) / len(distance_buffer)
+
+                            # Annoter uniquement les deux points
+                            cv2.circle(frame, (left_border, adjusted_y), 5, (0, 255, 0), -1)  # Point gauche
+                            cv2.circle(frame, (right_border, adjusted_y), 5, (0, 0, 255), -1)  # Point droit
+
+                            # Tracer une ligne entre les deux points
+                            cv2.line(frame, (left_border, adjusted_y), (right_border, adjusted_y), (0, 0, 0), 2)
+
+                            # Annoter la distance moyenne en noir
+                            cv2.putText(frame, f"Distance: {avg_distance:.2f} m", (50, 50),
+                                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
+                            return avg_distance, frame
+                except (IndexError, KeyError, AttributeError) as e:
+                    self.get_logger().error(f"Erreur lors du traitement du masque {i}: {e}")
 
         # Si aucune bordure n'est détectée, retourner l'image originale et None
         return None, frame
+
+    def calculate_2d_distance(self, point1, point2, focal_length, depth):
+        """
+        Calcule la distance 2D réelle entre deux points donnés en pixels.
+        """
+        x1_pixels, y1_pixels = point1
+        x2_pixels, y2_pixels = point2
+        x1_real = (x1_pixels * depth) / focal_length
+        y1_real = (y1_pixels * depth) / focal_length
+        x2_real = (x2_pixels * depth) / focal_length
+        y2_real = (y2_pixels * depth) / focal_length
+        distance_2d = math.sqrt((x2_real - x1_real) ** 2 + (y2_real - y1_real) ** 2)
+        return distance_2d
 
 
 def main(args=None):
