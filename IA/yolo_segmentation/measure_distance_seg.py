@@ -13,9 +13,9 @@ model = YOLO(model_path)
 
 # Chemin vers la vidéo à traiter
 video_path = os.path.join(script_dir, "WIN_20250109_10_10_05_Pro.mp4")
-output_path = os.path.join(script_dir, "output_video_segmentation4.mp4")
+output_path = os.path.join(script_dir, "output_video_segmentation_test1.mp4")
 
-# Paramètres de la caméra
+# Paramètres de la caméra (Logitech C270)
 FOCAL_LENGTH = 490
 DEPTH_CONSTANT = 5
 IMAGE_WIDTH = 640
@@ -52,38 +52,41 @@ else:
                 break
 
             results = model.predict(source=frame, save=False, verbose=False)
-            masks = results[0].masks.data.cpu().numpy()  # Masques segmentés
             boxes = results[0].boxes.data.cpu().numpy()  # Bounding boxes [x1, y1, x2, y2, conf, class]
+            class_names = results[0].names  # Nom des classes
 
-            left_box = None
-            right_box = None
+            valid_centers = []
 
-            # Identifier les boxes les plus à gauche et à droite
-            if boxes.size > 0:
-                boxes = sorted(boxes, key=lambda b: (b[0] + b[2]) / 2)  # Trier par position centrale x
-                left_box = boxes[0]
-                right_box = boxes[-1]
+            # Parcourir toutes les boxes
+            for box in boxes:
+                x1, y1, x2, y2, conf, class_id = box
 
-            if left_box is not None and right_box is not None:
-                # Calcul des centres
-                left_center = (int((left_box[0] + left_box[2]) // 2), int((left_box[1] + left_box[3]) // 2))
-                right_center = (int((right_box[0] + right_box[2]) // 2), int((right_box[1] + right_box[3]) // 2))
+                # Calculer le centre de la box
+                center_x = int((x1 + x2) / 2)
+                center_y = int((y1 + y2) / 2)
+                valid_centers.append((center_x, center_y, class_id))
 
-                # Dessiner les bounding boxes utilisées
-                cv2.rectangle(frame, (int(left_box[0]), int(left_box[1])),
-                            (int(left_box[2]), int(left_box[3])), (0, 255, 0), 2)
-                cv2.rectangle(frame, (int(right_box[0]), int(right_box[1])),
-                            (int(right_box[2]), int(right_box[3])), (0, 255, 0), 2)
+            # Trouver les centres les plus à gauche et à droite
+            if valid_centers:
+                leftmost = min(valid_centers, key=lambda c: c[0])  # Plus à gauche (min x)
+                rightmost = max(valid_centers, key=lambda c: c[0])  # Plus à droite (max x)
 
                 # Calculer la distance entre les deux
-                distance_2d = calculate_2d_distance(left_center, right_center, FOCAL_LENGTH, DEPTH_CONSTANT)
+                distance_2d = calculate_2d_distance(
+                    (leftmost[0], leftmost[1]), (rightmost[0], rightmost[1]), FOCAL_LENGTH, DEPTH_CONSTANT
+                )
 
-                # Annoter les centres et la distance
-                cv2.circle(frame, left_center, 5, (0, 255, 0), -1)
-                cv2.circle(frame, right_center, 5, (0, 0, 255), -1)
+                # Annoter les centres
+                cv2.circle(frame, (leftmost[0], leftmost[1]), 5, (0, 255, 0), -1)
+                cv2.circle(frame, (rightmost[0], rightmost[1]), 5, (0, 0, 255), -1)
+
+                # Annoter la distance
                 distance_text = f"Distance: {distance_2d:.2f} m"
-                cv2.putText(frame, distance_text, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-                cv2.line(frame, left_center, right_center, (255, 0, 0), 2)
+                cv2.putText(frame, distance_text, (50, 50),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+
+                # Dessiner la ligne entre les centres
+                cv2.line(frame, (leftmost[0], leftmost[1]), (rightmost[0], rightmost[1]), (255, 0, 0), 2)
 
             output_video.write(frame)
 
