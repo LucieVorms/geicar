@@ -18,7 +18,7 @@ class PathDetection(Node):
         self.bridge = CvBridge()
 
         # Charger le modèle YOLOv8
-        self.model = YOLO("/home/geicar/path_detection/runs/train/weights/best.pt")  # Remplacez par le chemin de votre modèle
+        self.model = YOLO("/home/geicar/path_detection/runs/train2/best.pt")  # Remplacez par le chemin de votre modèle
         self.get_logger().info("Modèle YOLOv8 chargé avec succès !")
 
         # Souscription au topic de la caméra
