@@ -17,12 +17,18 @@ SpaceEnvironment::SpaceEnvironment() : Node("space_environment_node"),
 }
 
 bool SpaceEnvironment::is_enough_space(const Scan &scan, const float offset) const {
-    float rad = scan.angle_reference + offset;
-    for (const float &value: scan.values) {
-        if (value < 0) continue; // Skip invalid values
-        rad = std::fmod(rad, 2 * M_PIf);
-        if (value < max_depth && rad > M_PIf && std::abs(value * std::cos(rad)) * 2 < width)
+    double rad = scan.angle_reference + offset;
+
+    for (const auto &value: scan.values) {
+        if (rad > M_PI) rad -= 2 * M_PI;
+        else if (rad < -M_PI) rad += 2 * M_PI;
+
+        if (
+            value < max_depth && rad < 0 &&
+            std::abs(value * std::cos(rad)) * 2 < width
+        )
             return false;
+
         rad += scan.angle_increment;
     }
     return true;
