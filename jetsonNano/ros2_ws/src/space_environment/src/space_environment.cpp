@@ -11,7 +11,7 @@ SpaceEnvironment::SpaceEnvironment() : Node("space_environment_node"),
     subscription_laser_scan_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
         "scan", 10, std::bind(&SpaceEnvironment::LaserScanCallback, this, _1));
 
-    publisher_enough_width_space_ = this->create_publisher<std_msgs::msg::Bool>("enough_width_space", 10);
+    publisher_enough_width_space_ = this->create_publisher<interfaces::msg::EnougthSpace>("enough_width_space", 10);
 
     RCLCPP_INFO(this->get_logger(), "Space environment node has been started.");
 }
