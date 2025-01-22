@@ -9,7 +9,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -pedantic)
 endif()
 
-set(req_deps "rclcpp" "sensor_msgs" "std_msgs")
+set(req_deps "rclcpp" "sensor_msgs" "interfaces")
 
 find_package(ament_cmake_auto REQUIRED)
 find_package(ament_cmake_ros REQUIRED)
