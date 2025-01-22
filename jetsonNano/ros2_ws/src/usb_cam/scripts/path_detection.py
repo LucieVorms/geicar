@@ -45,7 +45,7 @@ class PathDetection(Node):
 
         # Paramètres de la caméra
         self.FOCAL_LENGTH = 490
-        self.DEPTH_CONSTANT = 4.5
+        self.DEPTH_CONSTANT = 4
 
     def image_callback(self, msg):
         try:
