@@ -20,6 +20,8 @@
 #include "../include/car_control/propulsionCmd.h"
 #include "../include/car_control/car_control_node.h"
 
+#include "../../../build/interfaces/rosidl_generator_cpp/interfaces/msg/detail/enougth_space__struct.hpp"
+
 using namespace std;
 using placeholders::_1;
 #define REVERSE_DURATION 2000  
@@ -63,7 +65,7 @@ public:
         subscription_obstacle_info_ = this->create_subscription<interfaces::msg::ObstacleInfo>(
             "obstacle_info", 10, std::bind(&car_control::ObstacleInfoCallback, this, _1));
 
-        subscription_enough_width_space_ = this->create_subscription<std_msgs::msg::Bool>(
+        subscription_enough_width_space_ = this->create_subscription<interfaces::msg::EnougthSpace>(
             "enough_width_space", 10, std::bind(&car_control::EnoughWidthSpaceCallback, this, _1));
        
 	    subscription_steering_calibration_ = this->create_subscription<interfaces::msg::SteeringCalibration>(
@@ -108,8 +110,8 @@ private:
         obstacle_detected = Obstaclemsg.obstacle_detected; 
     }
 
-    void EnoughWidthSpaceCallback(const std_msgs::msg::Bool &msg) {
-        enough_width_space = msg.data;
+    void EnoughWidthSpaceCallback(const interfaces::msg::EnougthSpace &msg) {
+        enough_width_space = msg.found;
     }
 
      /* Callback to handle ultrasonic sensor data */
@@ -319,7 +321,7 @@ private:
     rclcpp::Subscription<interfaces::msg::MotorsFeedback>::SharedPtr subscription_motors_feedback_;
     rclcpp::Subscription<interfaces::msg::SteeringCalibration>::SharedPtr subscription_steering_calibration_;
     rclcpp::Subscription<interfaces::msg::ObstacleInfo>::SharedPtr subscription_obstacle_info_;
-    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr subscription_enough_width_space_;
+    rclcpp::Subscription<interfaces::msg::EnougthSpace>::SharedPtr subscription_enough_width_space_;
     //Timer
     rclcpp::TimerBase::SharedPtr timer_;
 
