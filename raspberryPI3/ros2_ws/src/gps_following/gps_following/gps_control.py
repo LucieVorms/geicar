@@ -22,7 +22,7 @@ class GnssListener(Node):
         self.publisher = self.create_publisher(GnssStatus, '/gnss_status', 10)
         
         # Load the GPS points from the itinerary CSV file
-        self.itinerary = self.load_itinerary_from_csv('gnss_data_spline.csv')
+        self.itinerary = self.load_itinerary_from_csv('gnss_data_new_path.csv')
 
         if not self.itinerary:
             self.get_logger().error("No valid GPS points loaded from the itinerary!")
@@ -88,7 +88,6 @@ class GnssListener(Node):
                 if self.haversine(current_position[0], current_position[1], final_target[0], final_target[1]) < 50:
                     self.get_logger().info("Destination reached.")
                     status_msg.stop_following = True
-                    rclpy.shutdown()
 
             distance = self.haversine(current_lat, current_lon, target_lat, target_lon)
             
@@ -101,8 +100,8 @@ class GnssListener(Node):
             # Calculate the angle difference between current and target directions
             angle_difference = self.calculate_angle_difference(current_direction, target_direction)
             
-            max_angle_difference = 40.0
-            min_angle_difference = -40.0
+            max_angle_difference = 35.0
+            min_angle_difference = -35.0
 
             angle_difference = max(min(angle_difference, max_angle_difference), min_angle_difference)
             if(distance < self.lookahead_distance):
