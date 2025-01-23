@@ -81,6 +81,8 @@ class GnssListener(Node):
             if new_global_index > self.current_target_index:
                 self.current_target_index = new_global_index
 
+
+            status_msg = GnssStatus()
             if self.current_target_index == len(self.itinerary) - 1:
                 final_target = self.itinerary[-1]
                 if self.haversine(current_position[0], current_position[1], final_target[0], final_target[1]) < 50:
@@ -115,7 +117,7 @@ class GnssListener(Node):
                 status_msg.direction_message = "Go Straight"
 
             # Create a new status message
-            status_msg = GnssStatus()
+            
             status_msg.current_latitude = current_lat
             status_msg.current_longitude = current_lon
             status_msg.target_latitude = target_lat
