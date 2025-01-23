@@ -2,8 +2,8 @@ float64 current_latitude
 float64 current_longitude
 float64 target_latitude
 float64 target_longitude
-float64 previous_longitude
-float64 previous_latitude
+float64 pursuit_latitude
+float64 pursuit_longitude
 float64 distance_to_target
 float64 current_direction  
 float64 target_direction
