@@ -18,14 +18,17 @@ public:
     SpaceEnvironment();
 
 private:
+    float min_depth;
     float max_depth;
     float width;
     float static_angle_offset;
     rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr subscription_laser_scan_;
     rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr publisher_enough_width_space_;
 
-    bool is_enough_space(const Scan &scan, const float offset) const;
-    bool is_enough_space_in_range(const Scan &scan, const float max_abs_angle) const;
+    bool is_enough_space(const Scan &scan, float offset) const;
+
+    bool is_enough_space_in_range(const Scan &scan, float max_abs_angle) const;
+
     void LaserScanCallback(const sensor_msgs::msg::LaserScan &msg) const;
 };
 

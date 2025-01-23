@@ -7,7 +7,7 @@ using namespace std;
 using placeholders::_1;
 
 SpaceEnvironment::SpaceEnvironment() : Node("space_environment_node"),
-                                       max_depth(5.0), width(1.2), static_angle_offset(0.0) {
+                                       min_depth(0.45), max_depth(5.0), width(1.2), static_angle_offset(0.0) {
     subscription_laser_scan_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
         "scan", 10, std::bind(&SpaceEnvironment::LaserScanCallback, this, _1));
 
@@ -22,13 +22,10 @@ bool SpaceEnvironment::is_enough_space(const Scan &scan, const float offset) con
     for (const auto &value: scan.values) {
         while (rad >= M_PI) rad -= 2 * M_PI;
         while (rad < -M_PI) rad += 2 * M_PI;
-	//RCLCPP_INFO(this->get_logger(), "scan value  %f",value);
-	
-        if (isnormal(value) && value < max_depth && value > 0.45 && rad < 0 && std::abs(value * std::cos(rad)) * 2 < width){            
-		//RCLCPP_INFO(this->get_logger(), "isnormal %f",value);
-		return false;
-	}
 
+        if (isnormal(value) && min_depth < value && value < max_depth &&
+            rad < 0 && std::abs(value * std::cos(rad)) * 2 < width)
+            return false;
         rad += scan.angle_increment;
     }
     return true;
@@ -48,7 +45,7 @@ bool SpaceEnvironment::is_enough_space_in_range(const Scan &scan, const float ma
 void SpaceEnvironment::LaserScanCallback(const sensor_msgs::msg::LaserScan &msg) const {
     const auto scan = Scan{msg.angle_min, msg.angle_increment, msg.ranges};
     std_msgs::msg::Bool msg_out;
-    msg_out.data = is_enough_space_in_range(scan, (M_PI*2.) /(9.));
+    msg_out.data = is_enough_space_in_range(scan, M_PI / 6.);
 
     publisher_enough_width_space_->publish(msg_out);
 }
