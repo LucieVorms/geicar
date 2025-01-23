@@ -11,7 +11,7 @@ ros.on("close", () => console.log("Connexion fermée"));
 
 const videoTopic = new ROSLIB.Topic({
     ros: ros,
-    name: "/path_detection/annotated_image", //A changer par compressed 
+    name: "/path_detection/compressed", 
     messageType: "sensor_msgs/msg/Image", 
 });
 

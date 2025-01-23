@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 import rclpy
 from rclpy.node import Node
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import Image, CompressedImage
 from std_msgs.msg import Float32  # Pour publier la distance
 from cv_bridge import CvBridge
 from ultralytics import YOLO  # Pour utiliser YOLOv8
@@ -43,6 +43,12 @@ class PathDetection(Node):
             10
         )
 
+        self.pub_compressed = self.create_publisher(
+            CompressedImage,
+            '/path_detection/compressed',
+            10
+        )
+
         # Paramètres de la caméra
         self.FOCAL_LENGTH = 490
         self.DEPTH_CONSTANT = 4
@@ -70,8 +76,11 @@ class PathDetection(Node):
         # Publier l'image annotée
         try:
             annotated_msg = self.bridge.cv2_to_imgmsg(annotated_image, encoding="bgr8")
+            annotated_image_compressed = self.bridge.cv2_to_compressed_imgmsg(annotated_image, dst_format='jpg')
             self.pub_annotated_image.publish(annotated_msg)
             self.get_logger().info("Image annotée publiée sur /path_detection/annotated_image")
+            self.pub_compressed.publish(annotated_image_compressed)
+            self.get_logger().info("Image annotée publiée sur /path_detection/compressed")
         except Exception as e:
             self.get_logger().error(f"Erreur lors de la publication de l'image annotée : {e}")
 
