@@ -109,7 +109,7 @@ private:
         obstacle_detected = Obstaclemsg.obstacle_detected; 
     }
 
-    void EnoughWidthSpaceCallback(const interfaces::msg::EnougthSpace &msg) {
+    void EnoughWidthSpaceCallback(const interfaces::msg::EnougthSpace & msg) {
         enough_width_space = msg.found;
     }
 
