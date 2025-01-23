@@ -101,8 +101,8 @@ class GnssListener(Node):
             # Calculate the angle difference between current and target directions
             angle_difference = self.calculate_angle_difference(current_direction, target_direction)
             
-            max_angle_difference = 40
-            min_angle_difference = -40
+            max_angle_difference = 40.0
+            min_angle_difference = -40.0
 
             angle_difference = max(min(angle_difference, max_angle_difference), min_angle_difference)
             if(distance < self.lookahead_distance):
