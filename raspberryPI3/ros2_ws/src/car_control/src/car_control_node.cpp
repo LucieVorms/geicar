@@ -20,7 +20,6 @@
 #include "../include/car_control/propulsionCmd.h"
 #include "../include/car_control/car_control_node.h"
 
-#include "../../../build/interfaces/rosidl_generator_cpp/interfaces/msg/detail/enougth_space__struct.hpp"
 
 using namespace std;
 using placeholders::_1;
