@@ -11,6 +11,7 @@
 #include "interfaces/msg/joystick_order.hpp"
 #include "interfaces/msg/gnss_status.hpp"
 #include "interfaces/msg/obstacle_info.hpp"
+#include "interfaces/msg/enougth_space.hpp"
 #include "std_msgs/msg/bool.hpp"  
 
 
