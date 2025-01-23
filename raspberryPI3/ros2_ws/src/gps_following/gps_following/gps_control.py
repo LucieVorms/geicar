@@ -83,10 +83,10 @@ class GnssListener(Node):
 
             if self.current_target_index == len(self.itinerary) - 1:
                 final_target = self.itinerary[-1]
-            if self.haversine(current_position[0], current_position[1], final_target[0], final_target[1]) < 50:
-                self.get_logger().info("Destination reached.")
-                status_msg.stop_following = True
-                rclpy.shutdown()
+                if self.haversine(current_position[0], current_position[1], final_target[0], final_target[1]) < 50:
+                    self.get_logger().info("Destination reached.")
+                    status_msg.stop_following = True
+                    rclpy.shutdown()
 
             distance = self.haversine(current_lat, current_lon, target_lat, target_lon)
             
