@@ -27,9 +27,7 @@ private:
 
     bool is_enough_space(const Scan &scan, float offset) const;
 
-    bool is_enough_space(const Scan &scan, float offset) const;
-
-    bool is_enough_space_in_range(const Scan &scan, float max_abs_angle) const;
+    float is_enough_space_in_range(const Scan &scan, float max_abs_angle) const;
 
     void LaserScanCallback(const sensor_msgs::msg::LaserScan &msg) const;
 };
