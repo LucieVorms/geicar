@@ -1,4 +1,4 @@
-const ROSBRIDGE_IP = "10.105.1.167"; 
+const ROSBRIDGE_IP = "172.20.10.10"; 
 const ROSBRIDGE_PORT = 9090;
 
 let ros = new ROSLIB.Ros({

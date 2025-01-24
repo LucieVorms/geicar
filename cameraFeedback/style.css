@@ -1,0 +1,71 @@
+/* --- Style global --- */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Bande supérieure */
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    background-color: #333;
+    padding: 10px 0;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    padding: 14px 20px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.navbar a:hover {
+    background-color: #575757;
+}
+
+.navbar a.active {
+    background-color: #007bff;
+}
+
+/* Conteneur principal */
+.content {
+    display: none;
+    padding: 20px;
+}
+
+.content.active {
+    display: block;
+}
+
+/* Style de la caméra */
+#cameraFeed {
+    max-width: 100%;
+    height: auto;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Style des vidéos */
+/* Conteneur de chaque vidéo */
+.video-item {
+    margin-bottom: 30px; /* Espace entre les vidéos */
+    text-align: center; /* Centrer les titres et les vidéos */
+}
+
+/* Titres au-dessus des vidéos */
+.video-item h3 {
+    margin-bottom: 10px; /* Espace entre le titre et la vidéo */
+    font-size: 1.5em; /* Taille du texte */
+    color: #333; /* Couleur du titre */
+}
+
+/* Vidéos */
+.video-item iframe {
+    width: 80%; /* Ajuste la largeur de la vidéo */
+    height: 360px; /* Hauteur de la vidéo */
+    border-radius: 10px; /* Coins arrondis */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Ombre pour un meilleur rendu */
+}

@@ -3,19 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Camera feedback</title>
+    <title>Interface Web ROS</title>
+    <!-- Lien vers le fichier CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Camera feedback with measurement annotations</h1>
-    <img id="cameraFeed" alt="Flux vidéo de la caméra" style="max-width: 100%; height: auto;" />
-    <div id="annotations"></div>
-    
-    <!-- Inclusion de la bibliothèque roslibjs -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/roslib@1/build/roslib.min.js"></script>
+    <!-- Bande supérieure avec les onglets -->
+    <div class="navbar">
+        <a href="#" class="tab-link active" data-tab="live-camera">Camera Live</a>
+        <a href="#" class="tab-link" data-tab="demonstrations">Demonstrations</a>
+    </div>
 
-    <!-- Votre script JavaScript -->
+    <!-- Contenu des onglets -->
+    <div id="live-camera" class="content active">
+        <h1>Camera Live</h1>
+        <img id="Camera feed" alt="cameraFeed" />
+    </div>
+
+    <div id="demonstrations" class="content">
+        <h1>Features demonstrations</h1>
+        <div class="video-item">
+            <h3>Obstacle detection and reaction</h3>
+            <iframe src="https://www.youtube.com/embed/sample1" allowfullscreen></iframe>
+        </div>
+        <div class="video-item">
+            <h3>PRM detection with the LIDAR</h3>
+            <iframe src="https://www.youtube.com/embed/sample2" allowfullscreen></iframe>
+        </div>
+        <div class="video-item">
+            <h3>Autonomous driving</h3>
+            <iframe src="https://www.youtube.com/embed/sample2" allowfullscreen></iframe>
+        </div>
+        
+    </div>
+
+    <!-- Lien vers les fichiers JavaScript -->
     <script src="ros.js"></script>
-</body>
-</html>
+    <script src="tabs.js"></script>
 </body>
 </html>
