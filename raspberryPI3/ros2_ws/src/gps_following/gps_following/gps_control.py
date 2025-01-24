@@ -47,10 +47,6 @@ class GnssListener(Node):
 
         self.angle = None
         self.space = None
-        self.current_lat = None
-        self.current_lon = None
-
-        self.timer = self.create_timer(0.1, self.calculate_path)
 
     def load_itinerary_from_csv(self, file_name):
         # Load GPS points from a CSV file
@@ -80,21 +76,19 @@ class GnssListener(Node):
         # Retrieve the current vehicle coordinates and apply the offset
 
         if msg.quality == 1 or msg.quality == 2:
-            self.current_lat = msg.latitude
-            self.current_lon = msg.longitude
+            current_lat = msg.latitude
+            current_lon = msg.longitude
         else:
-            self.current_lat = msg.latitude + self.lat_offset  # Apply latitude correction
-            self.current_lon = msg.longitude + self.lon_offset  # Apply longitude correction
-
-    def calculate_path(self):
-         # Get the coordinates of the current target and the final destination
+            current_lat = msg.latitude + self.lat_offset  # Apply latitude correction
+            current_lon = msg.longitude + self.lon_offset  # Apply longitude correction
+        
         target_lat, target_lon = self.itinerary[self.current_target_index]
 
         if self.previous_lat is not None and self.previous_lon is not None:
            # Calculate the distance to the target using the Haversine formula
 
             reduced_itinerary = self.itinerary[self.current_target_index:]
-            current_position = (self.current_lat, self.current_lon)
+            current_position = (current_lat, current_lon)
 
             pursuit_point, updated_index = self.calculate_pursuit_point(reduced_itinerary, current_position, self.lookahead_distance)
 
@@ -110,13 +104,13 @@ class GnssListener(Node):
                     self.get_logger().info("Destination reached.")
                     status_msg.stop_following = True
 
-            distance = self.haversine(self.current_lat, self.current_lon, target_lat, target_lon)
+            distance = self.haversine(current_lat, current_lon, target_lat, target_lon)
             
             # Calculate the direction (bearing) towards the current position
-            current_direction = self.calculate_bearing(self.previous_lat, self.previous_lon, self.current_lat, self.current_lon)
+            current_direction = self.calculate_bearing(self.previous_lat, self.previous_lon, current_lat, current_lon)
             
             # Calculate the direction (bearing) towards the new point
-            target_direction = self.calculate_bearing(self.current_lat, self.current_lon, pursuit_point[0],pursuit_point[1])  # Example target point
+            target_direction = self.calculate_bearing(current_lat, current_lon, pursuit_point[0],pursuit_point[1])  # Example target point
             
             # Calculate the angle difference between current and target directions
             angle_difference = self.calculate_angle_difference(current_direction, target_direction)
@@ -149,8 +143,8 @@ class GnssListener(Node):
 
             # Create a new status message
             
-            status_msg.current_latitude = self.current_lat
-            status_msg.current_longitude = self.current_lon
+            status_msg.current_latitude = current_lat
+            status_msg.current_longitude = current_lon
             status_msg.target_latitude = target_lat
             status_msg.target_longitude = target_lon
             status_msg.distance_to_target = distance
@@ -163,8 +157,9 @@ class GnssListener(Node):
 
             self.publisher.publish(status_msg)
             
-        self.previous_lat = self.current_lat
-        self.previous_lon = self.current_lon
+        self.previous_lat = current_lat
+        self.previous_lon = current_lon
+
 
     def haversine(self, lat1, lon1, lat2, lon2):
         # Convert coordinates to radians
