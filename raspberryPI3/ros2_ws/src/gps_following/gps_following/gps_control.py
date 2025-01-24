@@ -114,7 +114,7 @@ class GnssListener(Node):
             
             # Calculate the angle difference between current and target directions
             angle_difference = self.calculate_angle_difference(current_direction, target_direction)
-            
+            """
             if self.space == True:
                 if self.angle_lidar > 0.0:
                     if self.angle_lidar > 1.0:
@@ -122,9 +122,10 @@ class GnssListener(Node):
                     else: 
                         angle_difference = degrees(self.angle_lidar)-10
                 else:
-                    max_angle_difference = 35.0
-                    min_angle_difference = -35.0
-                    angle_difference = max(min(angle_difference, max_angle_difference), min_angle_difference)
+            """
+            max_angle_difference = 35.0
+            min_angle_difference = -35.0
+            angle_difference = max(min(angle_difference, max_angle_difference), min_angle_difference)
 
             
             if(distance < self.lookahead_distance):
