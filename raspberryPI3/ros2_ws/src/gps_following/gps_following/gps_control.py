@@ -47,6 +47,10 @@ class GnssListener(Node):
 
         self.angle = None
         self.space = None
+        self.current_lat = None
+        self.current_lon = None
+
+        self.timer = self.create_timer(0.1, self.calculate_path)
 
     def load_itinerary_from_csv(self, file_name):
         # Load GPS points from a CSV file
