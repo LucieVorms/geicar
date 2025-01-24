@@ -123,7 +123,10 @@ class GnssListener(Node):
             
             if self.space == True:
                 if self.angle_lidar > 0.0:
-                    angle_difference = degrees(self.angle_lidar)
+                    if self.angle_lidar > 1.0:
+                        angle_difference = degrees(self.angle_lidar)+10
+                    else: 
+                        angle_difference = degrees(self.angle_lidar)-10
                 else:
                     max_angle_difference = 35.0
                     min_angle_difference = -35.0
