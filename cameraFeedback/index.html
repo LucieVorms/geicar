@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Bande supérieure avec les onglets -->
+    <!-- Barre des onglets -->
     <div class="navbar">
         <a href="#" class="tab-link active" data-tab="live-camera">Camera Live</a>
         <a href="#" class="tab-link" data-tab="demonstrations">Demonstrations</a>
@@ -17,24 +17,25 @@
     <!-- Contenu des onglets -->
     <div id="live-camera" class="content active">
         <h1>Camera Live</h1>
-        <img id="Camera feed" alt="cameraFeed" />
+        <img id="cameraFeed" alt="Live Camera Feed" />
     </div>
 
     <div id="demonstrations" class="content">
-        <h1>Features demonstrations</h1>
-        <div class="video-item">
-            <h3>Obstacle detection and reaction</h3>
-            <iframe src="https://www.youtube.com/embed/sample1" allowfullscreen></iframe>
+        <h1>Features Demonstrations</h1>
+        <div class="video-container">
+            <div class="video-item">
+                <h3>Obstacle Detection and Reaction</h3>
+                <iframe src="https://www.youtube.com/embed/sample1" allowfullscreen></iframe>
+            </div>
+            <div class="video-item">
+                <h3>PRM Detection with the LIDAR</h3>
+                <iframe src="https://www.youtube.com/embed/sample2" allowfullscreen></iframe>
+            </div>
+            <div class="video-item">
+                <h3>Autonomous Driving</h3>
+                <iframe src="https://www.youtube.com/embed/sample3" allowfullscreen></iframe>
+            </div>
         </div>
-        <div class="video-item">
-            <h3>PRM detection with the LIDAR</h3>
-            <iframe src="https://www.youtube.com/embed/sample2" allowfullscreen></iframe>
-        </div>
-        <div class="video-item">
-            <h3>Autonomous driving</h3>
-            <iframe src="https://www.youtube.com/embed/sample2" allowfullscreen></iframe>
-        </div>
-        
     </div>
 
     <!-- Lien vers les fichiers JavaScript -->

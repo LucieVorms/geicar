@@ -5,7 +5,7 @@ body {
     padding: 0;
 }
 
-/* Bande supérieure */
+/* Onglet */
 .navbar {
     display: flex;
     justify-content: space-around;
