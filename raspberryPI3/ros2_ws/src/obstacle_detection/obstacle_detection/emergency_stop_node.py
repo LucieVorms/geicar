@@ -32,10 +32,10 @@ class EmergencyStopNode(Node):
         rear_obstacles_detected  = False
 
         # Vérifier les capteurs pour détecter des obstacles
-        if msg.front_left < OBSTACLE_THRESHOLD:
+        if msg.front_left < (OBSTACLE_THRESHOLD-15):
             detected_sides.append("Front Left")
             obstacle_detected = True
-            if msg.front_left < CRITICAL_THRESHOLD:
+            if msg.front_left < (CRITICAL_THRESHOLD-8):
                 critical_sides.append("Front Left")
                 critical_detected = True
         if msg.front_center < OBSTACLE_THRESHOLD:
@@ -44,10 +44,10 @@ class EmergencyStopNode(Node):
             if msg.front_center < CRITICAL_THRESHOLD:
                 critical_sides.append("Front Center")
                 critical_detected = True
-        if msg.front_right < OBSTACLE_THRESHOLD:
+        if msg.front_right < (OBSTACLE_THRESHOLD-15):
             detected_sides.append("Front Right")
             obstacle_detected = True
-            if msg.front_right < CRITICAL_THRESHOLD:
+            if msg.front_right < (CRITICAL_THRESHOLD-8):
                 critical_sides.append("Front Right")
                 critical_detected = True
         if msg.rear_right < OBSTACLE_THRESHOLD:
