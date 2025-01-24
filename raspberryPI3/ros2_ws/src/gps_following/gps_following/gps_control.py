@@ -116,17 +116,11 @@ class GnssListener(Node):
             angle_difference = self.calculate_angle_difference(current_direction, target_direction)
             
             if self.space == True:
-                angle_difference = degrees(self.angle_lidar)
-                self.get_logger().info(f"Turn? {angle_difference}")
                 if self.angle_lidar > 0.0:
-                    angle_difference = degrees(self.angle_lidar)
-                    self.get_logger().info(f"Turn {angle_difference}")
                     if degrees(self.angle_lidar) > 1.0:
-                        angle_difference = degrees(self.angle_lidar)+10
-                        self.get_logger().info(f"Turn Right {angle_difference}")
+                        angle_difference = 35.0
                     elif degrees(self.angle_lidar) > 1.0: 
-                        angle_difference = degrees(self.angle_lidar)-10
-                        self.get_logger().info(f"Turn Left {angle_difference}")
+                        angle_difference = -35.0
                 else:
                     max_angle_difference = 35.0
                     min_angle_difference = -35.0
