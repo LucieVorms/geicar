@@ -5,7 +5,7 @@
 
 //#include "interfaces/msg/motors_order.hpp"
 #include "interfaces/msg/motors_feedback.hpp"
-
+#include "std_msgs/msg/float32.hpp"
 #include "interfaces/msg/car_motion_order.hpp"
 #include "interfaces/msg/steering_calibration.hpp"
 #include "interfaces/msg/joystick_order.hpp"
@@ -68,7 +68,9 @@ public:
        
 	    subscription_steering_calibration_ = this->create_subscription<interfaces::msg::SteeringCalibration>(
 		    "steering_calibration", 10, std::bind(&car_control::steeringCalibrationCallback, this, _1));
-	
+
+        subscription_path_detection_results_ = this->create_subscription<std_msgs::msg::Float32>(
+            "/path_detection/results", 10, std::bind(&car_control::PathDetectionResultsCallback, this, _1));
 	    // Create calibration server 
 	    server_calibration_ = this->create_service<std_srvs::srv::Empty>( "steering_calibration", std::bind(&car_control::steeringCalibration, this, std::placeholders::_1, std::placeholders::_2));
 
@@ -79,6 +81,10 @@ public:
     
 private:
 
+    void PathDetectionResultsCallback(const std_msgs::msg::Float32::SharedPtr msg) {
+        RCLCPP_INFO(this->get_logger(), "Received path detection result: %f", msg->data);
+        path_detection_result_ = msg->data;
+    }
     /* Update start, mode, requestedThrottle, requestedSteerAngle and reverse from joystick order [callback function]  :
     *
     * This function is called when a message is published on the "/joystick_order" topic
@@ -183,7 +189,7 @@ private:
             frontWheelRotation = 0;
             reversing = false;
         } 
-    } else if (!start || obstacle_detected || !enough_width_space) {
+    } else if (!start || obstacle_detected || !enough_width_space || path_detection_result_ < 1.2) {
         // Stop the car 
         carSpeed = 0; 
         frontWheelRotation = 0;
@@ -299,6 +305,7 @@ private:
     float carSpeed;
     float frontWheelRotation;
 
+    float path_detection_result_;
     float turn_angle;
     bool stop_following;
     //Publishers
@@ -306,7 +313,7 @@ private:
     rclcpp::Publisher<interfaces::msg::SteeringCalibration>::SharedPtr publisher_steeringCalibration_;
 
     //Subscribers
-
+    rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr subscription_path_detection_results_;
     rclcpp::Subscription<interfaces::msg::GnssStatus>::SharedPtr subscription_gnss_status_;
     rclcpp::Subscription<interfaces::msg::JoystickOrder>::SharedPtr subscription_joystick_order_;
     rclcpp::Subscription<interfaces::msg::MotorsFeedback>::SharedPtr subscription_motors_feedback_;
