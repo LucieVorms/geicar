@@ -22,7 +22,7 @@ class GnssListener(Node):
         self.publisher = self.create_publisher(GnssStatus, '/gnss_status', 10)
         
         # Load the GPS points from the itinerary CSV file
-        self.itinerary = self.load_itinerary_from_csv('gnss_data_new_path.csv')
+        self.itinerary = self.load_itinerary_from_csv('gnss_data_test.csv')
 
         if not self.itinerary:
             self.get_logger().error("No valid GPS points loaded from the itinerary!")
