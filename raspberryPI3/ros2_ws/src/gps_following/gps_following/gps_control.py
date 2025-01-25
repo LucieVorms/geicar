@@ -76,8 +76,8 @@ class GnssListener(Node):
         # Retrieve the current vehicle coordinates and apply the offset
 
         if msg.quality == 1 or msg.quality == 2:
-            current_lat = msg.latitude
-            current_lon = msg.longitude
+            current_lat = msg.latitude - 0.000003
+            current_lon = msg.longitude + 0.000012
         else:
             current_lat = msg.latitude + self.lat_offset  # Apply latitude correction
             current_lon = msg.longitude + self.lon_offset  # Apply longitude correction
@@ -109,11 +109,11 @@ class GnssListener(Node):
             angle_difference = self.calculate_angle_difference(current_direction, target_direction)
             
             if self.space == True:
-                if self.angle_lidar > 0.0:
+                if abs(self.angle_lidar) > 0.0:
                     if degrees(self.angle_lidar) > 1.0:
                         angle_difference = 35.0
                         self.lookahead_distance = 120
-                    elif degrees(self.angle_lidar) > 1.0: 
+                    elif degrees(self.angle_lidar) < -1.0: 
                         angle_difference = -35.0
                         self.lookahead_distance = 120
                 else:
