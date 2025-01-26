@@ -49,6 +49,12 @@ class GnssListener(Node):
         self.angle = None
         self.space = None
 
+        self.lat_offset2= 0.000003
+        self.lon_offset2= 0.000012
+
+        self.lat_offset1 = 0
+        self.lon_offset1 = 0
+
     def load_itinerary_from_csv(self, file_name):
         # Load GPS points from a CSV file
         itinerary = []
@@ -77,8 +83,8 @@ class GnssListener(Node):
         # Retrieve the current vehicle coordinates and apply the offset
 
         if msg.quality == 1 or msg.quality == 2:
-            current_lat = msg.latitude - 0.00000
-            current_lon = msg.longitude + 0.0000
+            current_lat = msg.latitude -   self.lat_offset1      #Change here offset
+            current_lon = msg.longitude +  self.lat_offset1      #Change here offset
         else:
             current_lat = msg.latitude + self.lat_offset  # Apply latitude correction
             current_lon = msg.longitude + self.lon_offset  # Apply longitude correction
