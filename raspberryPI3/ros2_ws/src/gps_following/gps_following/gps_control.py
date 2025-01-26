@@ -31,7 +31,8 @@ class GnssListener(Node):
         self.publisher = self.create_publisher(GnssStatus, '/gnss_status', 10)
         
         # Load the GPS points from the itinerary CSV file
-        self.itinerary = self.load_itinerary_from_csv('gnss_test.csv')
+
+        self.itinerary = self.load_itinerary_from_csv('other_demo2.csv')
 
         if not self.itinerary:
             self.get_logger().error("No valid GPS points loaded from the itinerary!")
@@ -76,8 +77,8 @@ class GnssListener(Node):
         # Retrieve the current vehicle coordinates and apply the offset
 
         if msg.quality == 1 or msg.quality == 2:
-            current_lat = msg.latitude - 0.000003
-            current_lon = msg.longitude + 0.000012
+            current_lat = msg.latitude - 0.00000
+            current_lon = msg.longitude + 0.0000
         else:
             current_lat = msg.latitude + self.lat_offset  # Apply latitude correction
             current_lon = msg.longitude + self.lon_offset  # Apply longitude correction
@@ -112,10 +113,10 @@ class GnssListener(Node):
                 if abs(self.angle_lidar) > 0.0:
                     if degrees(self.angle_lidar) > 1.0:
                         angle_difference = 35.0
-                        self.lookahead_distance = 120
+                        self.lookahead_distance = 200
                     elif degrees(self.angle_lidar) < -1.0: 
                         angle_difference = -35.0
-                        self.lookahead_distance = 120
+                        self.lookahead_distance = 200
                 else:
                     self.lookahead_distance = 75
                     max_angle_difference = 35.0
