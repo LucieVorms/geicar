@@ -38,7 +38,7 @@ class EmergencyStopNode(Node):
             if msg.front_left < (CRITICAL_THRESHOLD-8):
                 critical_sides.append("Front Left")
                 critical_detected = True
-        if msg.front_center < OBSTACLE_THRESHOLD:
+        if msg.front_center < (OBSTACLE_THRESHOLD-6):
             detected_sides.append("Front Center")
             obstacle_detected = True
             if msg.front_center < CRITICAL_THRESHOLD:

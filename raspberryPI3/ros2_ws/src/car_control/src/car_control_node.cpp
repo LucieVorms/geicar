@@ -191,7 +191,7 @@ private:
             frontWheelRotation = 0;
             reversing = false;
         } 
-    } else if (!start || obstacle_detected || !enough_width_space || path_detection_result_ < 1.2) {
+    } else if (!start || obstacle_detected || !enough_width_space) {
         // Stop the car 
         carSpeed = 0; 
         frontWheelRotation = 0;
