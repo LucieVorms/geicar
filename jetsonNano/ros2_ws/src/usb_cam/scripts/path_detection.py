@@ -14,32 +14,32 @@ class PathDetection(Node):
     def __init__(self):
         super().__init__('path_detection')
 
-        # CvBridge pour la conversion ROS <-> OpenCV
+        # Convert ROS <-> OpenCV
         self.bridge = CvBridge()
 
-        # Charger le modèle YOLOv8
-        self.model = YOLO("/home/geicar/path_detection/runs/train2/best.pt")  # Remplacez par le chemin de votre modèle
+        # YOLOv8
+        self.model = YOLO("/home/geicar/path_detection/runs/train2/best.pt")  
         self.get_logger().info("Modèle YOLOv8 chargé avec succès !")
 
-        # Souscription au topic de la caméra
+        # Subscribe to the camera topic
         self.sub = self.create_subscription(
             Image,
-            'image_raw',  # Topic de la caméra
+            'image_raw', 
             self.image_callback,
             10
         )
 
-        # Publication de la distance détectée
+        #Publish the distance
         self.pub_distance = self.create_publisher(
             Float32,
-            '/path_detection/results',  # Topic pour publier la distance
+            '/path_detection/results',  
             10
         )
 
-        # Publication des images annotées
+        # Publish annotated images
         self.pub_annotated_image = self.create_publisher(
             Image,
-            '/path_detection/annotated_image',  # Topic pour publier les images annotées
+            '/path_detection/annotated_image', 
             10
         )
 
@@ -49,22 +49,22 @@ class PathDetection(Node):
             10
         )
 
-        # Paramètres de la caméra
-        self.FOCAL_LENGTH = 490
-        self.DEPTH_CONSTANT = 4
+        #Camera parameter
+        self.FOCAL_LENGTH = 490 
+        self.DEPTH_CONSTANT = 4 #Distance between the point taken to measure and the camera
 
     def image_callback(self, msg):
         try:
-            # Convertir l'image ROS en image OpenCV
+            # Convert ROS image in OpenCV image
             frame = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
         except Exception as e:
             self.get_logger().error(f"Erreur lors de la conversion de l'image : {e}")
             return
 
-        # Effectuer la segmentation avec YOLO
+        # Predict with YOLO
         results = self.model.predict(source=frame, save=False, verbose=False)
 
-        # Calculer et publier la distance
+        # Compute and publish the distance
         distance, annotated_image = self.calculate_distance_and_annotate(frame, results)
 
         if distance is not None:
@@ -73,7 +73,7 @@ class PathDetection(Node):
             self.pub_distance.publish(distance_msg)
             self.get_logger().info(f"Distance publiée : {distance:.2f} m")
 
-        # Publier l'image annotée
+        # Publish the annotated image and the one compressed (for the web)
         try:
             annotated_msg = self.bridge.cv2_to_imgmsg(annotated_image, encoding="bgr8")
             annotated_image_compressed = self.bridge.cv2_to_compressed_imgmsg(annotated_image, dst_format='jpg')
@@ -86,69 +86,66 @@ class PathDetection(Node):
 
     def calculate_distance_and_annotate(self, frame, results):
         """
-        Calcule la distance entre les bordures gauche et droite pour la classe "path" et
-        annote l'image avec les bordures et la distance moyenne calculée.
+        Take two point on each edge of the "path" detected, compute the distance and annotate the image
         """
-        if len(results) > 0 and results[0].masks is not None:
-            masks = results[0].masks.data.cpu().numpy()  # Masques segmentés
-            class_names = results[0].names  # Noms des classes
 
-            distance_buffer = []  # Stocker les distances pour calculer la moyenne
-            fps = 30  # Exemple d'estimation d'une valeur par seconde
+        # Loop that runs through predictions
+        if len(results) > 0 and results[0].masks is not None:
+            masks = results[0].masks.data.cpu().numpy()  
+            class_names = results[0].names 
+
+            # Variable initialization for averaging
+            distance_buffer = []
+            fps = 2  # Number of estimation per seconds
 
             for i, mask in enumerate(masks):
                 try:
-                    class_id = int(results[0].boxes.cls[i].item())  # ID de la classe
+                    class_id = int(results[0].boxes.cls[i].item())
+                    # Focus on the "path" only and not on "grass" and "concrete block"
                     if class_names[class_id] == "path":
-                        # Obtenir les coordonnées de la bounding box
+                        # Get the coordinates of the bounding box
                         box = results[0].boxes.xyxy[i].cpu().numpy()
                         x1, y1, x2, y2 = map(int, box)
 
-                        # Trouver la position aux 2/3 de la bounding box en hauteur
+                        # Choose to take the 2 points at 2/3 of the height (on the image) of the path 
                         adjusted_y = y2 - (2 * (y2 - y1)) // 3
 
-                        # Trouver les bordures gauche et droite alignées avec ce niveau
+                        # Find the edges
                         active_pixels = np.where(mask > 0)
                         row_pixels = active_pixels[1][active_pixels[0] == adjusted_y]
                         if row_pixels.size > 0:
                             left_border = np.min(row_pixels)
                             right_border = np.max(row_pixels)
 
-                            # Calculer la distance réelle
+                            # Convert into meters
                             distance_2d = self.calculate_2d_distance(
                                 (left_border, adjusted_y), (right_border, adjusted_y), self.FOCAL_LENGTH, self.DEPTH_CONSTANT
                             )
 
-                            # Ajouter la distance dans le buffer
+                            # Averaging during 5 seconds : on 10 predictions
                             distance_buffer.append(distance_2d)
-
-                            # Maintenir uniquement les distances sur 2 secondes (fps frames)
-                            if len(distance_buffer) > 2 * fps:
+                            
+                            if len(distance_buffer) > 2 * 10 :
                                 distance_buffer.pop(0)
-
-                            # Calculer la moyenne des distances
+                                
                             avg_distance = sum(distance_buffer) / len(distance_buffer)
 
-                            # Annoter uniquement les deux points
+                            # Annotations
                             cv2.circle(frame, (left_border, adjusted_y), 5, (0, 255, 0), -1)  # Point gauche
                             cv2.circle(frame, (right_border, adjusted_y), 5, (0, 0, 255), -1)  # Point droit
-
-                            # Tracer une ligne entre les deux points
                             cv2.line(frame, (left_border, adjusted_y), (right_border, adjusted_y), (0, 0, 0), 2)
-
-                            # Annoter la distance moyenne en noir
                             cv2.putText(frame, f"Distance: {avg_distance:.2f} m", (50, 50),
                                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
                             return avg_distance, frame
                 except (IndexError, KeyError, AttributeError) as e:
                     self.get_logger().error(f"Erreur lors du traitement du masque {i}: {e}")
 
-        # Si aucune bordure n'est détectée, retourner l'image originale et None
+        # If no border is detected, return the original image and None
         return None, frame
 
     def calculate_2d_distance(self, point1, point2, focal_length, depth):
         """
-        Calcule la distance 2D réelle entre deux points donnés en pixels.
+        Convert pixels into meters
         """
         x1_pixels, y1_pixels = point1
         x2_pixels, y2_pixels = point2
