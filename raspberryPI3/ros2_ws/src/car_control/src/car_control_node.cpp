@@ -5,12 +5,13 @@
 
 //#include "interfaces/msg/motors_order.hpp"
 #include "interfaces/msg/motors_feedback.hpp"
-
+#include "std_msgs/msg/float32.hpp"
 #include "interfaces/msg/car_motion_order.hpp"
 #include "interfaces/msg/steering_calibration.hpp"
 #include "interfaces/msg/joystick_order.hpp"
 #include "interfaces/msg/gnss_status.hpp"
 #include "interfaces/msg/obstacle_info.hpp"
+#include "interfaces/msg/enougth_space.hpp"
 #include "std_msgs/msg/bool.hpp"  
 
 
@@ -19,6 +20,7 @@
 #include "../include/car_control/steeringCmd.h"
 #include "../include/car_control/propulsionCmd.h"
 #include "../include/car_control/car_control_node.h"
+
 
 using namespace std;
 using placeholders::_1;
@@ -63,12 +65,14 @@ public:
         subscription_obstacle_info_ = this->create_subscription<interfaces::msg::ObstacleInfo>(
             "obstacle_info", 10, std::bind(&car_control::ObstacleInfoCallback, this, _1));
 
-        subscription_enough_width_space_ = this->create_subscription<std_msgs::msg::Bool>(
+        subscription_enough_width_space_ = this->create_subscription<interfaces::msg::EnougthSpace>(
             "enough_width_space", 10, std::bind(&car_control::EnoughWidthSpaceCallback, this, _1));
        
 	    subscription_steering_calibration_ = this->create_subscription<interfaces::msg::SteeringCalibration>(
 		    "steering_calibration", 10, std::bind(&car_control::steeringCalibrationCallback, this, _1));
-	
+
+        subscription_path_detection_results_ = this->create_subscription<std_msgs::msg::Float32>(
+            "/path_detection/results", 10, std::bind(&car_control::PathDetectionResultsCallback, this, _1));
 	    // Create calibration server 
 	    server_calibration_ = this->create_service<std_srvs::srv::Empty>( "steering_calibration", std::bind(&car_control::steeringCalibration, this, std::placeholders::_1, std::placeholders::_2));
 
@@ -79,6 +83,10 @@ public:
     
 private:
 
+    void PathDetectionResultsCallback(const std_msgs::msg::Float32::SharedPtr msg) {
+        RCLCPP_INFO(this->get_logger(), "Received path detection result: %f", msg->data);
+        path_detection_result_ = msg->data;
+    }
     /* Update start, mode, requestedThrottle, requestedSteerAngle and reverse from joystick order [callback function]  :
     *
     * This function is called when a message is published on the "/joystick_order" topic
@@ -102,8 +110,8 @@ private:
         obstacle_detected = Obstaclemsg.obstacle_detected; 
     }
 
-    void EnoughWidthSpaceCallback(const std_msgs::msg::Bool &msg) {
-        enough_width_space = msg.data;
+    void EnoughWidthSpaceCallback(const interfaces::msg::EnougthSpace & msg) {
+        enough_width_space = msg.found;
     }
 
      /* Callback to handle ultrasonic sensor data */
@@ -299,6 +307,7 @@ private:
     float carSpeed;
     float frontWheelRotation;
 
+    float path_detection_result_;
     float turn_angle;
     bool stop_following;
     //Publishers
@@ -306,13 +315,13 @@ private:
     rclcpp::Publisher<interfaces::msg::SteeringCalibration>::SharedPtr publisher_steeringCalibration_;
 
     //Subscribers
-
+    rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr subscription_path_detection_results_;
     rclcpp::Subscription<interfaces::msg::GnssStatus>::SharedPtr subscription_gnss_status_;
     rclcpp::Subscription<interfaces::msg::JoystickOrder>::SharedPtr subscription_joystick_order_;
     rclcpp::Subscription<interfaces::msg::MotorsFeedback>::SharedPtr subscription_motors_feedback_;
     rclcpp::Subscription<interfaces::msg::SteeringCalibration>::SharedPtr subscription_steering_calibration_;
     rclcpp::Subscription<interfaces::msg::ObstacleInfo>::SharedPtr subscription_obstacle_info_;
-    rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr subscription_enough_width_space_;
+    rclcpp::Subscription<interfaces::msg::EnougthSpace>::SharedPtr subscription_enough_width_space_;
     //Timer
     rclcpp::TimerBase::SharedPtr timer_;
 

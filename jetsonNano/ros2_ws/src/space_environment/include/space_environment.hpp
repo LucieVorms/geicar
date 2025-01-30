@@ -4,7 +4,7 @@
 #include <rclcpp/executors.hpp>
 #include <rclcpp/node.hpp>
 #include <sensor_msgs/msg/laser_scan.hpp>
-#include <std_msgs/msg/bool.hpp>
+#include <interfaces/msg/enougth_space.hpp>
 
 typedef struct {
     const float angle_reference;
@@ -23,11 +23,11 @@ private:
     float width;
     float static_angle_offset;
     rclcpp::Subscription<sensor_msgs::msg::LaserScan>::SharedPtr subscription_laser_scan_;
-    rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr publisher_enough_width_space_;
+    rclcpp::Publisher<interfaces::msg::EnougthSpace>::SharedPtr publisher_enough_width_space_;
 
     bool is_enough_space(const Scan &scan, float offset) const;
 
-    bool is_enough_space_in_range(const Scan &scan, float max_abs_angle) const;
+    float is_enough_space_in_range(const Scan &scan, float max_abs_angle) const;
 
     void LaserScanCallback(const sensor_msgs::msg::LaserScan &msg) const;
 };
