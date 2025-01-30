@@ -5,9 +5,9 @@ import numpy as np
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image, CompressedImage
-from std_msgs.msg import Float32  # Pour publier la distance
+from std_msgs.msg import Float32  
 from cv_bridge import CvBridge
-from ultralytics import YOLO  # Pour utiliser YOLOv8
+from ultralytics import YOLO 
 import math
 
 class PathDetection(Node):
