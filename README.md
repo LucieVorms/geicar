@@ -1,5 +1,4 @@
 # GeiCar Project
-
 The GeiCar project is a project carried out by students at [INSA Toulouse](http://www.insa-toulouse.fr/fr/index.html). This project consists in developing the software of a autonomous car in order to carry out different missions. Several projects are exposed on the [official website] (https://sites.google.com/site/projetsecinsa/).
 
 This repository is intended to provide a basis for students starting a new project on the GeiCar. The present code as well as the documentation is the result of internship carried out by [Alexis24](https://github.com/Alexix24) (Alexis Pierre Dit Lambert)
@@ -20,7 +19,7 @@ The projects are (or were) surpervised by:
 * DI MERCURIO Sébastien
 
 ## Quick User Guide
-###Turn the car on and off
+### Turn the car on and off
 * To turn on the car:
   * Toggle the red button to bring the power.
   * Press the START push button (hold it down for a short while).
@@ -31,7 +30,7 @@ The projects are (or were) surpervised by:
 * To turn off the car:
 	* Use the red button as a switch to turn off the power.
 
-###Use of this repository
+### Use of this repository
 * First of all, [fork this repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo) to get yours.
 * Then, clone your fresh and new repository on your computer: `git clone https://github.com/<your id>/<your wonderful repo>`
 * Have a look in "general" directory for how to connect and work with your car
@@ -44,3 +43,35 @@ The projects are (or were) surpervised by:
 
 __warning__
 You normally do not need to change firmware running in F103 and F476 boards. You main work is on the raspberry and jetson side.
+
+# Across the Univers project based on GeiCar 
+This project was carry out by :
+* AVY Antoine
+* VORMS Lucie
+* SANCHEZ Manon
+* LE Duc-Anh
+* SAINT-LOUBERT Jean-Yves
+* GNANGUESSIM Diskouna John
+
+And this project was surpervised by:
+* LE BOTLAN Didier
+* LELEUX Philippe
+
+## Quick User Guide
+### Turn the car on autonomous mode and off autonomous mode
+* To turn on the autonomous mode :
+	* Turn on the car and launch the node on the Raspberry and the Jetson (see general/how_to_use.rd)
+	* Press start and A on the XBOX controller
+ 	* To stop the car during autonomous mode : press B on the XBOX controller  
+ * To turn off the autonomous mode :
+ 	* Press Y on the XBOX controller
+
+### Use of this repository
+* Changes and additions from the GeiCar repository :
+    * raspberryPI3: Autonomous path following (for more 'in depth' documentation : see documentation in this directory)
+    * nucleoL476: Nothing
+    * nucleoF103: Nothing
+    * jetsonNano: AI and camera for measuring the width of the path and LIDAR for PRM path detection and obstacle avoidance (for more 'in depth' documentation : see documentation in this directory)
+    * simulation: Nothing
+
+    
