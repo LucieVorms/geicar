@@ -74,6 +74,8 @@ And this project was surpervised by:
     * jetsonNano: AI and camera for measuring the width of the path and LIDAR for PRM path detection and obstacle avoidance (for more 'in depth' documentation : see documentation in this directory)
     * simulation: Nothing
     * path_detection : Contains the AI models used on the jetson
-    * pathDetection : Contains test script and model training (it was for local test, the scripts are re-used in ./jetsonNano/ros2_ws/src/usb_cam/scripts)
+    * IA/yolo_segmentation : Contains test script and model training (it was for local test, the scripts are re-used in ./jetsonNano/ros2_ws/src/usb_cam/scripts)
+    * cameraFeedback : Local site hosting camera rendering with real-time distance measurement and video demonstrations of features
+    * openCV_test : Contains test scripts with openCV for path detection and measurement without AI : dead end (not used)
 
     
