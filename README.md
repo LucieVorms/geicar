@@ -60,7 +60,7 @@ And this project was surpervised by:
 ## Quick User Guide
 ### Turn the car on autonomous mode and off autonomous mode
 * To turn on the autonomous mode :
-	* Turn on the car and launch the node on the Raspberry and the Jetson (see general/how_to_use.rd)
+	* Turn on the car and launch the node on the Raspberry and the Jetson (see ./general/how_to_use.rd)
 	* Press start and A on the XBOX controller
  	* To stop the car during autonomous mode : press B on the XBOX controller  
  * To turn off the autonomous mode :
@@ -73,5 +73,7 @@ And this project was surpervised by:
     * nucleoF103: Nothing
     * jetsonNano: AI and camera for measuring the width of the path and LIDAR for PRM path detection and obstacle avoidance (for more 'in depth' documentation : see documentation in this directory)
     * simulation: Nothing
+    * path_detection : Contains the AI models used on the jetson
+    * pathDetection : Contains test script and model training (it was for local test, the scripts are re-used in ./jetsonNano/ros2_ws/src/usb_cam/scripts)
 
     
