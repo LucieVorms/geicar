@@ -8,11 +8,11 @@
    
 * raspberryPI3/ros2_ws/src/gps_following : Uses gnss_data and calculates direction (among other things) using a pure pursuit algorithm. 
 * raspberryPI3/ros2_ws/src/interfaces : Add a new topics : 
- * CarMotionOrder.msg
- * EnoughSpace.msg
- * GnssStatus.msg
- * MotorsOrders.msg
- * ObstacleInfo.msg
+   * CarMotionOrder.msg
+   * EnoughSpace.msg
+   * GnssStatus.msg
+   * MotorsOrders.msg
+   * ObstacleInfo.msg
 * raspberryPI3/ros2_ws/src/motors_control : Add an upper layer of abstraction to motors command to ease and strengthen the motors control. A control loop is used to regulate reference commands (speed and orientation). This is used by the car_control_node.
   * left|right rear pwm are replaced by carSpeed
   * steering pwm is replaced by front_wheel_orientation 
